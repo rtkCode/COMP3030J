@@ -1,6 +1,6 @@
 <template>
   <div class="Index">
-    <Header></Header>
+    <Header :hospital="hospital"></Header>
     <section class="content d-flex justify-content-center align-items-center">
       <div class="">
         <h1 class="seven24">7<small>x</small>24</h1>
@@ -8,7 +8,7 @@
         <button class="btn btn-outline-info rounded-pill p-3 mt-2">start appointment now</button>
       </div>
     </section>
-    <Footer></Footer>
+    <Footer :hospital="hospital"></Footer>
   </div>
 </template>
 
@@ -24,8 +24,11 @@ export default {
     SideBar,
     Footer
   },
-  beforeCreate(){
-    document.title = "Dog&Cat Hospital";
+  props:{
+    "hospital": String
+  },
+  created(){
+    document.title = this.hospital;
   }
 }
 </script>

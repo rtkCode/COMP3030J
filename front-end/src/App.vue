@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view :hospital="hospital"></router-view>
   </div>
 </template>
 
@@ -13,3 +13,17 @@
   color: #2c3e50;
 }
 </style>
+
+<script>
+import Header from '@/components/Header.vue'
+import SideBar from '@/components/SideBar.vue'
+import Footer from '@/components/Footer.vue'
+
+export default {
+  data(){
+    return{
+      hospital: "Dog&Cat Hospital",
+    }
+  }
+}
+</script>

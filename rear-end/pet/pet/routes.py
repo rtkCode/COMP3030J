@@ -1,5 +1,6 @@
 from pet import app
 from flask import redirect, render_template, url_for, session, request, jsonify
+from flask_cors import CORS
 from .models import User, Pet, Staff, Transcript
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +9,8 @@ import time
 from .config import Config
 import json
 import re
+
+CORS(app, supports_credentials=True)
 
 
 @app.route("/login", methods=['POST'])

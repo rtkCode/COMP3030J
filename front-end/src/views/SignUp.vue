@@ -22,14 +22,14 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
               </div>
-              <input type="text" class="form-control" v-model="username" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <input type="text" class="form-control" v-model="username" @blur="verifyUserId()" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
             </div>
             <small class="invalid">*4-16 digits, letters, numbers, underscore</small>
           </div>
 
           <div class="row mt-1">
             <label for="ea">Email address</label>
-            <input type="email" class="form-control" id="ea" v-model="email" required>
+            <input type="email" class="form-control" id="ea" v-model="email" @blur="verifyUserId()" required>
             <small class="invalid">*Please input the correct email address</small>
           </div>
 
@@ -58,6 +58,7 @@ import Footer from '@/components/Footer.vue'
 export default {
   data(){
     return{
+      verifyUserIdUrl: "http://127.0.0.1:5000/verifyUserId",
       registerUrl: "https://jsonplaceholder.typicode.com/posts",
       firstName: "",
       lastName: "",
@@ -66,26 +67,32 @@ export default {
       password: ""
     }
   },
+
   props:{
     "hospital": String
   },
+
   components: {
     Header,
     SideBar,
     Footer
   },
+
   mounted(){
     $(".invalid").hide();
     this.hilight();
   },
+
   created(){
     document.title = `Sign up | ${this.hospital}`;
   },
+
   methods:{
     hilight(){
       let dom=this.$refs.header.$refs.register;
       $(dom).addClass("active");
     },
+
     verifyName(){
       let nameReg=/^[A-Za-z]{2,10}$/;
       if(nameReg.test(this.firstName)){
@@ -100,6 +107,7 @@ export default {
         $(".invalid").eq(0).show();
       }
     },
+
     verifyUsername(){
       let usernameReg=/^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;
       if(usernameReg.test(this.username)){
@@ -109,6 +117,7 @@ export default {
         $(".invalid").eq(2).show();
       }
     },
+
     verifyEmail(){
       let emailReg=/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
       if(emailReg.test(this.email)){
@@ -118,6 +127,7 @@ export default {
         $(".invalid").eq(3).show();
       }
     },
+
     verifyPassword(){
       let passwordReg=/^(\S){6,18}$/;
       if(passwordReg.test(this.password)){
@@ -127,6 +137,7 @@ export default {
         $(".invalid").eq(4).show();
       }
     },
+
     register(){
       this.$axios({
         method: 'post',
@@ -136,7 +147,8 @@ export default {
           lastName: this.lastName,
           username: this.username,
           email: this.email,
-          password: this.password
+          password: this.password,
+          others: "test",
         }
       })
       .then(function (response) {
@@ -145,7 +157,25 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
-    }
+    },
+
+    verifyUserId(){
+      this.$axios({
+        method: 'post',
+        url: this.verifyUserIdUrl,
+        data: {
+          username: this.username,
+          email: this.email,
+        }
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+
   }
 }
 </script>

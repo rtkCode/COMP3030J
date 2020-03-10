@@ -163,10 +163,11 @@ export default {
       this.$axios({
         method: 'post',
         url: this.verifyUserIdUrl,
-        data: {
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        data: this.$qs.stringify({
           username: this.username,
           email: this.email,
-        }
+        })
       })
       .then(function (response) {
         console.log(response);

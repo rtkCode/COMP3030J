@@ -1,6 +1,17 @@
 <template>
   <div>
     <Header :hospital="hospital" ref="header"></Header>
+    <div id="toast-container" aria-live="polite" aria-atomic="true">
+      <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
+        <div class="toast-header">
+          <strong class="mr-auto">{{loginHintTitle}}</strong>
+          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="toast-body text-white">{{loginHintText}}</div>
+      </div>
+    </div>
     <section class="content d-flex flex-column justify-content-center align-items-center">
       <form class="needs-validation" novalidate>
         <div class="form">
@@ -23,7 +34,11 @@
           </div>
         </div>
       </form>
-      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()">Log in</button>
+      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">Log in</button>
+      <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
+        <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
+        Loading...
+      </button>
     </section>
     <Footer :hospital="hospital"></Footer>
   </div>
@@ -39,9 +54,12 @@ import Footer from "@/components/Footer.vue";
 export default {
   data(){
     return{
-      loginUrl: "https://jsonplaceholder.typicode.com/posts",
-      username: "",
-      password: ""
+      loginUrl: "http://127.0.0.1:5000/login",
+      username: this.$route.query.username,
+      password: "",
+      showButton: true,
+      loginHintText: "",
+      loginHintTitle: "",
     }
   },
 
@@ -91,20 +109,34 @@ export default {
     },
 
     login(){
-      console.log("ok");
+      let _this=this;
+      this.showButton=false;
+      
       this.$axios({
         method: 'post',
         url: this.loginUrl,
-        data: {
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        data: this.$qs.stringify({
           username: this.username,
           password: this.password
-        }
+        })
       })
       .then(function (response) {
-        console.log(response);
+        _this.showButton=true;
+        if(response.data.code==400){
+          $('.toast').toast('show');
+          $(".toast").addClass("bg-danger border-danger");
+          _this.loginHintTitle="Login failed";
+          _this.loginHintText=response.data.msg+", please correct and resubmit";
+        }
       })
       .catch(function (error) {
         console.log(error);
+        _this.showButton=true;
+        $('.toast').toast('show');
+        $(".toast").addClass("bg-danger border-danger");
+        _this.loginHintTitle="Unknown error";
+        _this.loginHintText="unknown error, please check console log";
       });
     },
 
@@ -121,7 +153,19 @@ export default {
 .content {
   height: 90vh;
 }
+
 .invalid{
   color: #FF4136;
+}
+
+#toast-container{
+  position: relative;
+}
+
+.toast{
+  position: absolute; 
+  top: 10px;
+  right: 10px;
+  min-width: 300px;
 }
 </style> 

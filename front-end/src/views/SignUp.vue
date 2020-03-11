@@ -235,7 +235,7 @@ export default {
     },
 
     routeToLogin(){
-      this.$router.push({path: '/login',query:{ username: this.username}});
+      this.$router.push({name: 'LogIn',query:{ username: this.username}});
     }
   }
 }
@@ -263,6 +263,5 @@ export default {
   top: 10px;
   right: 10px;
   min-width: 300px;
-  /* background: #FF4136; */
 }
 </style>

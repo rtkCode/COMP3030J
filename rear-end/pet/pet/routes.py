@@ -42,26 +42,26 @@ def verifyUserId():
         user_in_db = User.query.filter(User.username == username).first()
         if not user_in_db:
             return jsonify({
-                "code": 200,
+                "code": 201,
                 "msg": "Username is available"
             })
         else:
             return jsonify({
-                "code": 400,
+                "code": 401,
                 "msg": "Username already exists"
 
             })
     elif "email" in request.form.keys():
-    	email = request.form["email"]
-    	email_in_db = User.query.filter(User.email == email).first()
-    	if not email_in_db:
+        email = request.form["email"]
+        email_in_db = User.query.filter(User.email == email).first()
+        if not email_in_db:
             return jsonify({
-                "code": 200,
+                "code": 202,
                 "msg": "Email is available"
             })
         else:
             return jsonify({
-                "code": 400,
+                "code": 402,
                 "msg": "Email already exists"
 
             })
@@ -96,7 +96,7 @@ def verifyUserId():
 
 @app.route("/register", methods=['POST'])
 def register():
-    print(request.form)
+    print(request.form["username"])
     if "username" in request.form and "password" in request.form and "email" in request.form and "firstName" in request.form and "lastName" in request.form and "others" in request.form:
         username = request.form["username"]
         password = request.form["password"]

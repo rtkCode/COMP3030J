@@ -29,6 +29,11 @@ def login():
                 "code": 200,
                 "msg": "Login success"
             })
+        else:
+            return jsonify({
+                "code": 400,
+                "msg": "Invalid username or password"
+            })
     return jsonify({
                 "code": 400,
                 "msg": "Invalid data"

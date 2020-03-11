@@ -37,20 +37,32 @@ def login():
 
 @app.route("/verifyUserId", methods=['POST'])
 def verifyUserId():
-    if "username" in request.form.keys() and "email" in request.form.keys():
+    if "username" in request.form.keys():
         username = request.form["username"]
-        email = request.form["email"]
         user_in_db = User.query.filter(User.username == username).first()
-        email_in_db = User.query.filter(User.email == email).first()
-        if (not user_in_db) and (not email_in_db):
+        if not user_in_db:
             return jsonify({
                 "code": 200,
-                "msg": "Username and Email is available"
+                "msg": "Username is available"
             })
         else:
             return jsonify({
                 "code": 400,
-                "msg": "Username and Email already exists"
+                "msg": "Username already exists"
+
+            })
+    elif "email" in request.form.keys():
+    	email = request.form["email"]
+    	email_in_db = User.query.filter(User.email == email).first()
+    	if not email_in_db:
+            return jsonify({
+                "code": 200,
+                "msg": "Email is available"
+            })
+        else:
+            return jsonify({
+                "code": 400,
+                "msg": "Email already exists"
 
             })
     else:

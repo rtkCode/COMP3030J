@@ -4,3 +4,7 @@ front-end/.idea/
 rear-end/.idea/
 
 rear-end/flaskenv/
+
+front-end/node_modules/
+
+rear-end/pet/.idea/

@@ -1,7 +1,7 @@
 from pet import app
-# from .form import LoginForm, SignUpForm, ProfileForm, PostForm, ReplyForm
-from flask import flash,redirect,render_template,get_flashed_messages,url_for,session, request,jsonify
-from .models import User,Pet,Staff,Transcript
+from flask import redirect, render_template, url_for, session, request, jsonify
+from flask_cors import CORS
+from .models import User, Pet, Staff, Transcript
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -10,61 +10,64 @@ from .config import Config
 import json
 import re
 
-#http://www.pythondoc.com/flask-sqlalchemy/queries.html All the query, delete and other operations of database are learned from this website. 
-#The structure of route function are learned from lecture 9
-#The structure of route function that has parameters are learned from https://blog.csdn.net/weixin_36380516/article/details/80008496
-
-@app.route('/')
-@app.route('/index')
-def index():
-    return render_template('index.html',title='Home')
+CORS(app, supports_credentials=True)
 
 
-@app.route ("/login", methods=['GET','POST']) # line 21-34 code from lecture 15 def login()
+@app.route("/login", methods=['POST'])
 def login():
-    json_data = request.get_data()
-    data = json.loads(json_data, encoding="utf-8")
-    
-    if data["username"] and data["password"]:
-        username = data["username"]
-        password = data["password"]
+    if "username" in request.form.keys() and "password" in request.form.keys():
+        username = request.form["username"]
+        password = request.form["password"]
         user_in_db = User.query.filter(User.username == username).first()
         if not user_in_db:
             return jsonify({
                 "code": 400,
-                "msg":"Invalid username or password"
+                "msg": "Invalid username or password"
             })
         if (check_password_hash(user_in_db.password_hash, password)):
-            # session["USERNAME"] = user_in_db.username
             return jsonify({
                 "code": 200,
-                "msg":"Login success"
-            })
-    return jsonify({
-                "code": 400,
-                "msg":"Invalid username or password"
-            })
-
-
-@app.route ("/verifyUserId", methods=['POST'])    # line 33-42 code from lecture 15 def check_username()
-def verifyUserId():
-    json_data = request.get_data()
-    data = json.loads(json_data,encoding="utf-8")      
-    
-    if data["username"] and data["email"]:
-        username = data["username"]
-        email = data["email"]
-        user_in_db = User.query.filter(User.username == username).first()
-        email_in_db = User.query.filter(User.email == email).first()
-        if (not user_in_db) and (not email_in_db):
-            return jsonify({
-                "code": 200,
-                "msg": "Username and Email is OK"                
+                "msg": "Login success"
             })
         else:
             return jsonify({
                 "code": 400,
-                "msg":"Username and Email already exists"
+                "msg": "Invalid username or password"
+            })
+    return jsonify({
+                "code": 400,
+                "msg": "Invalid data"
+            })
+
+
+@app.route("/verifyUserId", methods=['POST'])
+def verifyUserId():
+    if "username" in request.form.keys():
+        username = request.form["username"]
+        user_in_db = User.query.filter(User.username == username).first()
+        if not user_in_db:
+            return jsonify({
+                "code": 201,
+                "msg": "Username is available"
+            })
+        else:
+            return jsonify({
+                "code": 401,
+                "msg": "Username already exists"
+
+            })
+    elif "email" in request.form.keys():
+        email = request.form["email"]
+        email_in_db = User.query.filter(User.email == email).first()
+        if not email_in_db:
+            return jsonify({
+                "code": 202,
+                "msg": "Email is available"
+            })
+        else:
+            return jsonify({
+                "code": 402,
+                "msg": "Email already exists"
 
             })
     else:
@@ -96,25 +99,20 @@ def verifyUserId():
 # 						'returnvalue': 1})
         
 
-@app.route ("/register", methods=['GET','POST']) # line 67-77 inspiration from lecture 15 def signup()
-def register(): 
-    # json_data = request.get_data(as_text=True)
-    # print(json_data)
-    json_data = request.get_data()
-    data = json.loads(json_data,encoding="utf-8")  
-    # data = json.loads(request.get_data(as_text=True))
-    print(data)
-    if data:
-        username = data["username"]
-        password = data["password"]
-        email = data["email"]
-        firstName = data["firstName"]
-        lastName = data["lastName"]
-        others = data["others"]
+@app.route("/register", methods=['POST'])
+def register():
+    print(request.form["username"])
+    if "username" in request.form and "password" in request.form and "email" in request.form and "firstName" in request.form and "lastName" in request.form and "others" in request.form:
+        username = request.form["username"]
+        password = request.form["password"]
+        email = request.form["email"]
+        firstName = request.form["firstName"]
+        lastName = request.form["lastName"]
+        others = request.form["others"]
 
         email_in_db = User.query.filter(User.email == email).first()
         if email_in_db:
-            return  jsonify({
+            return jsonify({
                 'code': 400,
                 'msg': 'Email already exists'
             })
@@ -131,30 +129,29 @@ def register():
                 'msg': 'Password length wrong'
             })
 
-        if re.match('^[a-zA-Z]{2,10}$',firstName) is None:
+        if re.match('^[a-zA-Z]{2,10}$', firstName) is None:
             return jsonify({
                 'code': 400,
                 'msg': 'FirstName format wrong'
             })
         
-        if re.match('^[a-zA-Z]{2,10}$',lastName) is None:
+        if re.match('^[a-zA-Z]{2,10}$', lastName) is None:
             return jsonify({
                 'code': 400,
                 'msg': 'LastName format wrong'
             })
 
-        if re.match('^[a-zA-Z]{1}[a-zA-Z0-9\_]{3,15}$',username) is None:
+        if re.match('^[a-zA-Z]{1}[a-zA-Z0-9\_]{3,15}$', username) is None:
             return jsonify({
                 'code': 400,
                 'msg': 'Username format wrong'
             })
         
-        if re.match('^[a-zA-Z]{2,10}$',lastName) is None:
+        if re.match('^[a-zA-Z]{2,10}$', lastName) is None:
             return jsonify({
                 'code': 400,
                 'msg': 'LastName format wrong'
             })
-
 
         user_in_db = User.query.filter(User.username == username).first()
         if user_in_db:			
@@ -163,9 +160,8 @@ def register():
                 'msg': 'Username already exists'
             })
 
-
         passw_hash = generate_password_hash(password)
-        user = User(username=username, email=email,password_hash=passw_hash,firstName=firstName,lastName=lastName,others=others)
+        user = User(username=username, email=email, password_hash=passw_hash, firstName=firstName, lastName=lastName, others=others)
         db.session.add(user)
         db.session.commit()
         return jsonify({
@@ -308,7 +304,5 @@ def logout():
 #     db.session.commit()
 #     return redirect(url_for('postdetails',post_title=post.title))
 
-
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5000,debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

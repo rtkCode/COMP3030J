@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Index from '../views/Index.vue'
 import LogIn from '../views/LogIn.vue'
 import SignUp from '../views/SignUp.vue'
+import Appointment from '../views/Appointment.vue'
 import axios from 'axios'
 import qs from 'qs';
 
@@ -30,6 +31,11 @@ const routes = [
     component: SignUp
     // lazy-loaded
     // component: () => import(/* webpackChunkName: "register" */ '../views/SignUp.vue')
+  },
+  {
+    path: '/appointment',
+    name: 'Appointment',
+    component: Appointment
   }
 ]
 

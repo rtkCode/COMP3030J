@@ -1,6 +1,17 @@
 <template>
   <div class="Appointment">
     <Header :hospital="hospital" ref="header"></Header>
+    <div id="toast-container" aria-live="polite" aria-atomic="true">
+      <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
+        <div class="toast-header">
+          <strong class="mr-auto">{{hintTitle}}</strong>
+          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="toast-body text-white">{{hintText}}</div>
+      </div>
+    </div>
     <div class="d-flex align-items-start flex-column content">
 
       <div class="p-4">
@@ -35,7 +46,13 @@
         <h4 class="text-left">Leave a message</h4>
         <div class="d-flex">
           <textarea class="form-control flex-grow-1  p-2 m-2" rows="4" v-model="message" placeholder="Anything that you want to tell or remind the doctor, or any other symptoms of the pet"></textarea>
-          <svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bg-info rounded-lg align-self-center ml-5 feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          <button @click="makeAppointment()" v-show="showButton" class="btn btn-info align-self-center ml-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+
+          <button class="btn btn-info align-self-center ml-5" v-show="!showButton" style="width: 205px; height: 126px;" disabled>
+            <span class="spinner-border" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
 
@@ -53,6 +70,7 @@ import Footer from "@/components/Footer.vue";
 export default {
   data() {
     return {
+      appointmentUrl: "https://jsonplaceholder.typicode.com/posts",
       dates: [],
       pets: ["Dog", "Cat"],
       cities: ["Beijing", "Shanghai", "Chengdu"],
@@ -65,7 +83,10 @@ export default {
       d: 0,
       p: 0,
       c: 0,
-      t: 0
+      t: 0,
+      hintTitle: "",
+      hintText: "",
+      showButton: true,
     };
   },
 
@@ -137,7 +158,44 @@ export default {
     changeType(index) {
       this.t = index;
       this.symptom=this.types[index];
-    }
+    },
+
+    makeAppointment(){
+      let _this=this;
+      this.showButton=false;
+      
+      this.$axios({
+        method: 'post',
+        url: this.appointmentUrl,
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        data: this.$qs.stringify({
+          date: this.date,
+          petType: this.petType,
+          location: this.location,
+          symptom: this.symptom,
+          message: this.message,
+          token: "AABBCCDDEEFFGG",
+        })
+      })
+      .then(function (response) {
+        _this.showButton=true;
+        if(response.data.code==400){
+          $('.toast').toast('show');
+          $(".toast").addClass("bg-danger border-danger");
+          _this.hintTitle="Failed to make appointment";
+          _this.hintText=response.data.msg+", please correct and resubmit";
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        _this.showButton=true;
+        $('.toast').toast('show');
+        $(".toast").addClass("bg-danger border-danger");
+        _this.hintTitle="Failed to make appointment";
+        _this.hintText="unknown error, please check console log";
+      });
+    },
+
   }
 };
 </script>
@@ -160,11 +218,22 @@ export default {
 }
 
 svg{
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 svg:hover{
   cursor: pointer;
-  width: 140px;
+  width: 130px;
+}
+
+#toast-container{
+  position: relative;
+}
+
+.toast{
+  position: absolute; 
+  top: 10px;
+  right: 10px;
+  min-width: 300px;
 }
 </style>

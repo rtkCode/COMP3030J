@@ -1,7 +1,7 @@
 <template>
   <div class="Appointment">
     <Header :hospital="hospital" ref="header"></Header>
-    <div class="d-flex align-items-start flex-column" style="height: 90vh">
+    <div class="d-flex align-items-start flex-column content">
 
       <div class="p-4">
         <h4 class="text-left">Appointment Date</h4>
@@ -31,6 +31,14 @@
         </div>
       </div>
 
+      <div class="p-4" style="width: 80%">
+        <h4 class="text-left">Leave a message</h4>
+        <div class="d-flex">
+          <textarea class="form-control flex-grow-1  p-2 m-2" rows="4" v-model="message" placeholder="Anything that you want to tell or remind the doctor, or any other symptoms of the pet"></textarea>
+          <svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bg-info rounded-lg align-self-center ml-5 feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+      </div>
+
     </div>
     <Footer :hospital="hospital"></Footer>
   </div>
@@ -48,7 +56,7 @@ export default {
       dates: [],
       pets: ["Dog", "Cat"],
       cities: ["Beijing", "Shanghai", "Chengdu"],
-      types: ["Surgery", "Internal medicine", "Ophthalmology", "Orthopedics", "Dermatology", "Obstetrics"],
+      types: ["Surgery", "Internal medicine", "Ophthalmology", "Orthopedics", "Dermatology", "Obstetrics", "Others"],
       date: "",
       petType: "Dog",
       location: "Beijing",
@@ -135,6 +143,11 @@ export default {
 </script>
 
 <style scoped>
+.content{
+  height: 87vh;
+  max-height: 87vh;
+  overflow-y: scroll;
+}
 
 .button-c{
   width: 150px;
@@ -144,5 +157,14 @@ export default {
   background-color: #3ba2bd;
   color: #fff;
   border: 1px #fff solid;
+}
+
+svg{
+  transition: all 0.5s ease-in-out;
+}
+
+svg:hover{
+  cursor: pointer;
+  width: 140px;
 }
 </style>

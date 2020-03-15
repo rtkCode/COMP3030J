@@ -3,7 +3,7 @@
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded">
       <!-- nav title -->
-      <a class="navbar-brand" href="/">
+      <router-link class="navbar-brand" to="/">
         <svg
           t="1583465325680"
           class="icon mb-2"
@@ -22,7 +22,7 @@
           />
         </svg>
         {{hospital}}
-      </a>
+      </router-link>
       <!-- nav collapse button -->
       <button
         class="navbar-toggler"
@@ -39,15 +39,15 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- links -->
         <nav class="navbar-nav m-auto">
-          <a class="nav-link" href="/appointment" ref="appointment">Appointment</a>
-          <a class="nav-link" href="/">Announcement</a>
-          <a class="nav-link" href="/">Discussion</a>
-          <a class="nav-link" href="/">About</a>
+          <router-link class="nav-link" to="/appointment" ref="appointment">Appointment</router-link>
+          <router-link class="nav-link" to="/">Announcement</router-link>
+          <router-link class="nav-link" to="/">Discussion</router-link>
+          <router-link class="nav-link" to="/">About</router-link>
         </nav>
         <!-- login & register links -->
         <nav class="navbar-nav ml-auto">
-          <a class="nav-link" href="/login" ref="login">Log in</a>
-          <a class="nav-link" href="/register" ref="register">Sign up</a>
+          <router-link class="nav-link" to="/login" ref="login">Log in</router-link>
+          <router-link class="nav-link" to="/register" ref="register">Sign up</router-link>
         </nav>
       </div>
     </nav>

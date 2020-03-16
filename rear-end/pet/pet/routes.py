@@ -1,7 +1,7 @@
 from pet import app
 from flask import redirect, render_template, url_for, session, request, jsonify
 from flask_cors import CORS
-from .models import User, Pet, Staff, Transcript
+from .models import User, Pet, Staff, Transcript,Appointment
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -9,7 +9,12 @@ import time
 from .config import Config
 import json
 import re
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature, SignatureExpired
+from flask_httpauth import HTTPTokenAuth
+from flask_sqlalchemy import and_
 
+auth = HTTPTokenAuth()
 CORS(app, supports_credentials=True)
 
 
@@ -25,9 +30,12 @@ def login():
                 "msg": "Invalid username or password"
             })
         if (check_password_hash(user_in_db.password_hash, password)):
+            token = generateToken(user_in_db.username)
+            
             return jsonify({
                 "code": 200,
-                "msg": "Login success"
+                "msg": "Login success",
+                "token":token
             })
         else:
             return jsonify({
@@ -38,6 +46,11 @@ def login():
                 "code": 400,
                 "msg": "Invalid data"
             })
+
+@app.route("/appointment", methods=['POST'])
+@auth.login_required
+def appointment():
+    pass
 
 
 @app.route("/verifyUserId", methods=['POST'])
@@ -173,6 +186,38 @@ def register():
             'code': 400,
             'msg': 'register failure'
         })
+
+def generateToken(user):
+    expiration = 3600
+    serializer = Serializer(Config.SECRET_KEY,expires_in=expiration) #有效时间为秒
+    token = serializer.dumps({"username":user}).decode("ascii") #解码形式再讨论
+    return token
+
+@auth.verify_token
+def verify_token(token):
+    s = Serializer(Config.SECRET_KEY)
+    try:
+        data = s.loads(token)
+    except SignatureExpired:
+        return False
+    except BadSignature:
+        return False
+    username = data["username"]
+    if not username:
+        return False
+    else:
+        # g.user = User.query.filter(User.username == username).first() #g的作用
+        return True
+    
+@auth.error_handler
+def error_handler():
+    return jsonify({
+            'code': 404,
+            'msg': 'Unauthorized Operation'
+        })
+
+
+    
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

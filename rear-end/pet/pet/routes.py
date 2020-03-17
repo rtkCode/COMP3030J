@@ -12,7 +12,7 @@ import re
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
 from flask_httpauth import HTTPTokenAuth
-from flask_sqlalchemy import and_
+# from flask_sqlalchemy import and_
 
 auth = HTTPTokenAuth()
 CORS(app, supports_credentials=True)
@@ -50,8 +50,28 @@ def login():
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
 def appointment():
-    pass
+    # pass
+    if "date" in request.form and "petType" in request.form and "location" in request.form and "symptom" in request.form and "message" in request.form:
+        date = request.form["date"]
+        petType = request.form["petType"]
+        location = request.form["location"]
+        symptom = request.form["symptom"]
+        message = request.form["message"]
+        customerId = 1
+        # need verify_token()
 
+        appointment = Appointment(customer_id=customerId, date=date, pet_type=petType, location=location, symptom=symptom, message=message)
+        # db.session.add(appointment)
+        # db.session.commit()
+        return jsonify({
+            'code': 200,
+            'msg': 'appointment success'
+        })
+    else:
+        return jsonify({
+            'code': 400,
+            'msg': 'Invalid data'
+        })
 
 @app.route("/verifyUserId", methods=['POST'])
 def verifyUserId():

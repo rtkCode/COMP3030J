@@ -12,6 +12,10 @@
   text-align: center;
   color: #2c3e50;
 }
+
+.router-link-exact-active{
+  color: rgba(0,0,0,.9) !important;
+}
 </style>
 
 <script>

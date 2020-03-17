@@ -100,12 +100,7 @@ export default {
     hospital: String
   },
 
-  created() {
-    document.title = this.hospital;
-  },
-
   mounted() {
-    this.hilight();
     for(let i=0;i<7;i++){
       let dict={}
       dict["date"]=this.getDate(i);
@@ -120,10 +115,6 @@ export default {
   },
 
   methods: {
-    hilight() {
-      let dom = this.$refs.header.$refs.appointment;
-      $(dom).addClass("active");
-    },
 
     getDate(d){
       let today=new Date();

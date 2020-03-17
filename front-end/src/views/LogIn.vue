@@ -75,7 +75,6 @@ export default {
 
   mounted() {
     $(".invalid").hide();
-    this.hilight();
   },
 
   created() {
@@ -83,10 +82,6 @@ export default {
   },
 
   methods: {
-    hilight() {
-      let dom = this.$refs.header.$refs.login;
-      $(dom).addClass("active");
-    },
 
     verifyUsername(){
       let usernameReg=/^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;

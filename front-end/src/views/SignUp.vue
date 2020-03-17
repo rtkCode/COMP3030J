@@ -100,7 +100,6 @@ export default {
 
   mounted(){
     $(".invalid").hide();
-    this.hilight();
   },
 
   created(){
@@ -108,10 +107,6 @@ export default {
   },
 
   methods:{
-    hilight(){
-      let dom=this.$refs.header.$refs.register;
-      $(dom).addClass("active");
-    },
 
     verifyName(){
       let nameReg=/^[A-Za-z]{2,10}$/;

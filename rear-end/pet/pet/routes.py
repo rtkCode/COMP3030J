@@ -48,7 +48,7 @@ def login():
             })
 
 @app.route("/appointment", methods=['POST'])
-@auth.login_required
+# @auth.login_required
 def appointment():
     # pass
     if "date" in request.form and "petType" in request.form and "location" in request.form and "symptom" in request.form and "message" in request.form:
@@ -60,7 +60,7 @@ def appointment():
         customerId = 1
         # need verify_token()
 
-        appointment = Appointment(customer_id=customerId, date=date, pet_type=petType, location=location, symptom=symptom, message=message)
+        appointment = Appointment(customer_id=customerId, date=date, pet_id=0, location=location, symptom=symptom, message=message)
         # db.session.add(appointment)
         # db.session.commit()
         return jsonify({

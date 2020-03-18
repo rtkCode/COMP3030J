@@ -25,8 +25,7 @@ const routes = [
     // lazy-loaded
     // component: () => import(/* webpackChunkName: "login" */ '../views/LogIn.vue')
     meta: {
-      requireAuth: true,
-      elsePath: "logout"
+      toLogout: true
     },
   },
   {
@@ -36,8 +35,7 @@ const routes = [
     // lazy-loaded
     // component: () => import(/* webpackChunkName: "register" */ '../views/SignUp.vue')
     meta: {
-      requireAuth: true,
-      elsePath: "logout"
+      toLogout: true
     },
   },
   {
@@ -45,8 +43,7 @@ const routes = [
     name: 'Appointment',
     component: Appointment,
     meta: {
-      requireAuth: true,
-      elsePath: "login"
+      requireAuth: true
     },
   }
 ]
@@ -62,37 +59,49 @@ router.beforeEach((to, from, next) => {
     let token=localStorage.getItem('t');
     let t=window.decodeURIComponent(window.atob(token));
 
-    axios({
-      method: 'post',
-      url: "http://127.0.0.1:5000/verifyToken",
-      headers:{
-        'Content-Type': 'application/x-www-form-urlencoded',
-        "Authorization": t
-      },
-      data: qs.stringify({
-        token: token
+    if(token==null){
+      next("/login");
+    }else{
+      axios({
+        method: 'post',
+        url: "http://127.0.0.1:5000/verifyToken",
+        headers:{
+          'Content-Type': 'application/x-www-form-urlencoded',
+          "Authorization": "bearer "+t
+        },
+        data: qs.stringify({
+          token: token
+        })
       })
-    })
-    .then(function (response) {
-      console.log(response);
-      if(response.data.code==200){
-        if(to.meta.elsePath=="logout"){
-          next("/logout");
-        }else{
+
+      .then(function (response) {
+        if(response.data.code==200){
           next();
-        }
-      }else if(response.data.code==400){
-        localStorage.removeItem('t');
-        if(to.meta.elsePath=="login"){
-          next("/login");
         }else{
           next("/");
         }
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+      })
+
+      .catch(function (error) {
+        if(error.response){
+          if(error.response.status==401){
+            localStorage.removeItem('t');
+            next("/login");
+          }else{
+            console.log(error);
+          }
+        }else{
+          console.log(error);
+        }
+      });
+    }
+  }else if(to.meta.toLogout){
+    let token=localStorage.getItem('t');
+    if(token==null){
+      next();
+    }else{
+      next("/logout")
+    }
   }else{
     next();
   }

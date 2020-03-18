@@ -60,7 +60,13 @@ router.beforeEach((to, from, next) => {
     let t=window.decodeURIComponent(window.atob(token));
 
     if(token==null){
-      next("/login");
+      next({
+        name: 'LogIn',
+        query:{ 
+          message: "In order to complete this operation, you must log in",
+          from: to.path
+        }
+      });
     }else{
       axios({
         method: 'post',
@@ -86,7 +92,13 @@ router.beforeEach((to, from, next) => {
         if(error.response){
           if(error.response.status==401){
             localStorage.removeItem('t');
-            next("/login");
+            next({
+              name: 'LogIn',
+              query:{ 
+                message: "Login status expired, please log in again",
+                from: to.path
+              }
+            });
           }else{
             console.log(error);
           }

@@ -13,6 +13,11 @@
       </div>
     </div>
     <section class="content d-flex flex-column justify-content-center align-items-center">
+      <div class="alert alert-info alert-dismissible fade show" role="alert">{{alertMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <form class="needs-validation" novalidate>
         <div class="form">
 
@@ -60,6 +65,8 @@ export default {
       showButton: true,
       loginHintText: "",
       loginHintTitle: "",
+      fromPath: this.$route.query.from,
+      alertMessage: this.$route.query.message,
     }
   },
 
@@ -130,6 +137,7 @@ export default {
         }else if(response.data.code==200){
           let token=response.data.token;
           _this.storeToken(token);
+          _this.$router.push(_this.fromPath);
         }
       })
       .catch(function (error) {

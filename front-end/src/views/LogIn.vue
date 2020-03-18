@@ -82,6 +82,7 @@ export default {
 
   mounted() {
     $(".invalid").hide();
+    if(this.alertMessage==undefined) $(".alert").alert('close');
   },
 
   created() {

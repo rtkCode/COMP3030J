@@ -1,18 +1,19 @@
 from pet import app
-from flask import redirect, render_template, url_for, session, request, jsonify
+from flask import request, jsonify,g
 from flask_cors import CORS
 from .models import User, Pet, Staff, Transcript,Appointment
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import time
+import datetime
 from .config import Config
 import json
 import re
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
 from flask_httpauth import HTTPTokenAuth
-# from flask_sqlalchemy import and_
+
 
 auth = HTTPTokenAuth()
 CORS(app, supports_credentials=True)
@@ -48,30 +49,38 @@ def login():
             })
 
 @app.route("/appointment", methods=['POST'])
-# @auth.login_required
+@auth.login_required
 def appointment():
-    # pass
-    if "date" in request.form and "petType" in request.form and "location" in request.form and "symptom" in request.form and "message" in request.form:
+    if "date" in request.form.keys() and "petType" in request.form.keys() and "symptom" in request.form.keys() and "location" in request.form.keys():
         date = request.form["date"]
         petType = request.form["petType"]
         location = request.form["location"]
         symptom = request.form["symptom"]
         message = request.form["message"]
-        customerId = 1
-        # need verify_token()
+        user = g.user   
+        real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()   
+        appointment = Appointment(customer_id=user.id,date=real_date, petType=petType, location=location, symptom=symptom, message=message)
+        db.session.add(appointment)
+        db.session.commit()
+        return jsonify({
+            "code": 200,
+            "msg": "Appointment success",
+                
+        })
+        
+    return jsonify({
+                "code": 400,
+                "msg": "Invalid data"
+            })
 
-        appointment = Appointment(customer_id=customerId, date=date, pet_id=0, location=location, symptom=symptom, message=message)
-        # db.session.add(appointment)
-        # db.session.commit()
-        return jsonify({
-            'code': 200,
-            'msg': 'appointment success'
+@app.route("/verifyToken", methods=['POST'])
+@auth.login_required
+def verifyToken():
+    return jsonify({
+            "code": 200,
+            "msg": "Verify sucess"
         })
-    else:
-        return jsonify({
-            'code': 400,
-            'msg': 'Invalid data'
-        })
+
 
 @app.route("/verifyUserId", methods=['POST'])
 def verifyUserId():
@@ -134,7 +143,7 @@ def verifyUserId():
 
 @app.route("/register", methods=['POST'])
 def register():
-    print(request.form["username"])
+    # print(request.form["username"])
     if "username" in request.form and "password" in request.form and "email" in request.form and "firstName" in request.form and "lastName" in request.form and "others" in request.form:
         username = request.form["username"]
         password = request.form["password"]
@@ -214,7 +223,8 @@ def generateToken(user):
     return token
 
 @auth.verify_token
-def verify_token(token):
+def verify_token(token):   
+    g.user = None 
     s = Serializer(Config.SECRET_KEY)
     try:
         data = s.loads(token)
@@ -226,7 +236,7 @@ def verify_token(token):
     if not username:
         return False
     else:
-        # g.user = User.query.filter(User.username == username).first() #g的作用
+        g.user = User.query.filter(User.username == username).first() #g是存用户相关数据的
         return True
     
 @auth.error_handler

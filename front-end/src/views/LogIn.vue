@@ -82,6 +82,10 @@ export default {
   },
 
   methods: {
+    storeToken(token){
+      let t=window.btoa(window.encodeURIComponent(token));
+      localStorage.setItem("t",t);
+    },
 
     verifyUsername(){
       let usernameReg=/^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;
@@ -123,6 +127,9 @@ export default {
           $(".toast").addClass("bg-danger border-danger");
           _this.loginHintTitle="Login failed";
           _this.loginHintText=response.data.msg+", please correct and resubmit";
+        }else if(response.data.code==200){
+          let token=response.data.token;
+          _this.storeToken(token);
         }
       })
       .catch(function (error) {

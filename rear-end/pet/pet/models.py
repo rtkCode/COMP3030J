@@ -48,12 +48,14 @@ class Transcript(db.Model):
     date = db.Column(db.Date, index=True)
     item = db.Column(db.String(50), index=True)
 
+
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     customer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'))
+    pet_type = db.Column(db.String(10), index=True)
+    emergency = db.Column(db.String(10), index=True)
     # staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'))
-    symptom = db.Column(db.String(150), index=True)
+    symptom = db.Column(db.String(50), index=True)
     date = db.Column(db.Date, index=True)
     location = db.Column(db.String(50), index=True)
     message = db.Column(db.String(250), index=True)

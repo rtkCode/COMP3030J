@@ -48,24 +48,25 @@ def login():
                 "msg": "Invalid data"
             })
 
+
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
 def appointment():
     if "date" in request.form.keys() and "petType" in request.form.keys() and "symptom" in request.form.keys() and "location" in request.form.keys():
         date = request.form["date"]
-        petType = request.form["petType"]
+        pet_type = request.form["petType"]
         location = request.form["location"]
         symptom = request.form["symptom"]
         message = request.form["message"]
+        emergency = request.form["emergency"]
         user = g.user   
         real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()   
-        appointment = Appointment(customer_id=user.id,date=real_date, petType=petType, location=location, symptom=symptom, message=message)
+        appointment = Appointment(customer_id=user.id, date=real_date, pet_type=pet_type, location=location, symptom=symptom, emergency=emergency, message=message)
         db.session.add(appointment)
         db.session.commit()
         return jsonify({
             "code": 200,
             "msg": "Appointment success",
-                
         })
         
     return jsonify({

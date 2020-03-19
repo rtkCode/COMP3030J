@@ -29,7 +29,7 @@
       </div>
       
       <div class="p-4">
-        <h4 class="text-left">Location</h4>
+        <h4 class="text-left">Hospital Location</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(city,index) in cities" :key="index" :class="{checked:index==c}" @click="changeCity(index)">{{city}}</button>
         </div>
@@ -39,6 +39,13 @@
         <h4 class="text-left">Where do you think your pet is going wrong</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(type,index) in types" :key="index" :class="{checked:index==t}" @click="changeType(index)">{{type}}</button>
+        </div>
+      </div>
+
+      <div class="p-4">
+        <h4 class="text-left">Whether your pet has an emergency</h4>
+        <div class="d-flex flex-wrap">
+          <button class="btn btn-outline-info button-c p-2 m-2" v-for="(i,index) in emergency" :key="index" :class="{checked:index==e}" @click="changeEmergency(index)">{{i}}</button>
         </div>
       </div>
 
@@ -70,8 +77,9 @@ import Footer from "@/components/Footer.vue";
 export default {
   data() {
     return {
-      appointmentUrl: "https://jsonplaceholder.typicode.com/posts",
+      appointmentUrl: "http://127.0.0.1:5000/appointment",
       dates: [],
+      emergency: [false, true],
       pets: ["Dog", "Cat"],
       cities: ["Beijing", "Shanghai", "Chengdu"],
       types: ["Surgery", "Internal medicine", "Ophthalmology", "Orthopedics", "Dermatology", "Obstetrics", "Others"],
@@ -79,11 +87,13 @@ export default {
       petType: "Dog",
       location: "Beijing",
       symptom: "Surgery",
+      isEmergency: false,
       message: "",
       d: 0,
       p: 0,
       c: 0,
       t: 0,
+      e: 0,
       hintTitle: "",
       hintText: "",
       showButton: true,
@@ -115,6 +125,12 @@ export default {
   },
 
   methods: {
+    getToken(n){
+      let token=localStorage.getItem('t');
+      let t=window.decodeURIComponent(window.atob(token));
+      if(n==0) return token;
+      if(n==1) return t;
+    },
 
     getDate(d){
       let today=new Date();
@@ -129,6 +145,11 @@ export default {
       day.setTime(today.getTime()+3600*1000*24*d);
       let weekDay="Sun,Mon,Tue,Wed,Thu,Fri,Sat";
       return weekDay.split(",")[day.getDay()];
+    },
+
+    changeEmergency(index){
+      this.e=index;
+      this.isEmergency=this.emergency[index];
     },
 
     changePet(index) {
@@ -158,32 +179,54 @@ export default {
       this.$axios({
         method: 'post',
         url: this.appointmentUrl,
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        headers: {
+          'Content-Type':'application/x-www-form-urlencoded',
+          "Authorization": "bearer "+this.getToken(1)
+        },
         data: this.$qs.stringify({
           date: this.date,
           petType: this.petType,
           location: this.location,
           symptom: this.symptom,
           message: this.message,
-          token: "AABBCCDDEEFFGG",
+          emergency: this.isEmergency,
+          token: this.getToken(0),
         })
       })
       .then(function (response) {
         _this.showButton=true;
+        $('.toast').toast('show');
+        if(response.data.code==200){
+          $(".toast").removeClass("bg-danger border-danger");
+          $(".toast").addClass("bg-success border-success");
+          _this.hintTitle=response.data.msg;
+          _this.hintText="The doctor has received your appointment";
+        }
         if(response.data.code==400){
-          $('.toast').toast('show');
+          $(".toast").removeClass("bg-success border-success");
           $(".toast").addClass("bg-danger border-danger");
           _this.hintTitle="Failed to make appointment";
           _this.hintText=response.data.msg+", please correct and resubmit";
         }
       })
       .catch(function (error) {
-        console.log(error);
-        _this.showButton=true;
-        $('.toast').toast('show');
-        $(".toast").addClass("bg-danger border-danger");
-        _this.hintTitle="Failed to make appointment";
-        _this.hintText="unknown error, please check console log";
+        if(error.response.status==401){
+          localStorage.removeItem('t');
+          _this.$router.push({
+            name: 'LogIn',
+            query:{ 
+              message: "Login status expired, please log in again",
+              from: "/appointment"
+            }
+          });
+        }else{
+          console.log(error);
+          _this.showButton=true;
+          $('.toast').toast('show');
+          $(".toast").addClass("bg-danger border-danger");
+          _this.hintTitle="Failed to make appointment";
+          _this.hintText="unknown error, please check console log";
+        }
       });
     },
 

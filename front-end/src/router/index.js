@@ -50,7 +50,7 @@ const routes = [
   {
     path: '/logout',
     name: 'LogOut',
-    component: LogOut
+    component: LogOut,
   }
 ]
 
@@ -118,7 +118,13 @@ router.beforeEach((to, from, next) => {
     if (token == null) {
       next();
     } else {
-      next("/logout")
+      next({
+        name: 'LogOut',
+        query: {
+          from: to.path,
+          to: from.path
+        }
+      });
     }
   } else {
     next();

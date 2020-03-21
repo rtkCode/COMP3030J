@@ -1,6 +1,6 @@
 <template>
   <div class="Index">
-    <Header :hospital="hospital"></Header>
+    <HeaderIf :hospital="hospital"></HeaderIf>
     <section class="content d-flex justify-content-center align-items-center">
       <div class>
         <h1 class="seven24">7<small>x</small>24</h1>
@@ -15,15 +15,13 @@
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
 
 export default {
   name: "Index",
   components: {
-    Header,
-    SideBar,
+    HeaderIf,
     Footer
   },
   props: {
@@ -41,9 +39,6 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  height: 90vh;
-}
 .seven24 {
   font-size: 70px;
 }

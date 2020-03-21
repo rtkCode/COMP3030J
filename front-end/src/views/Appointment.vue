@@ -1,6 +1,6 @@
 <template>
   <div class="Appointment">
-    <Header :hospital="hospital" ref="header"></Header>
+    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <div id="toast-container" aria-live="polite" aria-atomic="true">
       <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
         <div class="toast-header">
@@ -70,8 +70,7 @@
 
 
 <script>
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
 
 export default {
@@ -101,8 +100,7 @@ export default {
   },
 
   components: {
-    Header,
-    SideBar,
+    HeaderIf,
     Footer
   },
 
@@ -235,12 +233,6 @@ export default {
 </script>
 
 <style scoped>
-.content{
-  height: 87vh;
-  max-height: 87vh;
-  overflow-y: scroll;
-}
-
 .button-c{
   width: 150px;
 }

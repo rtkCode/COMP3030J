@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :hospital="hospital" ref="header"></Header>
+    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
 
     <div class="content d-flex justify-content-center align-items-center">
       <div class="confirm">
@@ -18,14 +18,12 @@
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
 
 export default {
   components: {
-    Header,
-    SideBar,
+    HeaderIf,
     Footer
   },
 
@@ -60,10 +58,6 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  min-height: 87vh;
-}
-
 h2 {
   color: #3ba2bd;
 }

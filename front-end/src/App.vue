@@ -16,12 +16,13 @@
 .router-link-exact-active{
   color: rgba(0,0,0,.9) !important;
 }
+
+.content{
+    min-height: 87vh;
+}
 </style>
 
 <script>
-import Header from '@/components/Header.vue'
-import SideBar from '@/components/SideBar.vue'
-import Footer from '@/components/Footer.vue'
 
 export default {
   data(){

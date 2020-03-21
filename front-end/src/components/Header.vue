@@ -46,8 +46,8 @@
         </nav>
         <!-- login & register links -->
         <nav class="navbar-nav ml-auto">
-          <router-link class="nav-link" to="/login" ref="login">Log in</router-link>
-          <router-link class="nav-link" to="/register" ref="register">Sign up</router-link>
+          <router-link class="nav-link" to="/login">Log in</router-link>
+          <router-link class="nav-link" to="/register">Sign up</router-link>
         </nav>
       </div>
     </nav>

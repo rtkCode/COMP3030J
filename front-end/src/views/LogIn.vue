@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :hospital="hospital" ref="header"></Header>
+    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <div id="toast-container" aria-live="polite" aria-atomic="true">
       <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
         <div class="toast-header">
@@ -52,8 +52,7 @@
 
 
 <script>
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
 
 export default {
@@ -75,8 +74,7 @@ export default {
   },
 
   components: {
-    Header,
-    SideBar,
+    HeaderIf,
     Footer
   },
 
@@ -138,7 +136,11 @@ export default {
         }else if(response.data.code==200){
           let token=response.data.token;
           _this.storeToken(token);
-          _this.$router.push(_this.fromPath);
+          if(_this.fromPath==undefined){
+              _this.$router.push("/");
+          }else{
+              _this.$router.push(_this.fromPath);
+          }
         }
       })
       .catch(function (error) {
@@ -157,14 +159,7 @@ export default {
 </script>
 
 
-
-
-
 <style scoped>
-.content {
-  height: 90vh;
-}
-
 .invalid{
   color: #FF4136;
 }

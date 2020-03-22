@@ -48,7 +48,6 @@ def login():
                 "msg": "Invalid data"
             })
 
-
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
 def appointment():
@@ -61,12 +60,13 @@ def appointment():
         emergency = request.form["emergency"]
         user = g.user   
         real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()   
-        appointment = Appointment(customer_id=user.id, date=real_date, pet_type=pet_type, location=location, symptom=symptom, emergency=emergency, message=message)
+        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, symptom=symptom, emergency=emergency,message=message)
         db.session.add(appointment)
         db.session.commit()
         return jsonify({
             "code": 200,
             "msg": "Appointment success",
+                
         })
         
     return jsonify({
@@ -248,7 +248,44 @@ def error_handler():
         })
 
 
-    
+@app.route ("/profile",methods=['POST'])
+@auth.login_required
+def profile():
+    user = g.user   
+    # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
+    user_in_db = User.query.filter(User.username == user.username).first() 
+    if user_in_db:
+        appointment = Appointment.query.filter(Appointment.customer_id == user_in_db.id).all()
+        appointment_list = []
+        for item in appointment:
+            list_item = {}
+            list_item["username"] = user_in_db.username
+            list_item["petType"] = item.pet_type
+            list_item["petStatus"] = item.petStatus
+            list_item["symptom"] = item.symptom
+            list_item["date"] = str(item.date)
+            list_item["location"] = item.location
+            list_item["message"] = item.message
+            list_item["emergency"] = item.emergency
+            appointment_list.append(list_item)
+        user = {}
+        user["username"] = user_in_db.username
+        user["firstName"] = user_in_db.firstName
+        user["lastName"] = user_in_db.lastName
+        user["email"] = user_in_db.email
+        user["others"] = user_in_db.others
+        return jsonify({
+            "code": 200,
+            "msg": "Success",
+            "user":user,
+            "appointment":appointment_list               
+        })
+    else:    
+        return jsonify({
+            "code": 400,
+            "msg": "Invalid data"
+        })
+
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():
@@ -314,10 +351,16 @@ def error_handler():
 #             prev_posts = Post.query.filter(Post.user_id == user.id).all() 
 #             return render_template('post.html', title='Add your posts',prev_posts=prev_posts,form=form,user=user)
 
-@app.route ("/logout") # line 152-155 code from lecture 13 def logout()
+@app.route ("/logout",methods=['POST']) # line 152-155 code from lecture 13 def logout()
+@auth.login_required
 def logout():
-    session.pop("USERNAME",None)
-    return redirect(url_for('login'))    
+    g.user = None
+    # logout_user()
+    return jsonify({
+            "code": 200,
+            "msg": "Log out sucess"
+        })   
+
 
 # @app.route("/showpost", methods=['GET','POST'])
 # def showpost():

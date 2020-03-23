@@ -60,7 +60,7 @@ def appointment():
         emergency = request.form["emergency"]
         user = g.user   
         real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()   
-        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, symptom=symptom, emergency=emergency,message=message)
+        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message)
         db.session.add(appointment)
         db.session.commit()
         return jsonify({
@@ -259,9 +259,9 @@ def profile():
         appointment_list = []
         for item in appointment:
             list_item = {}
-            list_item["username"] = user_in_db.username
-            list_item["petType"] = item.pet_type
-            list_item["petStatus"] = item.petStatus
+            list_item["id"] = item.id
+            list_item["type"] = item.pet_type
+            # list_item["petStatus"] = item.petStatus
             list_item["symptom"] = item.symptom
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
@@ -273,12 +273,14 @@ def profile():
         user["firstName"] = user_in_db.firstName
         user["lastName"] = user_in_db.lastName
         user["email"] = user_in_db.email
-        user["others"] = user_in_db.others
         return jsonify({
             "code": 200,
             "msg": "Success",
-            "user":user,
-            "appointment":appointment_list               
+            "data":{
+                "basic":user,
+                "appointments":appointment_list
+            }
+                   
         })
     else:    
         return jsonify({

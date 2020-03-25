@@ -1,100 +1,122 @@
 <template>
-    <header>
-        <!-- navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded">
-            <!-- nav title -->
-            <router-link class="navbar-brand" to="/">
-                <svg t="1583465325680" class="icon mb-2" viewBox="0 0 1024 1024" version="1.1"
-                    xmlns="http://www.w3.org/2000/svg" p-id="5179" xmlns:xlink="http://www.w3.org/1999/xlink" width="24"
-                    height="24">
-                    <defs />
-                    <path
-                        d="M992 192h-128l-14.32-28.62A64 64 0 0 0 792.44 128H685.2l-54.56-54.56C610.46 53.28 576 67.56 576 96.06v299.68l256 91.42V416h64c70.7 0 128-57.3 128-128v-64c0-17.68-14.32-32-32-32z m-224 96c-17.68 0-32-14.32-32-32s14.32-32 32-32 32 14.32 32 32-14.32 32-32 32zM192 448c-35.28 0-64-28.72-64-64 0-35.34-28.66-64-64-64S0 348.66 0 384c0 83.32 53.66 153.7 128 180.2V992c0 17.68 14.32 32 32 32h128c17.68 0 32-14.32 32-32V768h320v224c0 17.68 14.32 32 32 32h128c17.68 0 32-14.32 32-32V555.1L532.1 448H192z"
-                        p-id="5180" />
-                </svg>
-                {{hospital}}
-            </router-link>
-            <!-- nav collapse button -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+  <header>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded">
+      <!-- nav title -->
+      <router-link class="navbar-brand" to="/">
+        <svg
+          t="1583465325680"
+          class="icon mb-2"
+          viewBox="0 0 1024 1024"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          p-id="5179"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          width="24"
+          height="24"
+        >
+          <defs />
+          <path
+            d="M992 192h-128l-14.32-28.62A64 64 0 0 0 792.44 128H685.2l-54.56-54.56C610.46 53.28 576 67.56 576 96.06v299.68l256 91.42V416h64c70.7 0 128-57.3 128-128v-64c0-17.68-14.32-32-32-32z m-224 96c-17.68 0-32-14.32-32-32s14.32-32 32-32 32 14.32 32 32-14.32 32-32 32zM192 448c-35.28 0-64-28.72-64-64 0-35.34-28.66-64-64-64S0 348.66 0 384c0 83.32 53.66 153.7 128 180.2V992c0 17.68 14.32 32 32 32h128c17.68 0 32-14.32 32-32V768h320v224c0 17.68 14.32 32 32 32h128c17.68 0 32-14.32 32-32V555.1L532.1 448H192z"
+            p-id="5180"
+          />
+        </svg>
+        {{hospital}}
+      </router-link>
+      <!-- nav collapse button -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- links -->
-                <nav class="navbar-nav m-auto">
-                    <router-link class="nav-link" to="/appointment" ref="appointment">Appointment</router-link>
-                    <router-link class="nav-link" to="/announcement">Announcement</router-link>
-                    <router-link class="nav-link" to="/discussion">Discussion</router-link>
-                    <router-link class="nav-link" to="/about">About</router-link>
-                </nav>
-                <!-- login & register links -->
-                <nav class="navbar-nav ml-auto">
-                    <span :class="[{ 'left-arrow-tran135': arrow }, 'left-arrow', 'align-self-center']"
-                        @click="changeArrow()" data-toggle="collapse" href="#collapse" role="button"
-                        aria-expanded="false" aria-controls="collapse"></span>
-                    <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
-                    <div class="collapse multi-collapse" id="collapse">
-                        <router-link class="nav-link text-danger" to="/logout">logout</router-link>
-                    </div>
-                </nav>
-            </div>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- links -->
+        <nav class="navbar-nav m-auto">
+          <router-link class="nav-link" to="/appointment" ref="appointment">Appointment</router-link>
+          <router-link class="nav-link" to="/announcement">Announcement</router-link>
+          <router-link class="nav-link" to="/discussion">Discussion</router-link>
+          <router-link class="nav-link" to="/about">About</router-link>
         </nav>
-    </header>
+        <!-- login & register links -->
+        <nav class="navbar-nav ml-auto">
+          <span
+            :class="[{ 'left-arrow-tran135': arrow }, 'left-arrow', 'align-self-center']"
+            @click="changeArrow()"
+            data-toggle="collapse"
+            href="#collapse"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapse"
+          ></span>
+          <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
+          <div class="collapse multi-collapse" id="collapse">
+            <router-link class="nav-link text-danger" to="/logout">logout</router-link>
+          </div>
+        </nav>
+      </div>
+    </nav>
+  </header>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                arrow: false
-            };
-        },
-
-        props: {
-            hospital: String
-        },
-
-        methods: {
-            changeArrow() {
-                this.arrow = !this.arrow;
-            }
-        }
+export default {
+  data() {
+    return {
+      arrow: false
     };
+  },
+
+  props: {
+    hospital: String
+  },
+
+  methods: {
+    changeArrow() {
+      this.arrow = !this.arrow;
+    }
+  }
+};
 </script>
 
 <style scoped>
-    .navbar-brand {
-        margin-left: 16px;
-    }
+.navbar-brand {
+  margin-left: 16px;
+}
 
-    .left-arrow {
-        width: 9px;
-        height: 9px;
-        border-top: 1px solid #9da3ab;
-        border-left: 1px solid #9da3ab;
-        display: inline-block;
-        transform: rotate(-45deg);
-        transition: all 0.5s;
-        cursor: pointer;
-        margin-right: 5px;
-    }
+.left-arrow {
+  width: 9px;
+  height: 9px;
+  border-top: 1px solid #9da3ab;
+  border-left: 1px solid #9da3ab;
+  display: inline-block;
+  transform: rotate(-45deg);
+  transition: all 0.5s;
+  cursor: pointer;
+  margin-right: 5px;
+}
 
-    .left-arrow-tran45 {
-        transform: rotate(-45deg);
-    }
+.left-arrow-tran45 {
+  transform: rotate(-45deg);
+}
 
-    .left-arrow-tran135 {
-        transform: rotate(135deg);
-    }
+.left-arrow-tran135 {
+  transform: rotate(135deg);
+}
 
-    @media (max-width: 990px){
-        .left-arrow{
-            display: none;
-        }
+@media (max-width: 990px) {
+  .left-arrow {
+    display: none;
+  }
 
-        #collapse{
-            display: block;
-        }
-    }
+  #collapse {
+    display: block;
+  }
+}
 </style>

@@ -5,6 +5,7 @@ import LogIn from '../views/LogIn.vue'
 import SignUp from '../views/SignUp.vue'
 import Appointment from '../views/Appointment.vue'
 import LogOut from '../views/LogOut.vue'
+import dashboard from '../views/dashboard.vue'
 import axios from 'axios'
 import qs from 'qs';
 
@@ -51,6 +52,11 @@ const routes = [
     path: '/logout',
     name: 'LogOut',
     component: LogOut,
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: dashboard,
   }
 ]
 

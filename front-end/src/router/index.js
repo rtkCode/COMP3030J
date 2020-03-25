@@ -5,7 +5,7 @@ import LogIn from '../views/LogIn.vue'
 import SignUp from '../views/SignUp.vue'
 import Appointment from '../views/Appointment.vue'
 import LogOut from '../views/LogOut.vue'
-import dashboard from '../views/dashboard.vue'
+import Dashboard from '../views/Dashboard.vue'
 import axios from 'axios'
 import qs from 'qs';
 
@@ -55,8 +55,11 @@ const routes = [
   },
   {
     path: '/dashboard',
-    name: 'dashboard',
-    component: dashboard,
+    name: 'Dashboard',
+    component: Dashboard,
+    meta: {
+      requireAuth: true
+    },
   }
 ]
 

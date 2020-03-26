@@ -199,6 +199,7 @@ export default {
           $(".toast").addClass("bg-success border-success");
           _this.hintTitle=response.data.msg;
           _this.hintText="The doctor has received your appointment";
+          setTimeout(_this.route,2000);
         }
         if(response.data.code==400){
           $(".toast").removeClass("bg-success border-success");
@@ -227,6 +228,10 @@ export default {
         }
       });
     },
+
+    route(){
+      this.$router.push("/dashboard");
+    }
 
   }
 };

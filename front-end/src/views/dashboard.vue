@@ -2,58 +2,70 @@
   <div>
     <HeaderIf :hospital="hospital"></HeaderIf>
     <div class="content">
-      <div class="title text-left text-info mt-2 p-2 ml-2"><h3>Welcome {{username}}, you have {{appointments.length}} appointments.</h3></div>
+      <div class="title text-left text-info mt-4 p-2 ml-5">
+        <h3>Welcome {{username}}, you have {{appointments.length}} appointments.</h3>
+      </div>
       <div class="col-12 row p-2">
         <div class="col-8">
-          <table class="table table-borderless" v-for="(a,index) in appointments" :key="index">
-            <tbody>
-              <tr>
-                <td>Appointment Date: {{a.date}}</td>
-                <td>Location: {{a.location}}</td>
-              </tr>
-              <tr>
-                <td>Syptom: {{a.symptom}}</td>
-                <td>Operation Date: 2020-02-??</td>
-              </tr>
-              <tr>
-                <td>Attending Doctor: Mr.XXXX</td>
-                <td>Contact Number: XXXXXXXXX</td>
-              </tr>
-              <tr>
-                <td>Operation progress: XXXXXXXX</td>
-                <td>Release Date: XXXXXXXX</td>
-              </tr>
-              <tr>
-                <td>Doctors' Notes: XXXXXX XXXXX XXX XXX xXXXXXx XXXX</td>
-              </tr>
-              <hr/>
-            </tbody>
-          </table>
+          <div v-for="(a,index) in appointments.reverse()" :key="index">
+            <div class="d-flex justify-content-around m-4">
+              <span class="d-flex align-items-center badge badge-pill badge-secondary">Waiting</span>
+              <span>{{index+1}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
+              <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
+              <a class="text-info">Operations</a>
+            </div>
+            <table class="table table-borderless card card-body collapse ml-5 col-11" :id="'a'+index">
+              <tbody>
+                <tr>
+                  <td>Appointment date: <span class="text-secondary">{{a.date}}</span></td>
+                  <td>Location: <span class="text-secondary">{{a.location}}</span></td>
+                </tr>
+                <tr>
+                  <td>Syptom: <span class="text-secondary">{{a.symptom}}</span></td>
+                  <td>Type: <span class="text-secondary">{{a.type}}</span></td>
+                </tr>
+                <tr>
+                  <td>Customer's Notes: <span class="text-secondary">Undetermined</span></td>
+                </tr>
+                <tr>
+                  <td>Operation date: <span class="text-secondary">Undetermined</span></td>
+                  <td>Attending doctor: <span class="text-secondary">Undetermined</span></td>
+                </tr>
+                <tr>
+                  <td>Discharge date: <span class="text-secondary">Undetermined</span></td>
+                </tr>
+                <tr>
+                  <td>Doctor's Notes: <span class="text-secondary">Undetermined</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <a href class="mt-2 text-info">View more appointments</a>
         </div>
         <div class="col">
           <div class="card card-body">
             <table class="table table-borderless">
-            <tbody>
-              <tr>
-                <td><h3>{{name}}</h3></td>
-              </tr>
-              <tr>
-                <td>Username: {{username}}</td>
-              </tr>
-              <tr>
-                <td>Email: {{email}}</td>
-              </tr>
-              <a class="nav-link text-left" href="#">Edit your information</a>
-            </tbody>
-          </table>
+              <tbody>
+                <tr>
+                  <td>
+                    <h3>{{name}}</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Username: {{username}}</td>
+                </tr>
+                <tr>
+                  <td>Email: {{email}}</td>
+                </tr>
+                <tr>
+                  <td><a class="text-info text-left" href="#">Edit your information</a></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-      
-
     </div>
-
-    <a href>View history appointments</a>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -67,7 +79,7 @@
       return {
         profileUrl: "http://127.0.0.1:5000/profile",
         username: "",
-        name:"",
+        name: "",
         email: "",
         appointments: []
       };
@@ -91,66 +103,66 @@
     },
 
     methods: {
-      getToken(n){
-        let token=localStorage.getItem('t');
-        let t=window.decodeURIComponent(window.atob(token));
-        if(n==0) return token;
-        if(n==1) return t;
+      getToken(n) {
+        let token = localStorage.getItem('t');
+        let t = window.decodeURIComponent(window.atob(token));
+        if (n == 0) return token;
+        if (n == 1) return t;
       },
 
-      getProfile(){
-        let _this=this;
-        
-        this.$axios({
-          method: 'post',
-          url: this.profileUrl,
-          headers: {
-            'Content-Type':'application/x-www-form-urlencoded',
-            "Authorization": "bearer "+this.getToken(1)
-          },
-          data: this.$qs.stringify({
-            token: this.getToken(0),
-          })
-        })
-        .then(function (response) {
-          console.log(response);
-          // $('.toast').toast('show');
-          if(response.data.code==200){
-            _this.username=response.data.data.basic.username;
-            _this.email=response.data.data.basic.email;
-            _this.name=response.data.data.basic.firstName+response.data.data.basic.lastName;
-            _this.appointments=response.data.data.appointments;
-            // $(".toast").removeClass("bg-danger border-danger");
-            // $(".toast").addClass("bg-success border-success");
-            // _this.hintTitle=response.data.msg;
-            // _this.hintText="The doctor has received your appointment";
+      getProfile() {
+        let _this = this;
 
-          }
-          if(response.data.code==400){
-            // $(".toast").removeClass("bg-success border-success");
-            // $(".toast").addClass("bg-danger border-danger");
-            // _this.hintTitle="Failed to make appointment";
-            // _this.hintText=response.data.msg+", please correct and resubmit";
-          }
-        })
-        .catch(function (error) {
-          if(error.response.status==401){
-            localStorage.removeItem('t');
-            _this.$router.push({
-              name: 'LogIn',
-              query:{ 
-                message: "Login status expired, please log in again",
-                from: "/dashboard"
-              }
-            });
-          }else{
-            console.log(error);
+        this.$axios({
+            method: 'post',
+            url: this.profileUrl,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              "Authorization": "bearer " + this.getToken(1)
+            },
+            data: this.$qs.stringify({
+              token: this.getToken(0),
+            })
+          })
+          .then(function (response) {
+            console.log(response);
             // $('.toast').toast('show');
-            // $(".toast").addClass("bg-danger border-danger");
-            // _this.hintTitle="Failed to make appointment";
-            // _this.hintText="unknown error, please check console log";
-          }
-        });
+            if (response.data.code == 200) {
+              _this.username = response.data.data.basic.username;
+              _this.email = response.data.data.basic.email;
+              _this.name = response.data.data.basic.firstName + " " +response.data.data.basic.lastName;
+              _this.appointments = response.data.data.appointments;
+              // $(".toast").removeClass("bg-danger border-danger");
+              // $(".toast").addClass("bg-success border-success");
+              // _this.hintTitle=response.data.msg;
+              // _this.hintText="The doctor has received your appointment";
+
+            }
+            if (response.data.code == 400) {
+              // $(".toast").removeClass("bg-success border-success");
+              // $(".toast").addClass("bg-danger border-danger");
+              // _this.hintTitle="Failed to make appointment";
+              // _this.hintText=response.data.msg+", please correct and resubmit";
+            }
+          })
+          .catch(function (error) {
+            if (error.response.status == 401) {
+              localStorage.removeItem('t');
+              _this.$router.push({
+                name: 'LogIn',
+                query: {
+                  message: "Login status expired, please log in again",
+                  from: "/dashboard"
+                }
+              });
+            } else {
+              console.log(error);
+              // $('.toast').toast('show');
+              // $(".toast").addClass("bg-danger border-danger");
+              // _this.hintTitle="Failed to make appointment";
+              // _this.hintText="unknown error, please check console log";
+            }
+          });
       },
     }
 
@@ -159,7 +171,6 @@
 
 <style scoped>
   td {
-    font-size: 18px;
     text-align: left;
   }
 </style>

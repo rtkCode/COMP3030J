@@ -175,8 +175,8 @@ export default {
           $(".toast").removeClass("bg-danger border-danger");
           $(".toast").addClass("bg-success border-success");
           _this.registerHintTitle="Register success";
-          _this.registerHintText=response.data.msg+", it will jump to the login page in 3 seconds";
-          setTimeout(_this.routeToLogin,3000);
+          _this.registerHintText=response.data.msg+", it will jump to the login page in 2 seconds";
+          setTimeout(_this.routeToLogin,2000);
         }
         if(response.data.code==400){
           $(".toast").removeClass("bg-success border-success");

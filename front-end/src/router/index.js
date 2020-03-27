@@ -6,6 +6,7 @@ import SignUp from '../views/SignUp.vue'
 import Appointment from '../views/Appointment.vue'
 import LogOut from '../views/LogOut.vue'
 import Dashboard from '../views/Dashboard.vue'
+import employeeLogIn from '../views/employeeLogIn.vue'
 import axios from 'axios'
 import qs from 'qs';
 
@@ -60,6 +61,11 @@ const routes = [
     meta: {
       requireAuth: true
     },
+  },
+  {
+    path: '/employee_login',
+    name: 'employeeLogIn',
+    component: employeeLogIn
   }
 ]
 

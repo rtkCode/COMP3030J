@@ -1,17 +1,6 @@
 <template>
   <div class="Appointment">
     <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
-    <div id="toast-container" aria-live="polite" aria-atomic="true">
-      <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
-        <div class="toast-header">
-          <strong class="mr-auto">{{hintTitle}}</strong>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body text-white">{{hintText}}</div>
-      </div>
-    </div>
     <div class="d-flex align-items-start flex-column content">
 
       <div class="p-4">
@@ -62,8 +51,8 @@
           </button>
         </div>
       </div>
-
     </div>
+    <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -72,6 +61,7 @@
 <script>
 import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
+import Message from '@/components/Message.vue'
 
 export default {
   data() {
@@ -96,12 +86,14 @@ export default {
       hintTitle: "",
       hintText: "",
       showButton: true,
+      messageFailure: false
     };
   },
 
   components: {
     HeaderIf,
-    Footer
+    Footer,
+    Message
   },
 
   props: {
@@ -195,15 +187,13 @@ export default {
         _this.showButton=true;
         $('.toast').toast('show');
         if(response.data.code==200){
-          $(".toast").removeClass("bg-danger border-danger");
-          $(".toast").addClass("bg-success border-success");
+          _this.messageFailure=false;
           _this.hintTitle=response.data.msg;
           _this.hintText="The doctor has received your appointment";
           setTimeout(_this.route,2000);
         }
         if(response.data.code==400){
-          $(".toast").removeClass("bg-success border-success");
-          $(".toast").addClass("bg-danger border-danger");
+          _this.messageFailure=true;
           _this.hintTitle="Failed to make appointment";
           _this.hintText=response.data.msg+", please correct and resubmit";
         }
@@ -221,8 +211,8 @@ export default {
         }else{
           console.log(error);
           _this.showButton=true;
+          _this.messageFailure=true;
           $('.toast').toast('show');
-          $(".toast").addClass("bg-danger border-danger");
           _this.hintTitle="Failed to make appointment";
           _this.hintText="unknown error, please check console log";
         }
@@ -255,16 +245,5 @@ svg{
 svg:hover{
   cursor: pointer;
   width: 130px;
-}
-
-#toast-container{
-  position: relative;
-}
-
-.toast{
-  position: absolute; 
-  top: 10px;
-  right: 10px;
-  min-width: 300px;
 }
 </style>

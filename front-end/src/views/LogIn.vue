@@ -1,17 +1,6 @@
 <template>
   <div>
     <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
-    <div id="toast-container" aria-live="polite" aria-atomic="true">
-      <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
-        <div class="toast-header">
-          <strong class="mr-auto">{{loginHintTitle}}</strong>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body text-white">{{loginHintText}}</div>
-      </div>
-    </div>
     <section class="content d-flex flex-column justify-content-center align-items-center">
       <div class="alert alert-info alert-dismissible fade show" role="alert">{{alertMessage}}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -45,6 +34,7 @@
         Loading...
       </button>
     </section>
+    <Message :hintTitle="loginHintTitle" :hintText="loginHintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -54,6 +44,7 @@
 <script>
 import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
+import Message from '@/components/Message.vue'
 
 export default {
   data(){
@@ -66,6 +57,7 @@ export default {
       loginHintTitle: "",
       fromPath: this.$route.query.from,
       alertMessage: this.$route.query.message,
+      messageFailure: false,
     }
   },
 
@@ -75,7 +67,8 @@ export default {
 
   components: {
     HeaderIf,
-    Footer
+    Footer,
+    Message
   },
 
   mounted() {
@@ -130,7 +123,7 @@ export default {
         _this.showButton=true;
         if(response.data.code==400){
           $('.toast').toast('show');
-          $(".toast").addClass("bg-danger border-danger");
+          _this.messageFailure=true;
           _this.loginHintTitle="Login failed";
           _this.loginHintText=response.data.msg+", please correct and resubmit";
         }else if(response.data.code==200){
@@ -146,8 +139,8 @@ export default {
       .catch(function (error) {
         console.log(error);
         _this.showButton=true;
+        _this.messageFailure=true;
         $('.toast').toast('show');
-        $(".toast").addClass("bg-danger border-danger");
         _this.loginHintTitle="Unknown error";
         _this.loginHintText="unknown error, please check console log";
       });
@@ -162,16 +155,5 @@ export default {
 <style scoped>
 .invalid{
   color: #FF4136;
-}
-
-#toast-container{
-  position: relative;
-}
-
-.toast{
-  position: absolute; 
-  top: 10px;
-  right: 10px;
-  min-width: 300px;
 }
 </style> 

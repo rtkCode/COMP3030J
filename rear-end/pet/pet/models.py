@@ -23,17 +23,16 @@ class Pet(db.Model):#line 15-25 inspired from lecture 15 model.py class Post, I 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
-class Staff(db.Model):#line 27-35 code from lecture 15 model.py class Profile, I add an attribute called phone and decline the CV and image attributes.
+class employee(db.Model):#line 27-35 code from lecture 15 model.py class Profile
     id = db.Column(db.Integer, primary_key = True) 
-    sex = db.Column(db.String(10))
-    job = db.Column(db.String(50), index=True)
-    salary = db.Column(db.Integer, index=True) 
-    phoneNumber = db.Column(db.Integer, index=True, unique=True) 
-    age = db.Column(db.Integer)
+    name = db.Column(db.String(25), index=True, unique=True)
+    email = db.Column(db.String(40), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
 
     def __repr__(self):
-        return '<Profile for user: {}, gender:{}, birthday:{}>'.format(self.dob,self.gender)        
-
+        return '<Employee {}>'.format(self.name)
+        # return '<Profile for user: {}, gender:{}, birthday:{}>'.format(self.dob,self.gender)
+        
 # class Collection(db.Model):
 #     id = db.Column(db.Integer, primary_key = True) 
 #     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

@@ -58,7 +58,8 @@
                   <td>Email: {{email}}</td>
                 </tr>
                 <tr>
-                  <td><a class="text-info text-left" href="#">Edit your information</a></td>
+                  <td><a class="text-info text-left" href="#exampleModal" data-toggle="modal">Edit your information</a></td>
+                  <Model></Model>
                 </tr>
               </tbody>
             </table>
@@ -66,6 +67,7 @@
         </div>
       </div>
     </div>
+    <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -73,6 +75,7 @@
 <script>
   import HeaderIf from "@/components/HeaderIf.vue";
   import Footer from "@/components/Footer.vue";
+  import Model from "@/components/UpdateProfileModel.vue";
 
   export default {
     data() {
@@ -81,13 +84,17 @@
         username: "",
         name: "",
         email: "",
-        appointments: []
+        appointments: [],
+        hintTitle: "",
+        hintText: "",
+        messageFailure: false
       };
     },
 
     components: {
       HeaderIf,
-      Footer
+      Footer,
+      Model
     },
 
     props: {
@@ -132,17 +139,9 @@
               _this.email = response.data.data.basic.email;
               _this.name = response.data.data.basic.firstName + " " +response.data.data.basic.lastName;
               _this.appointments = response.data.data.appointments;
-              // $(".toast").removeClass("bg-danger border-danger");
-              // $(".toast").addClass("bg-success border-success");
-              // _this.hintTitle=response.data.msg;
-              // _this.hintText="The doctor has received your appointment";
-
             }
             if (response.data.code == 400) {
-              // $(".toast").removeClass("bg-success border-success");
-              // $(".toast").addClass("bg-danger border-danger");
-              // _this.hintTitle="Failed to make appointment";
-              // _this.hintText=response.data.msg+", please correct and resubmit";
+              
             }
           })
           .catch(function (error) {
@@ -157,10 +156,6 @@
               });
             } else {
               console.log(error);
-              // $('.toast').toast('show');
-              // $(".toast").addClass("bg-danger border-danger");
-              // _this.hintTitle="Failed to make appointment";
-              // _this.hintText="unknown error, please check console log";
             }
           });
       },

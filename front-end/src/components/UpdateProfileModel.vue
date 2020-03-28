@@ -1,0 +1,188 @@
+<template>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form p-3">
+                        <div class="row">
+                            <label for="fn">First name</label>
+                            <input type="text" class="form-control" id="fn" v-model="firstName" required>
+                            <small class="invalid text-danger">*2-10 letters</small>
+                        </div>
+
+                        <div class="row mt-1">
+                            <label for="ln">Last name</label>
+                            <input type="text" class="form-control" id="ln" v-model="lastName" required>
+                            <small class="invalid text-danger">*2-10 letters</small>
+                        </div>
+
+                        <div class="row mt-1">
+                            <label for="ea">Email address</label>
+                            <input type="email" class="form-control" id="ea" v-model="email"
+                                @blur="verifyUserId('email')" required>
+                            <small class="invalid text-danger">*Please input the correct email address</small>
+                            <small class="error-text text-danger">{{emailErrorText}}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" @click="verifyName()"
+                        v-show="showButton">Save</button>
+                    <button class="btn btn-primary" type="button" v-show="!showButton" disabled>
+                        <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                </div>
+            </div>
+        </div>
+        <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
+    </div>
+</template>
+
+<script>
+    import Message from '@/components/Message.vue'
+
+    export default {
+        data() {
+            return {
+                updateUrl: "http://127.0.0.1:5000/updateProfile",
+                verifyUserIdUrl: "http://127.0.0.1:5000/verifyUserId",
+                firstName: "",
+                lastName: "",
+                email: "",
+                emailErrorText: "",
+                showButton: true,
+            };
+        },
+
+        components: {
+            Message
+        },
+
+        mounted() {
+            $(".invalid").hide();
+            $('.toast').toast('show');
+        },
+
+        methods: {
+            verifyName() {
+                let nameReg = /^[A-Za-z]{2,10}$/;
+                if (nameReg.test(this.firstName)) {
+                    $(".invalid").eq(0).hide();
+                    if (nameReg.test(this.lastName)) {
+                        $(".invalid").eq(1).hide();
+                        this.verifyEmail();
+                    } else {
+                        $(".invalid").eq(1).show();
+                    }
+                } else {
+                    $(".invalid").eq(0).show();
+                }
+            },
+
+            verifyEmail() {
+                let emailReg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+                if (emailReg.test(this.email)) {
+                    $(".invalid").eq(2).hide();
+                    this.updateProfile()
+                } else {
+                    $(".invalid").eq(2).show();
+                }
+            },
+
+            getToken(n) {
+                let token = localStorage.getItem('t');
+                let t = window.decodeURIComponent(window.atob(token));
+                if (n == 0) return token;
+                if (n == 1) return t;
+            },
+
+            updateProfile() {
+                let _this = this;
+                this.showButton=false;
+                this.$axios({
+                        method: 'put',
+                        url: this.updateUrl,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            "Authorization": "bearer " + this.getToken(1)
+                        },
+                        data: this.$qs.stringify({
+                            firstName: this.firstName,
+                            lastName: this.lastName,
+                            email: this.email,
+                            token: this.getToken(0),
+                        })
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                        _this.showButton = true;
+                        // $('.toast').toast('show');
+                        if (response.data.code == 200) {
+
+                        }
+                        if (response.data.code == 400) {
+
+                        }
+                    })
+                    .catch(function (error) {
+                        _this.showButton = true;
+                        if (error.response.status == 401) {
+                            localStorage.removeItem('t');
+                            _this.$router.push({
+                                name: 'LogIn',
+                                query: {
+                                    message: "Login status expired, please log in again",
+                                    from: "/dashboard"
+                                }
+                            });
+                        } else {
+                            console.log(error);
+
+                        }
+                    });
+            },
+
+            verifyUserId(mode) {
+                let data;
+                let _this = this;
+
+                if (mode == "username") {
+                    data = this.$qs.stringify({
+                        username: this.username
+                    });
+                } else if (mode == "email") {
+                    data = this.$qs.stringify({
+                        email: this.email
+                    })
+                }
+
+                this.$axios({
+                        method: 'post',
+                        url: this.verifyUserIdUrl,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        data: data,
+                    })
+                    .then(function (response) {
+                        if (response.data.code == 201) _this.usernameErrorText = "";
+                        if (response.data.code == 202) _this.emailErrorText = "";
+                        if (response.data.code == 401) _this.usernameErrorText = response.data.msg;
+                        if (response.data.code == 402) _this.emailErrorText = response.data.msg;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+        }
+    }
+</script>

@@ -288,6 +288,54 @@ def profile():
             "msg": "Invalid data"
         })
 
+@app.route ("/updateProfile",methods=['PUT'])
+@auth.login_required
+def updateProfile():
+    if "firstName" in request.form and "lastName" in request.form and "email" in request.form:
+        user = g.user
+        email = request.form["email"]
+        firstName = request.form["firstName"]
+        lastName = request.form["lastName"]
+        user_in_db = User.query.filter(User.username == user.username).first()
+        email_in_db = User.query.filter(User.email == email).first()
+        if re.match('^[a-zA-Z]{2,10}$', firstName) is None:
+            return jsonify({
+                'code': 400,
+                'msg': 'FirstName format wrong'
+            })
+        
+        if re.match('^[a-zA-Z]{2,10}$', lastName) is None:
+            return jsonify({
+                'code': 400,
+                'msg': 'LastName format wrong'
+            })
+
+        
+        if re.match('^[a-zA-Z0-9\_\-\!\#\$\%\&\'\*\+\-\=\?\^\_\`\{\|\}\~\.]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$',email) is None:
+            return jsonify({
+                'code': 400,
+                'msg': 'Email format wrong'
+            })
+
+        if user_in_db and email_in_db is None:
+            user_in_db.firstName = firstName
+            user_in_db.lastName = lastName
+            user_in_db.email = email
+            db.session.commit()
+
+            return jsonify({
+            "code": 200,
+            "msg": "Success"        
+        })
+
+    return jsonify({
+        "code": 400,
+        "msg": "Failed"        
+    })
+        
+
+
+
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

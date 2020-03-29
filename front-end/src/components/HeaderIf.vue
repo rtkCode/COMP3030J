@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderIn v-if="hasToken()" :hospital="hospital"></HeaderIn>
+        <HeaderIn v-if="$token.hasToken()" :hospital="hospital"></HeaderIn>
         <Header v-else :hospital="hospital"></Header>
     </div>
 </template>
@@ -17,12 +17,5 @@
         props: {
             hospital: String
         },
-        methods: {
-            hasToken(){
-                let token=localStorage.getItem('t');
-                if(token==null) return false;
-                else return true;
-            }
-        }
     };
 </script>

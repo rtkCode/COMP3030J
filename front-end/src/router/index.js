@@ -9,11 +9,13 @@ import Dashboard from '../views/Dashboard.vue'
 import employeeLogIn from '../views/employeeLogIn.vue'
 import axios from 'axios'
 import qs from 'qs';
+import token from '../token.js'
 
+Vue.use(VueRouter)
 axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
 Vue.prototype.$axios = axios
 Vue.prototype.$qs = qs
-Vue.use(VueRouter)
+Vue.prototype.$token=token
 
 const routes = [
   {
@@ -77,8 +79,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    let token = localStorage.getItem('t');
-    let t = window.decodeURIComponent(window.atob(token));
 
     if (token == null) {
       next({
@@ -94,10 +94,10 @@ router.beforeEach((to, from, next) => {
         url: "http://127.0.0.1:5000/verifyToken",
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          "Authorization": "bearer " + t
+          "Authorization": "bearer " + token.getToken(1)
         },
         data: qs.stringify({
-          token: token
+          token: token.getToken(0)
         })
       })
 
@@ -112,7 +112,7 @@ router.beforeEach((to, from, next) => {
         .catch(function (error) {
           if (error.response) {
             if (error.response.status == 401) {
-              localStorage.removeItem('t');
+              token.removeToken();
               next({
                 name: 'LogIn',
                 query: {
@@ -129,8 +129,7 @@ router.beforeEach((to, from, next) => {
         });
     }
   } else if (to.meta.toLogout) {
-    let token = localStorage.getItem('t');
-    if (token == null) {
+    if (token.getToken(0) == null) {
       next();
     } else {
       next({

@@ -90,13 +90,6 @@
                 }
             },
 
-            getToken(n) {
-                let token = localStorage.getItem('t');
-                let t = window.decodeURIComponent(window.atob(token));
-                if (n == 0) return token;
-                if (n == 1) return t;
-            },
-
             updateProfile() {
                 let _this = this;
                 this.showButton=false;
@@ -105,28 +98,34 @@
                         url: this.updateUrl,
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
-                            "Authorization": "bearer " + this.getToken(1)
+                            "Authorization": "bearer " + this.$token.getToken(1)
                         },
                         data: this.$qs.stringify({
                             firstName: this.firstName,
                             lastName: this.lastName,
                             email: this.email,
-                            token: this.getToken(0),
+                            token: this.$token.getToken(0),
                         })
                     })
                     .then(function (response) {
                         console.log(response);
-                        $("#exampleModal").modal('hide');
-                        location.reload();
+                        _this.showButton=true;
+                        $('.toast').toast('show');
                         if (response.data.code == 200) {
-                            
+                            _this.$emit("messageFailure", false);
+                            _this.$emit("hintTitle", "Update success");
+                            _this.$emit("hintText", "Your information has been updated");
+                            $("#exampleModal").modal('hide');
+                            setTimeout("location.reload()",2000);
                         }
                         if (response.data.code == 400) {
-
+                            _this.$emit("messageFailure", true);
+                            _this.$emit("hintTitle", "Update failed");
+                            _this.$emit("hintText", response.data.msg);
                         }
                     })
                     .catch(function (error) {
-                        $("#exampleModal").modal('hide')
+                        _this.showButton=true;
                         if (error.response.status == 401) {
                             localStorage.removeItem('t');
                             _this.$router.push({
@@ -136,9 +135,11 @@
                                     from: "/dashboard"
                                 }
                             });
-                        } else{
+                        } else {
                             console.log(error);
-                            location.reload();
+                            _this.$emit("messageFailure", true);
+                            _this.$emit("hintTitle", "Unknow error");
+                            _this.$emit("hintText", response.data.msg);
                         }
                     });
             },

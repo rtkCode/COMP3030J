@@ -81,11 +81,6 @@ export default {
   },
 
   methods: {
-    storeToken(token){
-      let t=window.btoa(window.encodeURIComponent(token));
-      localStorage.setItem("t",t);
-    },
-
     verifyUsername(){
       let usernameReg=/^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;
       if(usernameReg.test(this.username)){
@@ -128,7 +123,7 @@ export default {
           _this.loginHintText=response.data.msg+", please correct and resubmit";
         }else if(response.data.code==200){
           let token=response.data.token;
-          _this.storeToken(token);
+          _this.$token.storeToken(token);
           if(_this.fromPath==undefined){
               _this.$router.push("/");
           }else{

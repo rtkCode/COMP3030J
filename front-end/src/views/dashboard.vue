@@ -7,7 +7,7 @@
       </div>
       <div class="col-12 row p-2">
         <div class="col-8">
-          <div v-for="(a,index) in appointments.reverse()" :key="index">
+          <div v-for="(a,index) in appointments" :key="index">
             <div class="d-flex justify-content-around m-4">
               <span class="d-flex align-items-center badge badge-pill badge-secondary">Waiting</span>
               <span>{{index+1}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
@@ -59,7 +59,7 @@
                 </tr>
                 <tr>
                   <td><a class="text-info text-left" href="#exampleModal" data-toggle="modal">Edit your information</a></td>
-                  <Model @hintTitle="getHintTitle" @hintText="getHintText"></Model>
+                  <Model @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></Model>
                 </tr>
               </tbody>
             </table>
@@ -120,11 +120,8 @@
         this.hintText=data;
       },
 
-      getToken(n) {
-        let token = localStorage.getItem('t');
-        let t = window.decodeURIComponent(window.atob(token));
-        if (n == 0) return token;
-        if (n == 1) return t;
+      getMessageFailure(data){
+        this.messageFailure=data;
       },
 
       getProfile() {
@@ -135,28 +132,30 @@
             url: this.profileUrl,
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
-              "Authorization": "bearer " + this.getToken(1)
+              "Authorization": "bearer " + this.$token.getToken(1)
             },
             data: this.$qs.stringify({
-              token: this.getToken(0),
+              token: this.$token.getToken(0),
             })
           })
           .then(function (response) {
             console.log(response);
-            // $('.toast').toast('show');
             if (response.data.code == 200) {
               _this.username = response.data.data.basic.username;
               _this.email = response.data.data.basic.email;
               _this.name = response.data.data.basic.firstName + " " +response.data.data.basic.lastName;
-              _this.appointments = response.data.data.appointments;
+              _this.appointments = response.data.data.appointments.reverse();
             }
             if (response.data.code == 400) {
-              
+              $('.toast').toast('show');
+              _this.messageFailure=true;
+              _this.hintTitle="Unknow error";
+              _this.hintText=response.data.msg+", please refresh the page";
             }
           })
           .catch(function (error) {
             if (error.response.status == 401) {
-              localStorage.removeItem('t');
+              _this.$token.removeToken();
               _this.$router.push({
                 name: 'LogIn',
                 query: {
@@ -165,7 +164,11 @@
                 }
               });
             } else {
+              $('.toast').toast('show');
               console.log(error);
+              _this.messageFailure=true;
+              _this.hintTitle="Unknow error";
+              _this.hintText=response.data.msg+", please check console log";
             }
           });
       },

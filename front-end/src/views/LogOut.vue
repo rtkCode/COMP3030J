@@ -44,7 +44,7 @@ export default {
 
   methods: {
     logout() {
-      localStorage.removeItem('t');
+      this.$token.removeToken();
       if(this.fromPath==undefined) this.fromPath="/";
       this.$router.push(this.fromPath);
     },

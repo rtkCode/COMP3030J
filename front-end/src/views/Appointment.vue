@@ -115,13 +115,6 @@ export default {
   },
 
   methods: {
-    getToken(n){
-      let token=localStorage.getItem('t');
-      let t=window.decodeURIComponent(window.atob(token));
-      if(n==0) return token;
-      if(n==1) return t;
-    },
-
     getDate(d){
       let today=new Date();
       let day=new Date();
@@ -171,7 +164,7 @@ export default {
         url: this.appointmentUrl,
         headers: {
           'Content-Type':'application/x-www-form-urlencoded',
-          "Authorization": "bearer "+this.getToken(1)
+          "Authorization": "bearer "+this.$token.getToken(1)
         },
         data: this.$qs.stringify({
           date: this.date,
@@ -180,7 +173,7 @@ export default {
           symptom: this.symptom,
           message: this.message,
           emergency: this.isEmergency,
-          token: this.getToken(0),
+          token: this.$token.getToken(0),
         })
       })
       .then(function (response) {
@@ -200,7 +193,7 @@ export default {
       })
       .catch(function (error) {
         if(error.response.status==401){
-          localStorage.removeItem('t');
+          _this.$token.removeToken();
           _this.$router.push({
             name: 'LogIn',
             query:{ 

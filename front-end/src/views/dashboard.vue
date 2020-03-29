@@ -59,7 +59,7 @@
                 </tr>
                 <tr>
                   <td><a class="text-info text-left" href="#exampleModal" data-toggle="modal">Edit your information</a></td>
-                  <Model></Model>
+                  <Model @hintTitle="getHintTitle" @hintText="getHintText"></Model>
                 </tr>
               </tbody>
             </table>
@@ -76,6 +76,7 @@
   import HeaderIf from "@/components/HeaderIf.vue";
   import Footer from "@/components/Footer.vue";
   import Model from "@/components/UpdateProfileModel.vue";
+  import Message from '@/components/Message.vue'
 
   export default {
     data() {
@@ -94,7 +95,8 @@
     components: {
       HeaderIf,
       Footer,
-      Model
+      Model,
+      Message
     },
 
     props: {
@@ -110,6 +112,14 @@
     },
 
     methods: {
+      getHintTitle(data){
+        this.hintTitle=data;
+      },
+
+      getHintText(data){
+        this.hintText=data;
+      },
+
       getToken(n) {
         let token = localStorage.getItem('t');
         let t = window.decodeURIComponent(window.atob(token));

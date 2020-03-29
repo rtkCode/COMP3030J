@@ -43,13 +43,10 @@
                 </div>
             </div>
         </div>
-        <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
     </div>
 </template>
 
 <script>
-    import Message from '@/components/Message.vue'
-
     export default {
         data() {
             return {
@@ -63,13 +60,8 @@
             };
         },
 
-        components: {
-            Message
-        },
-
         mounted() {
             $(".invalid").hide();
-            $('.toast').toast('show');
         },
 
         methods: {
@@ -124,17 +116,17 @@
                     })
                     .then(function (response) {
                         console.log(response);
-                        _this.showButton = true;
-                        // $('.toast').toast('show');
+                        $("#exampleModal").modal('hide');
+                        location.reload();
                         if (response.data.code == 200) {
-
+                            
                         }
                         if (response.data.code == 400) {
 
                         }
                     })
                     .catch(function (error) {
-                        _this.showButton = true;
+                        $("#exampleModal").modal('hide')
                         if (error.response.status == 401) {
                             localStorage.removeItem('t');
                             _this.$router.push({
@@ -144,9 +136,9 @@
                                     from: "/dashboard"
                                 }
                             });
-                        } else {
+                        } else{
                             console.log(error);
-
+                            location.reload();
                         }
                     });
             },

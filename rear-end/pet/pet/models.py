@@ -23,16 +23,29 @@ class Pet(db.Model):#line 15-25 inspired from lecture 15 model.py class Post, I 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
-class employee(db.Model):#line 27-35 code from lecture 15 model.py class Profile
+class Staff(db.Model):#line 27-35 code from lecture 15 model.py class Profile, I add an attribute called phone and decline the CV and image attributes.
     id = db.Column(db.Integer, primary_key = True) 
-    name = db.Column(db.String(25), index=True, unique=True)
+    sex = db.Column(db.String(10))
+    job = db.Column(db.String(50), index=True)
+    salary = db.Column(db.Integer, index=True) 
+    phoneNumber = db.Column(db.Integer, index=True, unique=True) 
+    age = db.Column(db.Integer)
+
+    
+class Employee(db.Model):#line 27-35 code from lecture 15 model.py class Profile
+    id = db.Column(db.Integer, primary_key = True) 
+    username = db.Column(db.String(25), index=True, unique=True)
     email = db.Column(db.String(40), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    firstName = db.Column(db.String(10))
+    lastName = db.Column(db.String(10))
+    others = db.Column(db.String(140))
 
     def __repr__(self):
-        return '<Employee {}>'.format(self.name)
+        return '<Employee {}>'.format(self.username)
         # return '<Profile for user: {}, gender:{}, birthday:{}>'.format(self.dob,self.gender)
         
+
 # class Collection(db.Model):
 #     id = db.Column(db.Integer, primary_key = True) 
 #     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -47,14 +60,14 @@ class Transcript(db.Model):
     date = db.Column(db.Date, index=True)
     item = db.Column(db.String(50), index=True)
 
-
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     customer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    pet_type = db.Column(db.String(10), index=True)
+    pet_type = db.Column(db.String(50), index = True)
     emergency = db.Column(db.String(10), index=True)
     # staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'))
-    symptom = db.Column(db.String(50), index=True)
+    # petStatus = db.Column(db.String(50), index = True, default = "To be examined")
+    symptom = db.Column(db.String(150), index=True)
     date = db.Column(db.Date, index=True)
     location = db.Column(db.String(50), index=True)
     message = db.Column(db.String(250), index=True)

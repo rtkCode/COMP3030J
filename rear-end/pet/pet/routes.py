@@ -1,7 +1,7 @@
 from pet import app
 from flask import request, jsonify,g
 from flask_cors import CORS
-from .models import User, Pet, Staff, Transcript,Appointment
+from .models import User, Pet, Transcript, Appointment, Employee
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -21,32 +21,59 @@ CORS(app, supports_credentials=True)
 
 @app.route("/login", methods=['POST'])
 def login():
-    if "username" in request.form.keys() and "password" in request.form.keys():
-        username = request.form["username"]
-        password = request.form["password"]
-        user_in_db = User.query.filter(User.username == username).first()
-        if not user_in_db:
-            return jsonify({
-                "code": 400,
-                "msg": "Invalid username or password"
-            })
-        if (check_password_hash(user_in_db.password_hash, password)):
-            token = generateToken(user_in_db.username)
+    if "employee" in request.form.keys():
+        employee = request.form["employee"]
+        if "username" in request.form.keys() and "password" in request.form.keys() and not employee:
+            username = request.form["username"]
+            password = request.form["password"]
+            if not "employee" in request.form.keys():
+            user_in_db = User.query.filter(User.username == username).first()
+            if not user_in_db:
+                return jsonify({
+                    "code": 400,
+                    "msg": "Invalid username or password"
+                })
+            if (check_password_hash(user_in_db.password_hash, password)):
+                token = generateToken(user_in_db.username)
             
-            return jsonify({
-                "code": 200,
-                "msg": "Login success",
-                "token":token
-            })
+                return jsonify({
+                    "code": 200,
+                    "msg": "Login success",
+                    "token":token
+                })
+            else:
+                return jsonify({
+                    "code": 400,
+                    "msg": "Invalid username or password"
+                })
+        elif "username" in request.form.keys() and "password" in request.form.keys() and employee:
+            username = request.form["username"]
+            password = request.form["password"]
+            employee_in_db = Employee.query.filter(Employee.username == employee).first()
+            if (check_password_hash(employee_in_db.password_hash, password)):
+                token = generateToken(employee_in_db.name)
+            
+                return jsonify({
+                    "code": 200,
+                    "msg": "Login success",
+                    "token":token
+                })
+            else:
+                return jsonify({
+                    "code": 400,
+                    "msg": "Invalid username or password"
+                })
         else:
             return jsonify({
                 "code": 400,
-                "msg": "Invalid username or password"
-            })
-    return jsonify({
+                "msg": "Invalid data"
+        })
+
+    else:
+        return jsonify({
                 "code": 400,
                 "msg": "Invalid data"
-            })
+        })
 
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
@@ -145,15 +172,30 @@ def verifyUserId():
 @app.route("/register", methods=['POST'])
 def register():
     # print(request.form["username"])
-    if "username" in request.form and "password" in request.form and "email" in request.form and "firstName" in request.form and "lastName" in request.form and "others" in request.form:
+    if "username" in request.form and "password" in request.form and "email" in request.form and "firstName" in request.form and "lastName" in request.form and "others" in request.form and "employee" in request.form:
         username = request.form["username"]
         password = request.form["password"]
         email = request.form["email"]
         firstName = request.form["firstName"]
         lastName = request.form["lastName"]
         others = request.form["others"]
-
-        email_in_db = User.query.filter(User.email == email).first()
+        employee = request.form["employee"]
+        if not employee:
+            email_in_db = User.query.filter(User.email == email).first()
+            user_in_db = User.query.filter(User.username == username).first()
+            if user_in_db:			
+                return jsonify({
+                    'code': 400,
+                    'msg': 'Username already exists'
+                })
+        else:
+            email_in_db = Employee.query.filter(Employee.email == email).first()
+            employee_in_db = Employee.query.filter(Employee.username == username).first()
+            if employee_in_db:			
+                return jsonify({
+                    'code': 400,
+                    'msg': 'Username already exists'
+                })
         if email_in_db:
             return jsonify({
                 'code': 400,
@@ -195,93 +237,20 @@ def register():
                 'code': 400,
                 'msg': 'LastName format wrong'
             })
-
-        user_in_db = User.query.filter(User.username == username).first()
-        if user_in_db:			
-            return jsonify({
-                'code': 400,
-                'msg': 'Username already exists'
-            })
-
+    
         passw_hash = generate_password_hash(password)
-        user = User(username=username, email=email, password_hash=passw_hash, firstName=firstName, lastName=lastName, others=others)
-        db.session.add(user)
+        if employee:
+            emp= Employee(username=username, email=email, password_hash=passw_hash,firstName=firstName, lastName=lastName, others=others)
+            db.session.add(emp)
+        else:
+            user = User(username=username, email=email, password_hash=passw_hash, firstName=firstName, lastName=lastName, others=others)
+            db.session.add(user)
         db.session.commit()
         return jsonify({
             'code': 200,
             'msg': 'register success'
         })
-    else:
-        return jsonify({
-            'code': 400,
-            'msg': 'register failure'
-        })
-
-def generateToken(user):
-    expiration = 3600
-    serializer = Serializer(Config.SECRET_KEY,expires_in=expiration) #有效时间为秒
-    token = serializer.dumps({"username":user}).decode("ascii") #解码形式再讨论
-    return token
-
-@auth.verify_token
-def verify_token(token):   
-    g.user = None 
-    s = Serializer(Config.SECRET_KEY)
-    try:
-        data = s.loads(token)
-    except SignatureExpired:
-        return False
-    except BadSignature:
-        return False
-    username = data["username"]
-    if not username:
-        return False
-    else:
-        g.user = User.query.filter(User.username == username).first() #g是存用户相关数据的
-        return True
     
-@auth.error_handler
-def error_handler():
-    return jsonify({
-            'code': 404,
-            'msg': 'Unauthorized Operation'
-        })
-
-
-@app.route ("/profile",methods=['POST'])
-@auth.login_required
-def profile():
-    user = g.user   
-    # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
-    user_in_db = User.query.filter(User.username == user.username).first() 
-    if user_in_db:
-        appointment = Appointment.query.filter(Appointment.customer_id == user_in_db.id).all()
-        appointment_list = []
-        for item in appointment:
-            list_item = {}
-            list_item["id"] = item.id
-            list_item["type"] = item.pet_type
-            # list_item["petStatus"] = item.petStatus
-            list_item["symptom"] = item.symptom
-            list_item["date"] = str(item.date)
-            list_item["location"] = item.location
-            list_item["message"] = item.message
-            list_item["emergency"] = item.emergency
-            appointment_list.append(list_item)
-        user = {}
-        user["username"] = user_in_db.username
-        user["firstName"] = user_in_db.firstName
-        user["lastName"] = user_in_db.lastName
-        user["email"] = user_in_db.email
-        return jsonify({
-            "code": 200,
-            "msg": "Success",
-            "data":{
-                "basic":user,
-                "appointments":appointment_list
-            }
-                   
-        })
     else:    
         return jsonify({
             "code": 400,

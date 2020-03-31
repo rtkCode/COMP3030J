@@ -27,7 +27,7 @@
 export default {
   data(){
     return{
-      hospital: "Dog&Cat Hospital",
+      hospital: "Healing Paws Veterinary Hospital",
     }
   }
 }

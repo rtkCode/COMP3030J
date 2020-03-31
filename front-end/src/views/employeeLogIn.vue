@@ -1,31 +1,16 @@
 <template>
   <div>
     <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
-    <div id="toast-container" aria-live="polite" aria-atomic="true">
-      <div
-        class="toast border rounded-lg"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-        data-delay="15000"
-        style="right: 10; top: 70;"
-      >
-        <div class="toast-header">
-          <strong class="mr-auto">{{loginHintTitle}}</strong>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body text-white">{{loginHintText}}</div>
-      </div>
-    </div>
     <section class="content d-flex flex-column justify-content-center align-items-center">
+      <h1 class="mb-3">Employee login</h1>
+
       <div class="alert alert-info alert-dismissible fade show" role="alert">
         {{alertMessage}}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      
       <form class="needs-validation" novalidate>
         <div class="form">
           <div class="row">
@@ -34,14 +19,8 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
               </div>
-              <input
-                type="text"
-                v-model="username"
-                class="form-control"
-                id="validationCustomUsername"
-                aria-describedby="inputGroupPrepend"
-                required
-              />
+              <input type="text" v-model="username" class="form-control" id="validationCustomUsername"
+                aria-describedby="inputGroupPrepend" required />
             </div>
             <small class="invalid">*Username format invalid</small>
           </div>
@@ -53,12 +32,8 @@
           </div>
         </div>
       </form>
-      <button
-        class="btn btn-outline-info mt-3 px-4"
-        type="submit"
-        @click="verifyUsername()"
-        v-show="showButton"
-      >Log in</button>
+      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">Log
+        in</button>
       <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
         Loading...
@@ -71,92 +46,76 @@
 
 
 <script>
-import HeaderIf from "@/components/HeaderIf.vue";
-import Footer from "@/components/Footer.vue";
+  import HeaderIf from "@/components/HeaderIf.vue";
+  import Footer from "@/components/Footer.vue";
 
-export default {
-  data() {
-    return {
-      loginUrl: "http://127.0.0.1:5000/employee_login",
-      username: "",
-      password: "",
-      showButton: true,
-      loginHintText: "",
-      loginHintTitle: "",
-      fromPath: this.$route.query.from,
-      alertMessage: this.$route.query.message
-    };
-  },
-
-  props: {
-    hospital: String
-  },
-
-  components: {
-    HeaderIf,
-    Footer
-  },
-
-  mounted() {
-    $(".invalid").hide();
-    if (this.alertMessage == undefined) $(".alert").alert("close");
-  },
-
-  created() {
-    document.title = `Log In | ${this.hospital}`;
-  },
-
-  methods: {
-    storeToken(token) {
-      let t = window.btoa(window.encodeURIComponent(token));
-      localStorage.setItem("t", t);
+  export default {
+    data() {
+      return {
+        loginUrl: "http://127.0.0.1:5000/employee_login",
+        username: "",
+        password: "",
+        showButton: true,
+        loginHintText: "",
+        loginHintTitle: "",
+        fromPath: this.$route.query.from,
+        alertMessage: this.$route.query.message
+      };
     },
 
-    verifyUsername() {
-      let usernameReg = /^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;
-      if (usernameReg.test(this.username)) {
-        $(".invalid")
-          .eq(0)
-          .hide();
-        this.verifyPassword();
-      } else {
-        $(".invalid")
-          .eq(0)
-          .show();
-      }
+    props: {
+      hospital: String
     },
 
-    verifyPassword() {
-      let passwordReg = /^(\S){6,18}$/;
-      if (passwordReg.test(this.password)) {
-        $(".invalid")
-          .eq(1)
-          .hide();
-        this.login();
-      } else {
-        $(".invalid")
-          .eq(1)
-          .show();
+    components: {
+      HeaderIf,
+      Footer
+    },
+
+    mounted() {
+      $(".invalid").hide();
+      if (this.alertMessage == undefined) $(".alert").alert("close");
+    },
+
+    created() {
+      document.title = `Employee Login | ${this.hospital}`;
+    },
+
+    methods: {
+      verifyUsername() {
+        let usernameReg = /^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;
+        if (usernameReg.test(this.username)) {
+          $(".invalid")
+            .eq(0)
+            .hide();
+          this.verifyPassword();
+        } else {
+          $(".invalid")
+            .eq(0)
+            .show();
+        }
+      },
+
+      verifyPassword() {
+        let passwordReg = /^(\S){6,18}$/;
+        if (passwordReg.test(this.password)) {
+          $(".invalid")
+            .eq(1)
+            .hide();
+          this.login();
+        } else {
+          $(".invalid")
+            .eq(1)
+            .show();
+        }
       }
     }
-  }
-};
+  };
 </script>
 
 
 <style scoped>
-.invalid {
-  color: #ff4136;
-}
-
-#toast-container {
-  position: relative;
-}
-
-.toast {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  min-width: 300px;
-}
-</style> 
+  .invalid {
+    color: #ff4136;
+  }
+</style>

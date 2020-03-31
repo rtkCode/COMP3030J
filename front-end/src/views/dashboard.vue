@@ -5,8 +5,8 @@
       <div class="title text-left text-info mt-4 p-2 ml-5">
         <h3>Welcome {{username}}, you have {{appointments.length}} appointments.</h3>
       </div>
-      <div class="col-12 row p-2">
-        <div class="col-8">
+      <div class="col-12 row d-flex flex-wrap-reverse">
+        <div class="col-md-8 col-sm-12 col ml-2">
           <div v-for="(a,index) in appointments" :key="index">
             <div class="d-flex justify-content-around m-4">
               <span class="d-flex align-items-center badge badge-pill badge-secondary">Waiting</span>
@@ -42,7 +42,7 @@
           </div>
           <a href class="mt-2 text-info">View more appointments</a>
         </div>
-        <div class="col">
+        <div class="col ml-4">
           <div class="card card-body">
             <table class="table table-borderless">
               <tbody>

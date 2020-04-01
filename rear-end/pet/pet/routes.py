@@ -23,7 +23,7 @@ CORS(app, supports_credentials=True)
 def login():
     if "employee" in request.form.keys():
         employee = request.form["employee"]
-        # print(employee)
+        
         if "username" in request.form.keys() and "password" in request.form.keys() and employee == "0":
             username = request.form["username"]
             password = request.form["password"]
@@ -274,7 +274,10 @@ def generateToken(user,employee):
 
 @auth.verify_token
 def verify_token(token):   
-    g.user = None 
+    g.user = None
+    g.employee = None 
+    if_employee = ""
+    username = None
     s = Serializer(Config.SECRET_KEY)
     try:
         data = s.loads(token)
@@ -284,15 +287,18 @@ def verify_token(token):
         return False
     username = data["username"]
     if_employee = data["employee"]
-    if not username or not if_employee:
+    # print(username,if_employee)
+    if not username: 
         return False
     else:
-        if if_employee == "1":
-            g.user = Employee.query.filter(Employee.username == username).first()
-            # print(1)
-        else:
+        if if_employee == 1:
+            g.employee = Employee.query.filter(Employee.username == username).first()
+            
+            # print(g.user.email)
+        elif if_employee == 0:
+            
             g.user = User.query.filter(User.username == username).first() #g是存用户相关数据的
-            # print(2)
+            # print(g.user.email)
         return True
     
 @auth.error_handler
@@ -303,7 +309,7 @@ def error_handler():
         })
 
 
-@app.route ("/profile",methods=['POST'])
+@app.route ("/profile",methods=['GET'])
 @auth.login_required
 def profile():
     user = g.user   
@@ -396,7 +402,7 @@ def updateProfile():
 @app.route ("/allAppointments",methods=['GET'])
 @auth.login_required
 def allAppointments():
-    username = g.user.username
+    username = g.employee.username
     employee_in_db = Employee.query.filter(Employee.username == username).first()
     user_in_db = User.query.filter(User.username == username).first()
     if employee_in_db and (not user_in_db):
@@ -501,6 +507,7 @@ def allAppointments():
 @auth.login_required
 def logout():
     g.user = None
+    g.employee = None
     # logout_user()
     return jsonify({
             "code": 200,

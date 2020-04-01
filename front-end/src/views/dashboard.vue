@@ -8,14 +8,18 @@
       <div class="col-12 row d-flex flex-wrap-reverse">
         <div class="col-md-8 col-sm-12 col ml-2">
           <div v-for="(a,index) in appointments" :key="index">
-            <div class="d-flex justify-content-around m-4">
-              <span class="d-flex align-items-center badge badge-pill badge-secondary">Waiting</span>
+            <div class="d-flex justify-content-around m-4 p-1" :class="{'bg-light-red': a.emergency}">
+              <span class="d-flex align-items-center badge badge-pill badge-secondary">{{a.status}}</span>
               <span>{{index+1}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
               <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
               <a class="text-info">Operations</a>
             </div>
             <table class="table table-borderless card card-body collapse ml-5 col-11" :id="'a'+index">
               <tbody>
+                <tr>
+                  <td>Status: <span class="text-secondary">{{a.status}}</span></td>
+                  <td>Emergency: <span class="text-secondary">{{a.emergency}}</span></td>
+                </tr>
                 <tr>
                   <td>Appointment date: <span class="text-secondary">{{a.date}}</span></td>
                   <td>Location: <span class="text-secondary">{{a.location}}</span></td>
@@ -25,14 +29,14 @@
                   <td>Type: <span class="text-secondary">{{a.type}}</span></td>
                 </tr>
                 <tr>
-                  <td>Customer's Notes: <span class="text-secondary">Undetermined</span></td>
+                  <td>Customer's Notes: <span class="text-secondary">{{a.message}}</span></td>
                 </tr>
                 <tr>
-                  <td>Operation date: <span class="text-secondary">Undetermined</span></td>
-                  <td>Attending doctor: <span class="text-secondary">Undetermined</span></td>
+                  <td>Operation date: <span class="text-secondary">{{a.operationTime}}</span></td>
+                  <td>Attending doctor: <span class="text-secondary">{{a.attendingDoctor}}</span></td>
                 </tr>
                 <tr>
-                  <td>Discharge date: <span class="text-secondary">Undetermined</span></td>
+                  <td>Discharge date: <span class="text-secondary">{{a.dischargeDate}}</span></td>
                 </tr>
                 <tr>
                   <td>Doctor's Notes: <span class="text-secondary">Undetermined</span></td>
@@ -40,7 +44,7 @@
               </tbody>
             </table>
           </div>
-          <a href class="mt-2 text-info">View more appointments</a>
+          <!-- <a href class="mt-2 text-info">View more appointments</a> -->
         </div>
         <div class="col ml-4">
           <div class="card card-body">
@@ -180,5 +184,9 @@
 <style scoped>
   td {
     text-align: left;
+  }
+
+  .bg-light-red{
+    background: #ffc4c4;
   }
 </style>

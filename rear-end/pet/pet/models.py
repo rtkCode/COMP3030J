@@ -1,7 +1,7 @@
-from datetime import datetime
 from pet import db
 
-class User(db.Model): #line 4-13 code from lecture 15 model.py class User
+
+class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(16), index=True, unique=True)
     firstName = db.Column(db.String(10))
@@ -13,7 +13,8 @@ class User(db.Model): #line 4-13 code from lecture 15 model.py class User
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-class Pet(db.Model):#line 15-25 inspired from lecture 15 model.py class Post, I add some attributes.
+
+class Pet(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     nickname = db.Column(db.String(30))
     age = db.Column(db.Integer) 
@@ -23,7 +24,8 @@ class Pet(db.Model):#line 15-25 inspired from lecture 15 model.py class Post, I 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
-class Staff(db.Model):#line 27-35 code from lecture 15 model.py class Profile, I add an attribute called phone and decline the CV and image attributes.
+
+class Staff(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     sex = db.Column(db.String(10))
     job = db.Column(db.String(50), index=True)
@@ -32,7 +34,7 @@ class Staff(db.Model):#line 27-35 code from lecture 15 model.py class Profile, I
     age = db.Column(db.Integer)
 
     
-class Employee(db.Model):#line 27-35 code from lecture 15 model.py class Profile
+class Employee(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     username = db.Column(db.String(25), index=True, unique=True)
     email = db.Column(db.String(40), index=True, unique=True)
@@ -43,13 +45,7 @@ class Employee(db.Model):#line 27-35 code from lecture 15 model.py class Profile
 
     def __repr__(self):
         return '<Employee {}>'.format(self.username)
-        # return '<Profile for user: {}, gender:{}, birthday:{}>'.format(self.dob,self.gender)
-        
 
-# class Collection(db.Model):
-#     id = db.Column(db.Integer, primary_key = True) 
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
 class Transcript(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -60,18 +56,18 @@ class Transcript(db.Model):
     date = db.Column(db.Date, index=True)
     item = db.Column(db.String(50), index=True)
 
+
 class Appointment(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    pet_type = db.Column(db.String(50), index = True)
+    pet_type = db.Column(db.String(50), index=True)
     emergency = db.Column(db.String(10), index=True)
-    # staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'))
-    status = db.Column(db.String(50), index = True, default = "")
+    status = db.Column(db.String(50), index=True, default="")
     symptom = db.Column(db.String(150), index=True)
     date = db.Column(db.Date, index=True)
     location = db.Column(db.String(50), index=True)
     message = db.Column(db.String(250), index=True)
-    attendingDoctor = db.Column(db.String(50), index=True, default = "")
+    attendingDoctor = db.Column(db.String(50), index=True, default="")
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
-    operationTime = db.Column(db.DateTime, index=True, default = "")
-    dischargeDate = db.Column(db.Date, index=True, default = "")
+    operationTime = db.Column(db.Date, index=True)
+    dischargeDate = db.Column(db.Date, index=True)

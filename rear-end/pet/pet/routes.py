@@ -81,6 +81,7 @@ def login():
                 "msg": "Invalid data"
         })
 
+
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
 def appointment():
@@ -92,8 +93,9 @@ def appointment():
         message = request.form["message"]
         emergency = request.form["emergency"]
         user = g.user   
-        real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()   
-        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message)
+        real_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        fake_date = datetime.datetime.strptime("1970-01-01", '%Y-%m-%d').date()
+        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message, operationTime=fake_date, dischargeDate=fake_date)
         db.session.add(appointment)
         db.session.commit()
         return jsonify({
@@ -322,17 +324,32 @@ def profile():
             list_item = {}
             list_item["id"] = item.id
             list_item["type"] = item.pet_type
-            # list_item["petStatus"] = item.petStatus
             list_item["symptom"] = item.symptom
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
-            list_item["emergency"] = item.emergency
-            list_item["status"] = item.status
-            list_item["attendingDoctor"] = item.attendingDoctor
+            if item.emergency == "false":
+                list_item["emergency"] = False
+            elif item.emergency == "false":
+                list_item["emergency"] = True
+            if item.status == "":
+                list_item["status"] = "Waiting"
+            else:
+                list_item["status"] = item.status
+            if item.attendingDoctor == "":
+                list_item["attendingDoctor"] = "Undetermined"
+            else:
+                list_item["attendingDoctor"] = item.attendingDoctor
             list_item["employeeId"] = item.employeeId
-            list_item["operationTime"] = str(item.operationTime)
-            list_item["dischargeDate"] = str(item.dischargeDate)
+            if str(item.operationTime) == "1970-01-01":
+                list_item["operationTime"] = "Undetermined"
+            else:
+                list_item["operationTime"] = str(item.operationTime)
+            if str(item.dischargeDate) == "1970-01-01":
+                list_item["dischargeDate"] = "Undetermined"
+            else:
+                list_item["dischargeDate"] = str(item.dischargeDate)
+
             appointment_list.append(list_item)
         user = {}
         user["username"] = user_in_db.username

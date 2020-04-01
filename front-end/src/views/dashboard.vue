@@ -128,7 +128,7 @@
         let _this = this;
 
         this.$axios({
-            method: 'post',
+            method: 'get',
             url: this.profileUrl,
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',

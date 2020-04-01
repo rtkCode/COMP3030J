@@ -111,7 +111,8 @@ export default {
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
         data: this.$qs.stringify({
           username: this.username,
-          password: this.password
+          password: this.password,
+          employee:  "0"
         })
       })
       .then(function (response) {

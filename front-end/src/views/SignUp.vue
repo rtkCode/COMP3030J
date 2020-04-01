@@ -40,6 +40,11 @@
             <input type="password" class="form-control" id="pw" v-model="password" required>
             <small class="invalid">*6-18</small>
           </div>
+
+          <div class="row mt-1">
+            <label for="irc">Internal registration code</label>
+            <input type="password" class="form-control" id="irc" v-model="irc" placeholder="Leave it blank if you're a customer">
+          </div>
         </div>
         <small>*By clicking sign up, you agree to the terms and conditions</small>
       </form>
@@ -76,6 +81,8 @@ export default {
       registerHintText: "",
       showButton: true,
       messageFailure: false,
+      irc: "",
+      employee: "0"
     }
   },
 
@@ -147,6 +154,7 @@ export default {
     register(){
       let _this=this;
       this.showButton=false;
+      if(this.irc!="") this.employee="1";
 
       this.$axios({
         method: 'post',
@@ -159,6 +167,7 @@ export default {
           email: this.email,
           password: this.password,
           others: "test",
+          employee: this.employee
         })
       })
       .then(function (response) {

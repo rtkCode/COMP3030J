@@ -39,6 +39,7 @@
         Loading...
       </button>
     </section>
+    <Message :hintTitle="loginHintTitle" :hintText="loginHintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -48,18 +49,20 @@
 <script>
   import HeaderIf from "@/components/HeaderIf.vue";
   import Footer from "@/components/Footer.vue";
+  import Message from '@/components/Message.vue';
 
   export default {
     data() {
       return {
-        loginUrl: "http://127.0.0.1:5000/employee_login",
+        loginUrl: "http://127.0.0.1:5000/login",
         username: "",
         password: "",
         showButton: true,
         loginHintText: "",
         loginHintTitle: "",
         fromPath: this.$route.query.from,
-        alertMessage: this.$route.query.message
+        alertMessage: this.$route.query.message,
+        messageFailure: false
       };
     },
 
@@ -69,7 +72,8 @@
 
     components: {
       HeaderIf,
-      Footer
+      Footer,
+      Message
     },
 
     mounted() {
@@ -82,6 +86,47 @@
     },
 
     methods: {
+      login(){
+        let _this=this;
+        this.showButton=false;
+        
+        this.$axios({
+          method: 'post',
+          url: this.loginUrl,
+          headers:{'Content-Type':'application/x-www-form-urlencoded'},
+          data: this.$qs.stringify({
+            username: this.username,
+            password: this.password,
+            employee:  "1"
+          })
+        })
+        .then(function (response) {
+          _this.showButton=true;
+          if(response.data.code==400){
+            $('.toast').toast('show');
+            _this.messageFailure=true;
+            _this.loginHintTitle="Login failed";
+            _this.loginHintText=response.data.msg+", please correct and resubmit";
+          }else if(response.data.code==200){
+            let token=response.data.token;
+            _this.$token.storeToken(token);
+            if(_this.fromPath==undefined){
+                _this.$router.push("/");
+            }else{
+                _this.$router.push(_this.fromPath);
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          _this.showButton=true;
+          _this.messageFailure=true;
+          $('.toast').toast('show');
+          _this.loginHintTitle="Unknown error";
+          _this.loginHintText="unknown error, please check console log";
+        });
+      },
+
       verifyUsername() {
         let usernameReg = /^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;
         if (usernameReg.test(this.username)) {

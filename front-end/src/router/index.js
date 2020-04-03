@@ -7,6 +7,7 @@ import Appointment from '../views/Appointment.vue'
 import LogOut from '../views/LogOut.vue'
 import Dashboard from '../views/Dashboard.vue'
 import EmployeeLogIn from '../views/EmployeeLogIn.vue'
+import EmployeeDashboard from '../views/EmployeeDashboard.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
@@ -61,15 +62,25 @@ const routes = [
     name: 'Dashboard',
     component: Dashboard,
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      employee: true
     },
   },
   {
-    path: '/employeeLogin',
+    path: '/employee/login',
     name: 'EmployeeLogIn',
     component: EmployeeLogIn,
     meta: {
       toLogout: true
+    },
+  },
+  {
+    path: '/employee/dashboard',
+    name: 'EmployeeDashboard',
+    component: EmployeeDashboard,
+    meta: {
+      requireAuth: true,
+      // employee: true
     },
   }
 ]
@@ -82,7 +93,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-
     if (token == null) {
       next({
         name: 'LogIn',
@@ -92,6 +102,7 @@ router.beforeEach((to, from, next) => {
         }
       });
     } else {
+      let _token = token;
       axios({
         method: 'post',
         url: "http://127.0.0.1:5000/verifyToken",
@@ -103,33 +114,34 @@ router.beforeEach((to, from, next) => {
           token: token.getToken(0)
         })
       })
-
-        .then(function (response) {
-          if (response.data.code == 200) {
-            next();
-          } else {
-            next("/");
-          }
-        })
-
-        .catch(function (error) {
-          if (error.response) {
-            if (error.response.status == 401) {
-              token.removeToken();
-              next({
-                name: 'LogIn',
-                query: {
-                  message: "Login status expired, please log in again",
-                  from: to.path
-                }
-              });
-            } else {
-              console.log(error);
-            }
+      .then(function (response) {
+        if (response.data.code == 200) {
+          if(to.meta.employee){
+            if(_token.isEmployee()=="true") next("/employee/dashboard");
+            else next();
+          }else next();
+        } else {
+          next("/");
+        }
+      })
+      .catch(function (error) {
+        if (error.response) {
+          if (error.response.status == 401) {
+            token.removeToken();
+            next({
+              name: 'LogIn',
+              query: {
+                message: "Login status expired, please log in again",
+                from: to.path
+              }
+            });
           } else {
             console.log(error);
           }
-        });
+        } else {
+          console.log(error);
+        }
+      });
     }
   } else if (to.meta.toLogout) {
     if (token.getToken(0) == null) {

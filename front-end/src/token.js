@@ -7,9 +7,21 @@ token.getToken=function(n) {
     if (n == 1) return t;
 };
 
+token.isEmployee=function() {
+    let e = localStorage.getItem('e');
+    return e;
+};
+
 token.storeToken=function(token){
     let t=window.btoa(window.encodeURIComponent(token));
     localStorage.setItem("t",t);
+    localStorage.setItem("e",false);
+};
+
+token.storeEmployeeToken=function(token){
+    let t=window.btoa(window.encodeURIComponent(token));
+    localStorage.setItem("t",t);
+    localStorage.setItem("e",true);
 };
 
 token.hasToken=function(){
@@ -20,6 +32,7 @@ token.hasToken=function(){
 
 token.removeToken=function(){
     localStorage.removeItem('t');
+    localStorage.removeItem("e");
 };
 
 export default token

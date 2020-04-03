@@ -6,7 +6,7 @@
         <h3>Welcome {{username}}, you have {{appointments.length}} appointments.</h3>
       </div>
       <div class="col-12 row d-flex flex-wrap-reverse">
-        <div class="col-md-8 col-sm-12 col ml-2">
+        <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
           <div v-for="(a,index) in appointments" :key="index">
             <div class="d-flex justify-content-around m-4 p-1" :class="{'bg-light-red': a.emergency}">
               <span class="d-flex align-items-center badge badge-pill badge-secondary">{{a.status}}</span>

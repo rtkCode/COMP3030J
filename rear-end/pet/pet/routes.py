@@ -92,8 +92,9 @@ def appointment():
         message = request.form["message"]
         emergency = request.form["emergency"]
         user = g.user   
-        real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()   
-        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message)
+        real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date() 
+        fake_date = datetime.datetime.strptime("1970-01-01",'%Y-%m-%d').date()  
+        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message,operationTime=fake_date,dischargeDate=fake_date)
         db.session.add(appointment)
         db.session.commit()
         return jsonify({

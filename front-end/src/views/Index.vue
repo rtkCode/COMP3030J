@@ -1,7 +1,7 @@
 <template>
   <div class="Index">
     <HeaderIf :hospital="hospital"></HeaderIf>
-    <section class="content d-flex justify-content-center align-items-center">
+    <section class="content d-flex justify-content-center align-items-center" :style="bg">
       <div class>
         <h1 class="seven24">7<small>x</small>24</h1>
         <h1>Take care of your pet in all aspects</h1>
@@ -20,6 +20,15 @@ import Footer from "@/components/Footer.vue";
 
 export default {
   name: "Index",
+  data(){
+    return{
+      bg: {
+        // backgroundImage: "url(" + require("../../public/img/index.jpeg") + ")",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 100%" 
+      },
+    }
+  },
   components: {
     HeaderIf,
     Footer

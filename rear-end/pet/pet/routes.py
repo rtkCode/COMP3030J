@@ -81,7 +81,6 @@ def login():
                 "msg": "Invalid data"
         })
 
-
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
 def appointment():
@@ -93,9 +92,8 @@ def appointment():
         message = request.form["message"]
         emergency = request.form["emergency"]
         user = g.user   
-        real_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
-        fake_date = datetime.datetime.strptime("1970-01-01", '%Y-%m-%d').date()
-        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message, operationTime=fake_date, dischargeDate=fake_date)
+        real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()   
+        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message)
         db.session.add(appointment)
         db.session.commit()
         return jsonify({
@@ -315,6 +313,7 @@ def error_handler():
 @auth.login_required
 def profile():
     user = g.user   
+    
     # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
     user_in_db = User.query.filter(User.username == user.username).first() 
     if user_in_db:
@@ -324,6 +323,7 @@ def profile():
             list_item = {}
             list_item["id"] = item.id
             list_item["type"] = item.pet_type
+            # list_item["petStatus"] = item.petStatus
             list_item["symptom"] = item.symptom
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
@@ -349,7 +349,6 @@ def profile():
                 list_item["dischargeDate"] = "Undetermined"
             else:
                 list_item["dischargeDate"] = str(item.dischargeDate)
-
             appointment_list.append(list_item)
         user = {}
         user["username"] = user_in_db.username
@@ -376,6 +375,11 @@ def profile():
 def updateProfile():
     if "firstName" in request.form and "lastName" in request.form and "email" in request.form:
         user = g.user
+        if not user:
+            return jsonify({
+            "code":401,
+            "msg":"Unauthorized"
+        })
         email = request.form["email"]
         firstName = request.form["firstName"]
         lastName = request.form["lastName"]
@@ -420,8 +424,9 @@ def updateProfile():
 @auth.login_required
 def allAppointments():
     username = g.employee.username
+    username_cus = g.user.username
     employee_in_db = Employee.query.filter(Employee.username == username).first()
-    user_in_db = User.query.filter(User.username == username).first()
+    user_in_db = User.query.filter(User.username == username_cus).first()
     if employee_in_db and (not user_in_db):
         appointments = Appointment.query.filter().all()
         appointment_list = []
@@ -434,7 +439,6 @@ def allAppointments():
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
-
             if item.emergency == "false":
                 list_item["emergency"] = False
             elif item.emergency == "true":
@@ -471,6 +475,55 @@ def allAppointments():
             "msg":"Unauthorized"
         })
 
+
+@app.route ("/updateAppointment",methods=['PUT'])
+@auth.login_required
+def updateAppointment():
+    if "id" in request.form:
+        id = request.form["id"]
+        if "status" in request.form:
+            status = request.form["status"]
+        else:
+            status = None
+        if "operationTime" in request.form: 
+            operationTime = request.form["operationTime"]
+        else:
+            operationTime = None
+        if "dischargeDate" in request.form:
+            dischargeDate = request.form["dischargeDate"]
+        else:
+            dischargeDate = None
+        if "attendingDoctor" in request.form:
+            attendingDoctor = request.form["attendingDoctor"]
+        else:
+            attendingDoctor = None
+        user = g.user
+        employee = g.employee
+        if user:    
+            return jsonify({
+                "code": 400,
+                "msg": "Unauthorized"        
+            })
+        else:
+            appointment = Appointment.query.filter(Appointment.id == id).first()
+            appointment.status = status
+            appointment.operationTime = datetime.datetime.strptime(operationTime,'%Y-%m-%d %H:%M:%S')
+            appointment.dischargeDate = datetime.datetime.strptime(dischargeDate,'%Y-%m-%d').date()
+            appointment.employee_id = employee.id
+            appointment.attendingDoctor = attendingDoctor 
+            db.session.commit()
+    
+        
+
+            return jsonify({
+            "code": 200,
+            "msg": "Success"        
+        })
+
+    return jsonify({
+        "code": 400,
+        "msg": "Failed"        
+    })
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

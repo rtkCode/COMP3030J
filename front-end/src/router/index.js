@@ -8,6 +8,7 @@ import LogOut from '../views/LogOut.vue'
 import Dashboard from '../views/Dashboard.vue'
 import EmployeeLogIn from '../views/EmployeeLogIn.vue'
 import EmployeeDashboard from '../views/EmployeeDashboard.vue'
+import EmployeePersonal from '../views/EmployeePersonal.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
@@ -16,7 +17,7 @@ Vue.use(VueRouter)
 axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
 Vue.prototype.$axios = axios
 Vue.prototype.$qs = qs
-Vue.prototype.$token=token
+Vue.prototype.$token = token
 
 const routes = [
   {
@@ -82,6 +83,11 @@ const routes = [
       requireAuth: true,
       // employee: true
     },
+  },
+  {
+    path: '/employee/personal',
+    name: 'EmployeePersonal',
+    component: EmployeePersonal
   }
 ]
 
@@ -114,34 +120,34 @@ router.beforeEach((to, from, next) => {
           token: token.getToken(0)
         })
       })
-      .then(function (response) {
-        if (response.data.code == 200) {
-          if(to.meta.employee){
-            if(_token.isEmployee()=="true") next("/employee/dashboard");
-            else next();
-          }else next();
-        } else {
-          next("/");
-        }
-      })
-      .catch(function (error) {
-        if (error.response) {
-          if (error.response.status == 401) {
-            token.removeToken();
-            next({
-              name: 'LogIn',
-              query: {
-                message: "Login status expired, please log in again",
-                from: to.path
-              }
-            });
+        .then(function (response) {
+          if (response.data.code == 200) {
+            if (to.meta.employee) {
+              if (_token.isEmployee() == "true") next("/employee/dashboard");
+              else next();
+            } else next();
+          } else {
+            next("/");
+          }
+        })
+        .catch(function (error) {
+          if (error.response) {
+            if (error.response.status == 401) {
+              token.removeToken();
+              next({
+                name: 'LogIn',
+                query: {
+                  message: "Login status expired, please log in again",
+                  from: to.path
+                }
+              });
+            } else {
+              console.log(error);
+            }
           } else {
             console.log(error);
           }
-        } else {
-          console.log(error);
-        }
-      });
+        });
     }
   } else if (to.meta.toLogout) {
     if (token.getToken(0) == null) {

@@ -425,10 +425,11 @@ def updateProfile():
 @auth.login_required
 def allAppointments():
     username = g.employee.username
-    username_cus = g.user.username
+    # username_cus = g.user.username
     employee_in_db = Employee.query.filter(Employee.username == username).first()
-    user_in_db = User.query.filter(User.username == username_cus).first()
-    if employee_in_db and (not user_in_db):
+    # user_in_db = User.query.filter(User.username == username_cus).first()
+    if employee_in_db:
+    # if employee_in_db and (not user_in_db):
         appointments = Appointment.query.filter().all()
         appointment_list = []
         for item in appointments:
@@ -470,61 +471,48 @@ def allAppointments():
                 "appointments":appointment_list
             }
         })
-    if user_in_db:
+    else:
+    # if user_in_db:
         return jsonify({
             "code":401,
             "msg":"Unauthorized"
         })
 
 
-@app.route ("/updateAppointment",methods=['PUT'])
+@app.route("/updateAppointment", methods=['PUT'])
 @auth.login_required
 def updateAppointment():
-    if "id" in request.form:
+    username = g.employee.username
+    employee_in_db = Employee.query.filter(Employee.username == username).first()
+    if employee_in_db:
         id = request.form["id"]
+        appointment = Appointment.query.filter(Appointment.id == id).first()
+
+        appointment.employee_id = employee_in_db.id
+        appointment.attendingDoctor = employee_in_db.firstName + " " + employee_in_db.lastName
+
         if "status" in request.form:
             status = request.form["status"]
-        else:
-            status = None
+            appointment.status = status
+
         if "operationTime" in request.form: 
             operationTime = request.form["operationTime"]
-        else:
-            operationTime = None
+            appointment.operationTime = datetime.datetime.strptime(operationTime, '%Y-%m-%d').date()
+
         if "dischargeDate" in request.form:
             dischargeDate = request.form["dischargeDate"]
-        else:
-            dischargeDate = None
+            appointment.dischargeDate = datetime.datetime.strptime(dischargeDate, '%Y-%m-%d').date()
+
         if "attendingDoctor" in request.form:
             attendingDoctor = request.form["attendingDoctor"]
-        else:
-            attendingDoctor = None
-        user = g.user
-        employee = g.employee
-        if user:    
-            return jsonify({
-                "code": 400,
-                "msg": "Unauthorized"        
-            })
-        else:
-            appointment = Appointment.query.filter(Appointment.id == id).first()
-            appointment.status = status
-            appointment.operationTime = datetime.datetime.strptime(operationTime,'%Y-%m-%d %H:%M:%S')
-            appointment.dischargeDate = datetime.datetime.strptime(dischargeDate,'%Y-%m-%d').date()
-            appointment.employee_id = employee.id
-            appointment.attendingDoctor = attendingDoctor 
-            db.session.commit()
-    
-        
+            appointment.attendingDoctor = attendingDoctor
 
-            return jsonify({
-            "code": 200,
-            "msg": "Success"        
-        })
+        db.session.commit()
+        return jsonify({"code": 200, "msg": "Success"})
 
-    return jsonify({
-        "code": 400,
-        "msg": "Failed"        
-    })
+    else:
+        return jsonify({"code": 400, "msg": "Failed"})
+
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

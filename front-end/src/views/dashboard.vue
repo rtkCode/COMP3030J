@@ -8,13 +8,13 @@
       <div class="col-12 row d-flex flex-wrap-reverse">
         <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
           <div v-for="(a,index) in appointments" :key="index">
-            <div class="d-flex justify-content-around m-4 p-1" :class="{'bg-light-red': a.emergency}">
-              <span class="d-flex align-items-center badge badge-pill badge-secondary">{{a.status}}</span>
+            <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
+              <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'']">{{a.status}}</span>
               <span>{{index+1}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
               <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
               <a class="text-info">Operations</a>
             </div>
-            <table class="table table-borderless card card-body collapse ml-5 col-11" :id="'a'+index">
+            <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
               <tbody>
                 <tr>
                   <td>Status: <span class="text-secondary">{{a.status}}</span></td>

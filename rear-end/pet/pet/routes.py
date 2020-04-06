@@ -425,11 +425,10 @@ def updateProfile():
 @auth.login_required
 def allAppointments():
     username = g.employee.username
-    # username_cus = g.user.username
+    username_cus = g.user.username
     employee_in_db = Employee.query.filter(Employee.username == username).first()
-    # user_in_db = User.query.filter(User.username == username_cus).first()
-    if employee_in_db:
-    # if employee_in_db and (not user_in_db):
+    user_in_db = User.query.filter(User.username == username_cus).first()
+    if employee_in_db and (not user_in_db):
         appointments = Appointment.query.filter().all()
         appointment_list = []
         for item in appointments:
@@ -471,15 +470,68 @@ def allAppointments():
                 "appointments":appointment_list
             }
         })
-    else:
-    # if user_in_db:
+    if user_in_db:
         return jsonify({
             "code":401,
             "msg":"Unauthorized"
         })
 
+@app.route ("/employeeAppointments",methods=['GET'])
+@auth.login_required
+def employeeAppointments():
+    username = g.employee.username
+    user_in_db = g.user
+    employee_in_db = Employee.query.filter(Employee.username == username).first()
+     
+    if employee_in_db and (not user_in_db):
+        appointments = Appointment.query.filter(Appointment.employee_id == employee_in_db.id).all()
+        appointment_list = []
+        for item in appointments:
+            list_item = {}
+            list_item["id"] = item.id
+            list_item["type"] = item.pet_type
+            # list_item["petStatus"] = item.petStatus
+            list_item["symptom"] = item.symptom
+            list_item["date"] = str(item.date)
+            list_item["location"] = item.location
+            list_item["message"] = item.message
+            if item.emergency == "false":
+                list_item["emergency"] = False
+            elif item.emergency == "true":
+                list_item["emergency"] = True
+            if item.status == "":
+                list_item["status"] = "Waiting"
+            else:
+                list_item["status"] = item.status
+            if item.attendingDoctor == "":
+                list_item["attendingDoctor"] = "Undetermined"
+            else:
+                list_item["attendingDoctor"] = item.attendingDoctor
+            list_item["employeeId"] = item.employee_id
+            if str(item.operationTime) == "1970-01-01":
+                list_item["operationTime"] = "Undetermined"
+            else:
+                list_item["operationTime"] = str(item.operationTime)
+            if str(item.dischargeDate) == "1970-01-01":
+                list_item["dischargeDate"] = "Undetermined"
+            else:
+                list_item["dischargeDate"] = str(item.dischargeDate)
+            appointment_list.append(list_item)
+        
+        return jsonify({
+            "code":200,
+            "msg":"Success",
+            "data":{
+                "appointments":appointment_list
+            }
+        })
+    if user_in_db:
+        return jsonify({
+            "code":401,
+            "msg":"Unauthorized"
+        })
 
-@app.route("/updateAppointment", methods=['PUT'])
+@app.route ("/updateAppointment",methods=['PUT'])
 @auth.login_required
 def updateAppointment():
     username = g.employee.username
@@ -513,6 +565,37 @@ def updateAppointment():
     else:
         return jsonify({"code": 400, "msg": "Failed"})
 
+@app.route ("/deleteAppointment",methods=['PUT'])
+@auth.login_required
+def deleteAppointment():
+    employee_in_db = g.employee
+    user_in_db = g.user
+    
+    if employee_in_db and "id" in request.form:
+        id = request.form["id"]
+        appointment = Appointment.query.filter(Appointment.id == id).first()
+
+        if appointment.employee_id == employee_in_db.id:
+            appointment.status = "Canceled"
+            db.session.commit()
+            return jsonify({"code": 200, "msg": "Success"}) 
+        else:
+            return jsonify({"code": 200, "msg": "Failed"})
+        
+
+        
+    elif user_in_db and "id" in request.form:
+        id = request.form["id"]
+        appointment = Appointment.query.filter(Appointment.id == id).first()
+        if appointment.customer_id == user_in_db.id and appointment.status == "":
+            appointment.status = "Canceled"
+            db.session.commit()
+            return jsonify({"code": 200, "msg": "Success"}) 
+        else:
+            return jsonify({"code": 200, "msg": "Failed"})
+
+    else:
+        return jsonify({"code": 400, "msg": "Failed"})
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

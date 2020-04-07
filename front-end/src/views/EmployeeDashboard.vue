@@ -10,7 +10,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
           <div v-for="(a,index) in appointments" :key="index">
             <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
-              <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'']">{{a.status}}</span>
+              <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-danger':'']">{{a.status}}</span>
               <span>{{index+1}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
               <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
               <button class="btn btn-outline-info badge badge-info" @click="updateStatus(a.id)" :disabled="a.employeeId">Handle</button>
@@ -57,7 +57,7 @@
   import HeaderIf from "@/components/HeaderIf.vue";
   import Footer from "@/components/Footer.vue";
   import Model from "@/components/UpdateProfileModel.vue";
-  import Message from '@/components/Message.vue'
+  import Message from '@/components/Message.vue';
 
   export default {
     data() {

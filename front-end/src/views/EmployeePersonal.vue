@@ -3,20 +3,20 @@
     <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <div class="content">
       <div>
-        <h5 class="text-left p-4">Accepted appointments ({{appointments.length}}):</h5>
+        <h5 class="text-left p-4">Accepted appointments ({{appointments_others.length}}):</h5>
         <div class="col-12 row d-flex flex-wrap-reverse">
           <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
-            <div v-for="(a,index) in appointments" :key="index">
+            <div v-for="(a,index) in appointments_others" :key="index">
               <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
-                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'']">{{a.status}}</span>
+                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'']">{{a.status}}</span>
                 <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
                 <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
                 <div class="dropleft">
                   <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation</button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Do an operation</a>
-                    <a class="dropdown-item text-success" href="#">End the operation</a>
-                    <a class="dropdown-item text-danger" href="#">Cancel the appointment</a>
+                    <button class="dropdown-item" @click="updateStatus(a.id, 'Operating')">Do an operation</button>
+                    <button class="dropdown-item text-success" @click="updateStatus(a.id, 'Discharged')">End the operation</button>
+                    <button class="dropdown-item text-danger" @click="updateStatus(a.id, 'Canceled')">Cancel the appointment</button>
                   </div>
                 </div>
               </div>
@@ -58,15 +58,17 @@
         </div>
       </div>
       <div>
-        <h5 class="text-left p-4">Completed appointments ({{completed_appointments.length}}):</h5>
+        <h5 class="text-left p-4">Completed appointments ({{appointments_completed.length}}):</h5>
         <div class="col-12 row d-flex flex-wrap-reverse">
           <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
-            <div v-for="(a,index) in appointments" :key="index">
+            <div v-for="(a,index) in appointments_completed" :key="index">
               <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
-                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'']">{{a.status}}</span>
-                <span>{{index+1}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
+                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-danger':'']">{{a.status}}</span>
+                <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
                 <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
-                <button class="btn btn-outline-info badge badge-info" @click="updateStatus(a.id)" :disabled="a.employeeId">Handle</button>
+                <div class="dropleft">
+                  <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>Operation</button>
+                </div>
               </div>
               <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
                 <tbody>
@@ -105,62 +107,9 @@
           <button class="btn btn-outline-info button-c px-3 m-2" @click="next">&gt;</button>
         </div>
       </div>
-      <!-- <table>
-        <tbody>
-          <tr>
-            <td>Employee Name: {{username}}</td>
-            <td>Id Number: {{id}}</td>
-          </tr>
-          <tr>
-            <td>Gender: {{sex}}</td>
-            <td>Job: {{job}}</td>
-          </tr>
-          <tr>
-            <td>Age: {{age}}</td>
-            <td>Salary: {{salary}}</td>
-          </tr>
-          <tr>
-            <td colspan="2">Phone Number: {{phoneNumber}}</td>
-          </tr>
-          <tr>
-            <td colspan="2">Accepted appointments ({{appointments.length}}):</td>
-          </tr>
-          <tr id="accepted">
-            <td colspan="2">
-              <p>{{appointments[i]}}</p>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <center>
-                <button class="btn btn-outline-info button-c p-2 m-2" @click="previous">&lt;</button>
-                <button class="btn btn-outline-info button-c p-2 m-2" @click="next">&gt;</button>
-              </center>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">Completed appointments ({{completed_appointments.length}}):</td>
-          </tr>
-          <tr id="completed">
-            <td colspan="2">
-              <p>{{completed_appointments[n]}}</p>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <center>
-                <button
-                  class="btn btn-outline-info button-c p-2 m-2"
-                  @click="completed_previous"
-                >&lt;</button>
-                <button class="btn btn-outline-info button-c p-2 m-2" @click="completed_next">&gt;</button>
-              </center>
-            </td>
-          </tr>
-        </tbody>
-      </!-->
     </div>
-
+    <Model @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></Model>
+    <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -168,13 +117,17 @@
 <script>
 import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
+import Message from '@/components/Message.vue';
+import Model from "@/components/ConfirmModel.vue";
 
 export default {
   data() {
     return {
-      url: "http://127.0.0.1:5000/allAppointments",
+      url: "http://127.0.0.1:5000/employeeAppointments",
       updateUrl: "http://127.0.0.1:5000/updateAppointment",
       appointments: [],
+      appointments_completed: [],
+      appointments_others: [],
       hintTitle: "",
       hintText: "",
       messageFailure: false,
@@ -188,13 +141,13 @@ export default {
       salary: "",
       age: "",
       phoneNumber: "",
-      appointments: ["1", "2", "3"],
-      completed_appointments: ["4", "5", "6", "7"]
     };
   },
   components: {
     HeaderIf,
-    Footer
+    Footer,
+    Message,
+    Model
   },
 
   props: {
@@ -210,6 +163,28 @@ export default {
   },
 
   methods: {
+    getHintTitle(data){
+      this.hintTitle=data;
+    },
+
+    getHintText(data){
+      this.hintText=data;
+    },
+
+    getMessageFailure(data){
+      this.messageFailure=data;
+    },
+
+    handleAppointments(appointments){
+      for(let i=0;i<appointments.length;i++){
+        if(appointments[i].status=="Completed"||appointments[i].status=="Canceled"){
+          this.appointments_completed.push(appointments[i]);
+        }else{
+          this.appointments_others.push(appointments[i]);
+        }
+      }
+    },
+
     getAppointments() {
       let _this = this;
 
@@ -225,14 +200,66 @@ export default {
           })
         })
         .then(function (response) {
-          console.log(response);
           if (response.data.code == 200) {
             _this.appointments = response.data.data.appointments.reverse();
+            _this.handleAppointments(_this.appointments);
           }
           if (response.data.code == 400) {
             $('.toast').toast('show');
             _this.messageFailure=true;
             _this.hintTitle="Unknow error";
+            _this.hintText=response.data.msg+", please refresh the page";
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: 'LogIn',
+              query: {
+                message: "Login status expired, please log in again",
+                from: "/dashboard"
+              }
+            });
+          } else {
+            $('.toast').toast('show');
+            console.log(error);
+            _this.messageFailure=true;
+            _this.hintTitle="Unknow error";
+            _this.hintText=response.data.msg+", please check console log";
+          }
+        });
+    },
+
+    updateStatus(id, status){
+      let _this = this;
+
+      this.$axios({
+          method: 'put',
+          url: this.updateUrl,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": "bearer " + this.$token.getToken(1)
+          },
+          data: this.$qs.stringify({
+            id: id,
+            token: this.$token.getToken(0),
+            status: status
+          })
+        })
+        .then(function (response) {
+          if (response.data.code == 200) {
+            $('.toast').toast('show');
+            _this.messageFailure=false;
+            _this.hintTitle="Success";
+            _this.hintText="operation success";
+            setTimeout("location.reload()",2000);
+          }
+          if (response.data.code == 400) {
+            $('.toast').toast('show');
+            _this.messageFailure=true;
+            _this.hintTitle="Handle failed";
             _this.hintText=response.data.msg+", please refresh the page";
           }
         })

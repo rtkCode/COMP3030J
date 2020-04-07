@@ -1,7 +1,7 @@
 <template>
   <footer>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded">
-        <small><p class="mb-0 ml-2">&copy; {{hospital}} {{thisYear}}.</p></small>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded p-2">
+        <small><p class="mb-0 ml-2 my-2">&copy; {{hospital}} {{thisYear}}.</p></small>
         <small><router-link class="text-secondary ml-2" to="/tac">Terms and Conditions</router-link></small>
         <div class="ml-auto">
             <svg t="1586063363604" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2438" width="16" height="16" xmlns:xlink="http://www.w3.org/1999/xlink"><defs></defs><path d="M512 431.157895c-118.568421 0-215.578947-97.010526-215.578947-215.578948s97.010526-215.578947 215.578947-215.578947 215.578947 97.010526 215.578947 215.578947-97.010526 215.578947-215.578947 215.578948z" fill="#515151" p-id="2439"></path><path d="M26.947368 975.494737C48.505263 687.157895 256 538.947368 512 538.947368c258.694737 0 468.884211 140.126316 485.052632 436.547369 0 10.778947 0 48.505263-40.421053 48.505263h-889.263158C53.894737 1024 26.947368 991.663158 26.947368 975.494737z" fill="#bfbfbf" p-id="2440"></path></svg>

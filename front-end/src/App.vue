@@ -18,7 +18,15 @@
 }
 
 .content{
-    min-height: 87vh;
+  min-height: 87vh;
+}
+
+td {
+  text-align: left;
+}
+
+.bg-light-red{
+  background: #ffc4c4;
 }
 </style>
 

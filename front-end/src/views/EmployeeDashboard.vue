@@ -4,7 +4,7 @@
     <div class="content">
       <div class="title text-left text-info mt-4 p-2 mx-5 d-flex justify-content-between">
         <h3>There are currently {{appointments.length}} appointments in the system.</h3>
-        <button type="button" class="btn btn-outline-info">Personal Panel</button>
+        <router-link to="/employee/personal" type="button" class="btn btn-outline-info">Personal Panel</router-link>
       </div>
       <div class="col-12 row d-flex flex-wrap-reverse">
         <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
@@ -204,13 +204,3 @@
 
   };
 </script>
-
-<style scoped>
-  td {
-    text-align: left;
-  }
-
-  .bg-light-red{
-    background: #ffc4c4;
-  }
-</style>

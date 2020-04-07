@@ -12,7 +12,13 @@
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'']">{{a.status}}</span>
               <span>{{index+1}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
               <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
-              <a class="text-info">Operations</a>
+              <div class="dropleft">
+                  <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item text-success" href="#">Retrieve your pet</a>
+                    <a class="dropdown-item text-danger" href="#">Cancel the appointment</a>
+                  </div>
+                </div>
             </div>
             <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
               <tbody>
@@ -180,13 +186,3 @@
 
   };
 </script>
-
-<style scoped>
-  td {
-    text-align: left;
-  }
-
-  .bg-light-red{
-    background: #ffc4c4;
-  }
-</style>

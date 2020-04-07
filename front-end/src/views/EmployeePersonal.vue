@@ -16,7 +16,9 @@
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <button class="dropdown-item" @click="updateStatus(a.id, 'Operating')">Do an operation</button>
                     <button class="dropdown-item text-success" @click="updateStatus(a.id, 'Discharged')">End the operation</button>
-                    <button class="dropdown-item text-danger" @click="updateStatus(a.id, 'Canceled')">Cancel the appointment</button>
+                    <button type="button" class="dropdown-item text-danger" @click="updateDeleteId(a.id)" data-toggle="modal" data-target="#modal2">
+                      Cancel the appointment
+                    </button>
                   </div>
                 </div>
               </div>
@@ -108,7 +110,31 @@
         </div>
       </div>
     </div>
-    <Model @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></Model>
+    <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    You are performing a dangerous operation. After canceling the order, the order will not be operated
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" @click="updateStatus(deleteId, 'Canceled')"
+                        v-show="showButton">Confirm</button>
+                    <button class="btn btn-danger" type="button" v-show="!showButton" disabled>
+                        <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
@@ -118,7 +144,6 @@
 import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
 import Message from '@/components/Message.vue';
-import Model from "@/components/ConfirmModel.vue";
 
 export default {
   data() {
@@ -131,6 +156,8 @@ export default {
       hintTitle: "",
       hintText: "",
       messageFailure: false,
+      showButton: true,
+      deleteId: -1,
 
       i: 0,
       n: 0,
@@ -147,7 +174,6 @@ export default {
     HeaderIf,
     Footer,
     Message,
-    Model
   },
 
   props: {
@@ -163,6 +189,10 @@ export default {
   },
 
   methods: {
+    updateDeleteId(id){
+      this.deleteId=id;
+    }, 
+
     getHintTitle(data){
       this.hintTitle=data;
     },
@@ -187,6 +217,7 @@ export default {
 
     getAppointments() {
       let _this = this;
+      this.showButton=false;
 
       this.$axios({
           method: 'get',
@@ -200,6 +231,7 @@ export default {
           })
         })
         .then(function (response) {
+          _this.showButton=true;
           if (response.data.code == 200) {
             _this.appointments = response.data.data.appointments.reverse();
             _this.handleAppointments(_this.appointments);
@@ -212,6 +244,7 @@ export default {
           }
         })
         .catch(function (error) {
+          _this.showButton=true;
           console.log(error);
           if (error.response.status == 401) {
             _this.$token.removeToken();

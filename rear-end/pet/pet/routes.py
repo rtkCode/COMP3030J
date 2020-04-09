@@ -604,12 +604,12 @@ def deleteAppointment():
     else:
         return jsonify({"code": 400, "msg": "Failed"})
 
-@app.route ("/appointmentDiscussion",methods=['POST'])
+@app.route ("/discussion",methods=['POST'])
 @auth.login_required
-def appointmentDiscussion():
-    if "id" in request.form.keys() and "post" in request.form.keys():
-        appointmentId = request.form["id"]
-        post = request.form["post"]
+def discussion():
+    if "appointmentId" in request.form.keys() and "content" in request.form.keys():
+        appointmentId = request.form["appointmentId"]
+        post = request.form["content"]
         if g.employee is not None:
             username = g.employee.username
             employee_in_db = Employee.query.filter(Employee.username == username).first()

@@ -159,10 +159,10 @@ def verifyUserId():
 #     user_in_db = User.query.filter(User.email == chosen).first()
 #     if not user_in_db:
 #         return jsonify({'text': 'Email is available',
-# 						'returnvalue': 0})
+#                       'returnvalue': 0})
 #     else:
 #         return jsonify({'text': 'Sorry! Email is already taken',
-# 						'returnvalue': 1})
+#                       'returnvalue': 1})
 
 # @app.route ("/checkphone", methods=['POST']) # line 55-64 inspiration from lecture 15 def check_username(), to check if the 2 password inputs are same
 # def check_phone():
@@ -170,10 +170,10 @@ def verifyUserId():
 #     profile_in_db = Profile.query.filter(Profile.phone == chosen).first()
 #     if not profile_in_db:
 #         return jsonify({'text': 'Phone is available',
-# 						'returnvalue': 0})
+#                       'returnvalue': 0})
 #     else:
 #         return jsonify({'text': 'Sorry! Phone is already taken',
-# 						'returnvalue': 1})
+#                       'returnvalue': 1})
         
 
 @app.route("/register", methods=['POST'])
@@ -190,7 +190,7 @@ def register():
         if employee == "0":
             email_in_db = User.query.filter(User.email == email).first()
             user_in_db = User.query.filter(User.username == username).first()
-            if user_in_db:			
+            if user_in_db:          
                 return jsonify({
                     'code': 400,
                     'msg': 'Username already exists'
@@ -198,7 +198,7 @@ def register():
         else:
             email_in_db = Employee.query.filter(Employee.email == email).first()
             employee_in_db = Employee.query.filter(Employee.username == username).first()
-            if employee_in_db:			
+            if employee_in_db:          
                 return jsonify({
                     'code': 400,
                     'msg': 'Username already exists'
@@ -603,6 +603,50 @@ def deleteAppointment():
 
     else:
         return jsonify({"code": 400, "msg": "Failed"})
+
+@app.route ("/appointmentDiscussion",methods=['POST'])
+@auth.login_required
+def appointmentDiscussion():
+    if "id" in request.form.keys() and "post" in request.form.keys():
+        appointmentId = request.form["id"]
+        post = request.form["post"]
+        if g.employee is not None:
+            username = g.employee.username
+            employee_in_db = Employee.query.filter(Employee.username == username).first()
+            appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
+            if(appointment == None or appointment.employee_id != employee_in_db.id):
+                return jsonify({
+                "code":401,
+                "msg":"Unauthorized"
+            })
+        
+            '''discussion = Discussion(appointment_id=appointmentId, post=post)
+            db.session.add(discussion)
+            db.session.commit()'''
+
+            return jsonify({
+                "code":200,
+                "msg":"Success"
+            })
+
+        if g.user is not None:
+            username_cus = g.user.username
+            user_in_db = User.query.filter(User.username == username_cus).first()
+            appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
+            if(appointment == None or appointment.customer_id != user_in_db.id):
+                return jsonify({
+                "code":401,
+                "msg":"Unauthorized"
+            })
+        
+            '''discussion = Discussion(appointment_id=appointmentId, post=post)
+            db.session.add(discussion)
+            db.session.commit()'''
+
+            return jsonify({
+                "code":200,
+                "msg":"Success"
+            })
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

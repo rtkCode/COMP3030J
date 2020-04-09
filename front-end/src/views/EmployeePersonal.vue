@@ -8,7 +8,7 @@
           <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
             <div v-for="(a,index) in appointments_others" :key="index">
               <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
-                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'']">{{a.status}}</span>
+                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
                 <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
                 <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
                 <div class="dropleft">
@@ -69,7 +69,7 @@
           <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
             <div v-for="(a,index) in appointments_completed" :key="index">
               <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
-                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-danger':'']">{{a.status}}</span>
+                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
                 <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
                 <a class="text-info" data-toggle="collapse" :href="'#a2'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
                 <div class="dropleft">
@@ -332,6 +332,7 @@ export default {
         .catch(function (error) {
           _this.showButton=true;
           console.log(error);
+          if(!error.response==undefined){
           if (error.response.status == 401) {
             _this.$token.removeToken();
             _this.$router.push({
@@ -341,7 +342,7 @@ export default {
                 from: "/dashboard"
               }
             });
-          } else {
+          } }else {
             $('.toast').toast('show');
             console.log(error);
             _this.messageFailure=true;
@@ -383,6 +384,7 @@ export default {
           }
         })
         .catch(function (error) {
+          if(!error.response==undefined){
           if (error.response.status == 401) {
             _this.$token.removeToken();
             _this.$router.push({
@@ -392,7 +394,7 @@ export default {
                 from: "/dashboard"
               }
             });
-          } else {
+          } }else {
             $('.toast').toast('show');
             console.log(error);
             _this.messageFailure=true;
@@ -445,7 +447,7 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log(error);
+          if(!error.response==undefined){
           if (error.response.status == 401) {
             _this.$token.removeToken();
             _this.$router.push({
@@ -455,7 +457,7 @@ export default {
                 from: "/dashboard"
               }
             });
-          } else {
+          } }else {
             $('.toast').toast('show');
             console.log(error);
             _this.messageFailure=true;

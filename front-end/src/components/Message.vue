@@ -28,7 +28,9 @@ export default {
 }
 
 .toast{
-  position: absolute; 
+  position: fixed;
+  z-index: 99;
+  /* position: absolute;  */
   bottom: 10px;
   left: 10px;
   min-width: 300px;

@@ -126,6 +126,7 @@
                     })
                     .catch(function (error) {
                         _this.showButton=true;
+                        if(!error.response==undefined){
                         if (error.response.status == 401) {
                             localStorage.removeItem('t');
                             _this.$router.push({
@@ -135,7 +136,7 @@
                                     from: "/dashboard"
                                 }
                             });
-                        } else {
+                        } }else {
                             console.log(error);
                             _this.$emit("messageFailure", true);
                             _this.$emit("hintTitle", "Unknow error");

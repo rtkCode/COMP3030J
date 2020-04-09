@@ -192,15 +192,17 @@ export default {
         }
       })
       .catch(function (error) {
-        if(error.response.status==401){
-          _this.$token.removeToken();
-          _this.$router.push({
-            name: 'LogIn',
-            query:{ 
-              message: "Login status expired, please log in again",
-              from: "/appointment"
-            }
-          });
+        if(!error.response==undefined){
+          if(error.response.status==401){
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: 'LogIn',
+              query:{ 
+                message: "Login status expired, please log in again",
+                from: "/appointment"
+              }
+            });
+          }
         }else{
           console.log(error);
           _this.showButton=true;

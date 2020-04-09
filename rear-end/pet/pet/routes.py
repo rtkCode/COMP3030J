@@ -620,7 +620,7 @@ def discussion():
                 "msg":"Unauthorized"
             })
         
-            '''discussion = Discussion(appointment_id=appointmentId, post=post)
+            '''discussion = Discussion(appointment_id=appointmentId, post=post, employee=ture)
             db.session.add(discussion)
             db.session.commit()'''
 
@@ -629,7 +629,7 @@ def discussion():
                 "msg":"Success"
             })
 
-        if g.user is not None:
+        elif g.user is not None:
             username_cus = g.user.username
             user_in_db = User.query.filter(User.username == username_cus).first()
             appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
@@ -639,7 +639,7 @@ def discussion():
                 "msg":"Unauthorized"
             })
         
-            '''discussion = Discussion(appointment_id=appointmentId, post=post)
+            '''discussion = Discussion(appointment_id=appointmentId, post=post, employee=false)
             db.session.add(discussion)
             db.session.commit()'''
 
@@ -647,6 +647,86 @@ def discussion():
                 "code":200,
                 "msg":"Success"
             })
+
+        else:    
+            return jsonify({
+                "code": 400,
+                "msg": "Invalid data"
+            })
+
+    else:    
+        return jsonify({
+            "code": 400,
+            "msg": "Invalid data"
+        })
+
+@app.route ("/discussion/<string:appointmentId>",methods=['GET'])
+@auth.login_required
+def getDiscussions(appointmentId):
+    if g.user is not None:
+        username_cus = g.user.username
+        user_in_db = User.query.filter(User.username == username_cus).first()
+        appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
+        if(appointment == None or appointment.customer_id != user_in_db.id):
+            return jsonify({
+            "code":401,
+            "msg":"Unauthorized"
+        })
+
+        discussions = Discussion.query.filter(Discussion.appointment_id == appointmentId).all()
+        discussion_list = []
+        for item in discussions:
+            list_item = {}
+            list_item["id"] = item.id
+            list_item["content"] = item.content
+            if item.employee == "false":
+                list_item["employee"] = False
+            else:
+                list_item["employee"] = True
+            discussion_list.append(list_item)
+
+        return jsonify({
+            "code":200,
+            "msg":"Success",
+            "data":{
+                "discussions":discussion_list
+            }
+        })
+
+    elif g.employee is not None:
+        username = g.employee.username
+        employee_in_db = Employee.query.filter(Employee.username == username).first()
+        if(appointment == None or appointment.employee_id != employee_in_db.id):
+            return jsonify({
+            "code":401,
+            "msg":"Unauthorized"
+        })
+
+        discussions = Discussion.query.filter(Discussion.appointment_id == appointmentId).all()
+        discussion_list = []
+        for item in discussions:
+            list_item = {}
+            list_item["id"] = item.id
+            list_item["content"] = item.content
+            if item.employee == "false":
+                list_item["employee"] = False
+            else:
+                list_item["employee"] = True
+            discussion_list.append(list_item)
+
+        return jsonify({
+            "code":200,
+            "msg":"Success",
+            "data":{
+                "discussions":discussion_list
+            }
+        })
+
+    else:    
+        return jsonify({
+            "code": 400,
+            "msg": "Invalid data"
+        })
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

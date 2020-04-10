@@ -71,3 +71,11 @@ class Appointment(db.Model):
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
     operationTime = db.Column(db.Date, index=True)
     dischargeDate = db.Column(db.Date, index=True)
+
+class Discussion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    appointment_id=db.Column(db.Integer, db.ForeignKey('appointment.id'))
+    content=db.Column(db.String(250), index=True)
+    post_time=db.Column(db.String(50), index=True)
+    employee=db.Column(db.String(10), index=True)
+        

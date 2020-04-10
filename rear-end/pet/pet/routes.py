@@ -1,7 +1,7 @@
 from pet import app
 from flask import request, jsonify,g
 from flask_cors import CORS
-from .models import User, Pet, Transcript, Appointment, Employee
+from .models import User, Pet, Transcript, Appointment, Employee, Discussion
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -620,9 +620,10 @@ def discussion():
                 "msg":"Unauthorized"
             })
         
-            '''discussion = Discussion(appointment_id=appointmentId, post=post, employee=ture)
+            localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            discussion = Discussion(appointment_id=appointmentId, content=post, post_time=localtime, employee="ture")
             db.session.add(discussion)
-            db.session.commit()'''
+            db.session.commit()
 
             return jsonify({
                 "code":200,
@@ -639,9 +640,10 @@ def discussion():
                 "msg":"Unauthorized"
             })
         
-            '''discussion = Discussion(appointment_id=appointmentId, post=post, employee=false)
+            localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            discussion = Discussion(appointment_id=appointmentId, content=post, post_time=localtime, employee="false")
             db.session.add(discussion)
-            db.session.commit()'''
+            db.session.commit()
 
             return jsonify({
                 "code":200,
@@ -673,53 +675,14 @@ def getDiscussions(appointmentId):
             "msg":"Unauthorized"
         })
 
-        discussions = Discussion.query.filter(Discussion.appointment_id == appointmentId).all()
-        discussion_list = []
-        for item in discussions:
-            list_item = {}
-            list_item["id"] = item.id
-            list_item["content"] = item.content
-            if item.employee == "false":
-                list_item["employee"] = False
-            else:
-                list_item["employee"] = True
-            discussion_list.append(list_item)
-
-        return jsonify({
-            "code":200,
-            "msg":"Success",
-            "data":{
-                "discussions":discussion_list
-            }
-        })
-
     elif g.employee is not None:
         username = g.employee.username
         employee_in_db = Employee.query.filter(Employee.username == username).first()
+        appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
         if(appointment == None or appointment.employee_id != employee_in_db.id):
             return jsonify({
             "code":401,
             "msg":"Unauthorized"
-        })
-
-        discussions = Discussion.query.filter(Discussion.appointment_id == appointmentId).all()
-        discussion_list = []
-        for item in discussions:
-            list_item = {}
-            list_item["id"] = item.id
-            list_item["content"] = item.content
-            if item.employee == "false":
-                list_item["employee"] = False
-            else:
-                list_item["employee"] = True
-            discussion_list.append(list_item)
-
-        return jsonify({
-            "code":200,
-            "msg":"Success",
-            "data":{
-                "discussions":discussion_list
-            }
         })
 
     else:    
@@ -727,6 +690,27 @@ def getDiscussions(appointmentId):
             "code": 400,
             "msg": "Invalid data"
         })
+
+    discussions = Discussion.query.filter(Discussion.appointment_id == appointmentId).all()
+    discussion_list = []
+    for item in discussions:
+        list_item = {}
+        list_item["id"] = item.id
+        list_item["content"] = item.content
+        list_item["postTime"] = item.post_time
+        if item.employee == "false":
+            list_item["employee"] = False
+        else:
+            list_item["employee"] = True
+        discussion_list.append(list_item)
+
+    return jsonify({
+        "code":200,
+        "msg":"Success",
+        "data":{
+            "discussions":discussion_list
+        }
+    })
 
 # @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
 # def profile():

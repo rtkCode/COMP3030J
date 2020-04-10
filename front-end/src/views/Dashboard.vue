@@ -7,7 +7,7 @@
       </div>
       <div class="col-12 row d-flex flex-wrap-reverse">
         <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
-          <div v-for="(a,index) in appointments" :key="index">
+          <div v-for="(a,index) in appointments_others" :key="index">
             <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
               <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
@@ -73,6 +73,54 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+      <div class="text-left p-2 ml-5">
+        <a class="text-info" data-toggle="collapse" href="#completedAppointments" role="button" aria-expanded="false" aria-controls="completedAppointments">View completed appointments</a>
+      </div>
+      <div class="collapse" id="completedAppointments">
+        <div class="col-12 row d-flex flex-wrap-reverse">
+          <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
+            <div v-for="(a,index) in appointments_completed" :key="index">
+              <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
+                <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
+                <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
+                <a class="text-info" data-toggle="collapse" :href="'#a2'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
+                <div class="dropleft">
+                    <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>Operation</button>
+                </div>
+              </div>
+              <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a2'+index">
+                <tbody>
+                  <tr>
+                    <td>Status: <span class="text-secondary">{{a.status}}</span></td>
+                    <td>Emergency: <span class="text-secondary">{{a.emergency}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Appointment date: <span class="text-secondary">{{a.date}}</span></td>
+                    <td>Location: <span class="text-secondary">{{a.location}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Syptom: <span class="text-secondary">{{a.symptom}}</span></td>
+                    <td>Type: <span class="text-secondary">{{a.type}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Customer's Notes: <span class="text-secondary">{{a.message}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Operation date: <span class="text-secondary">{{a.operationTime}}</span></td>
+                    <td>Attending doctor: <span class="text-secondary">{{a.attendingDoctor}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Discharge date: <span class="text-secondary">{{a.dischargeDate}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Doctor's Notes: <span class="text-secondary">Undetermined</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -147,6 +195,8 @@
         name: "",
         email: "",
         appointments: [],
+        appointments_completed: [],
+        appointments_others: [],
         hintTitle: "",
         hintText: "",
         messageFailure: false,
@@ -191,6 +241,16 @@
         this.messageFailure=data;
       },
 
+      handleAppointments(appointments){
+        for(let i=0;i<appointments.length;i++){
+          if(appointments[i].status=="Completed"||appointments[i].status=="Canceled"){
+            this.appointments_completed.push(appointments[i]);
+          }else{
+            this.appointments_others.push(appointments[i]);
+          }
+        }
+      },
+
       getProfile() {
         let _this = this;
 
@@ -212,6 +272,7 @@
               _this.email = response.data.data.basic.email;
               _this.name = response.data.data.basic.firstName + " " +response.data.data.basic.lastName;
               _this.appointments = response.data.data.appointments.reverse();
+              _this.handleAppointments(_this.appointments);
             }
             if (response.data.code == 400) {
               $('.toast').toast('show');

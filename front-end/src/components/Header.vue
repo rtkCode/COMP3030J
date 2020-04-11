@@ -41,7 +41,7 @@
         <nav class="navbar-nav m-auto">
           <router-link class="nav-link" to="/appointment" ref="appointment">Appointment</router-link>
           <router-link class="nav-link" to="/">Announcement</router-link>
-          <router-link class="nav-link" to="/">Discussion</router-link>
+          <router-link class="nav-link" to="/discussion">Discussion</router-link>
           <router-link class="nav-link" to="/">About</router-link>
         </nav>
         <!-- login & register links -->

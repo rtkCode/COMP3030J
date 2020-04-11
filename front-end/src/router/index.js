@@ -9,6 +9,7 @@ import Dashboard from '../views/Dashboard.vue'
 import EmployeeLogIn from '../views/EmployeeLogIn.vue'
 import EmployeeDashboard from '../views/EmployeeDashboard.vue'
 import EmployeePersonal from '../views/EmployeePersonal.vue'
+import Discussion from '../views/Discussion.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
@@ -88,6 +89,11 @@ const routes = [
     path: '/employee/personal',
     name: 'EmployeePersonal',
     component: EmployeePersonal
+  },
+  {
+    path: '/discussion',
+    name: 'Discussion',
+    component: Discussion
   }
 ]
 

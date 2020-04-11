@@ -1,7 +1,7 @@
 from pet import app
 from flask import request, jsonify,g
 from flask_cors import CORS
-from .models import User, Pet, Transcript, Appointment, Employee, Discussion
+from .models import User, Pet, Transcript, Appointment, Employee,Discussion
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -13,6 +13,7 @@ import re
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
 from flask_httpauth import HTTPTokenAuth
+from sqlalchemy import or_,and_
 
 
 auth = HTTPTokenAuth()
@@ -159,10 +160,10 @@ def verifyUserId():
 #     user_in_db = User.query.filter(User.email == chosen).first()
 #     if not user_in_db:
 #         return jsonify({'text': 'Email is available',
-#                       'returnvalue': 0})
+# 						'returnvalue': 0})
 #     else:
 #         return jsonify({'text': 'Sorry! Email is already taken',
-#                       'returnvalue': 1})
+# 						'returnvalue': 1})
 
 # @app.route ("/checkphone", methods=['POST']) # line 55-64 inspiration from lecture 15 def check_username(), to check if the 2 password inputs are same
 # def check_phone():
@@ -170,10 +171,10 @@ def verifyUserId():
 #     profile_in_db = Profile.query.filter(Profile.phone == chosen).first()
 #     if not profile_in_db:
 #         return jsonify({'text': 'Phone is available',
-#                       'returnvalue': 0})
+# 						'returnvalue': 0})
 #     else:
 #         return jsonify({'text': 'Sorry! Phone is already taken',
-#                       'returnvalue': 1})
+# 						'returnvalue': 1})
         
 
 @app.route("/register", methods=['POST'])
@@ -190,7 +191,7 @@ def register():
         if employee == "0":
             email_in_db = User.query.filter(User.email == email).first()
             user_in_db = User.query.filter(User.username == username).first()
-            if user_in_db:          
+            if user_in_db:			
                 return jsonify({
                     'code': 400,
                     'msg': 'Username already exists'
@@ -198,7 +199,7 @@ def register():
         else:
             email_in_db = Employee.query.filter(Employee.email == email).first()
             employee_in_db = Employee.query.filter(Employee.username == username).first()
-            if employee_in_db:          
+            if employee_in_db:			
                 return jsonify({
                     'code': 400,
                     'msg': 'Username already exists'
@@ -420,14 +421,89 @@ def updateProfile():
         "code": 400,
         "msg": "Failed"        
     })
-        
-@app.route ("/allAppointments",methods=['GET'])
+
+@app.route("/allAppointments", methods=['GET'])
+@app.route("/allAppointments/<status>/<typ>/<sequence>", methods=['GET'])
 @auth.login_required
-def allAppointments():
-    username = g.employee.username
-    employee_in_db = Employee.query.filter(Employee.username == username).first()
+def allAppointments(status="",typ="",sequence=""):
+    employee_in_db = g.employee
+    
+    request_type = typ
+    request_status = status
+    request_sequence = sequence
     if employee_in_db:
-        appointments = Appointment.query.filter().all()
+        if request_type == "all":
+            if request_status == "all":
+                appointments = Appointment.query.filter().all()
+            elif request_status == "Processing&Operating&Discharged":
+                appointments = Appointment.query.filter(or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged")).all()
+            else:
+                appointments = Appointment.query.filter(Appointment.status == request_status).all()
+        else:
+            if request_status == "all":
+                appointments = Appointment.query.filter(Appointment.pet_type == request_type).all()
+            elif request_status == "Processing&Operating&Discharged":
+                appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type, or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+            else:
+                appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type, Appointment.status == request_status)).all()
+        
+        appointment_list = []
+        for item in appointments:
+            list_item = {}
+            list_item["id"] = item.id
+            list_item["type"] = item.pet_type
+            
+            list_item["symptom"] = item.symptom
+            list_item["date"] = str(item.date)
+            list_item["location"] = item.location
+            list_item["message"] = item.message
+            if item.emergency == "false":
+                list_item["emergency"] = False
+            elif item.emergency == "true":
+                list_item["emergency"] = True
+            if item.status == "":
+                list_item["status"] = "Waiting"
+            else:
+                list_item["status"] = item.status
+            if item.attendingDoctor == "":
+                list_item["attendingDoctor"] = "Undetermined"
+            else:
+                list_item["attendingDoctor"] = item.attendingDoctor
+            list_item["employeeId"] = item.employee_id
+            if str(item.operationTime) == "1970-01-01":
+                list_item["operationTime"] = "Undetermined"
+            else:
+                list_item["operationTime"] = str(item.operationTime)
+            if str(item.dischargeDate) == "1970-01-01":
+                list_item["dischargeDate"] = "Undetermined"
+            else:
+                list_item["dischargeDate"] = str(item.dischargeDate)
+            appointment_list.append(list_item)
+        
+        if request_sequence == "date":
+            appointment_list.sort(key=lambda item:item["date"])
+        return jsonify({
+            "code":200,
+            "msg":"Success",
+            "data":{
+                "appointments":appointment_list
+            }
+        })
+    else:
+        return jsonify({
+            "code":401,
+            "msg":"Unauthorized"
+        })
+
+@app.route ("/employeeAppointments",methods=['GET'])
+@auth.login_required
+def employeeAppointments():
+    username = g.employee.username
+    
+    employee_in_db = Employee.query.filter(Employee.username == username).first()
+     
+    if employee_in_db:
+        appointments = Appointment.query.filter(Appointment.employee_id == employee_in_db.id).all()
         appointment_list = []
         for item in appointments:
             list_item = {}
@@ -462,69 +538,16 @@ def allAppointments():
             appointment_list.append(list_item)
         
         return jsonify({
-            "code": 200,
-            "msg": "Success",
-            "data": {
-                "appointments": appointment_list
-            }
-        })
-    else:
-        return jsonify({
-            "code": 401,
-            "msg": "Unauthorized"
-        })
-
-@app.route ("/employeeAppointments",methods=['GET'])
-@auth.login_required
-def employeeAppointments():
-    username = g.employee.username
-    employee_in_db = Employee.query.filter(Employee.username == username).first()
-     
-    if employee_in_db:
-        appointments = Appointment.query.filter(Appointment.employee_id == employee_in_db.id).all()
-        appointment_list = []
-        for item in appointments:
-            list_item = {}
-            list_item["id"] = item.id
-            list_item["type"] = item.pet_type
-            list_item["symptom"] = item.symptom
-            list_item["date"] = str(item.date)
-            list_item["location"] = item.location
-            list_item["message"] = item.message
-            if item.emergency == "false":
-                list_item["emergency"] = False
-            elif item.emergency == "true":
-                list_item["emergency"] = True
-            if item.status == "":
-                list_item["status"] = "Waiting"
-            else:
-                list_item["status"] = item.status
-            if item.attendingDoctor == "":
-                list_item["attendingDoctor"] = "Undetermined"
-            else:
-                list_item["attendingDoctor"] = item.attendingDoctor
-            list_item["employeeId"] = item.employee_id
-            if str(item.operationTime) == "1970-01-01":
-                list_item["operationTime"] = "Undetermined"
-            else:
-                list_item["operationTime"] = str(item.operationTime)
-            if str(item.dischargeDate) == "1970-01-01":
-                list_item["dischargeDate"] = "Undetermined"
-            else:
-                list_item["dischargeDate"] = str(item.dischargeDate)
-            appointment_list.append(list_item)
-        
-        return jsonify({
             "code":200,
             "msg":"Success",
             "data":{
                 "appointments":appointment_list
             }
         })
-    else:
+    if user_in_db:
         return jsonify({
-            "code": 401,
-            "msg": "Unauthorized"
+            "code":401,
+            "msg":"Unauthorized"
         })
 
 @app.route ("/updateAppointment",methods=['PUT'])
@@ -546,9 +569,8 @@ def updateAppointment():
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
 
-        if(employee):
-            appointment.employee_id = user_in_db.id
-            appointment.attendingDoctor = user_in_db.firstName + " " + user_in_db.lastName
+        appointment.employee_id = user_in_db.id
+        appointment.attendingDoctor = user_in_db.firstName + " " + employee_in_db.lastName
 
         if "status" in request.form:
             status = request.form["status"]
@@ -712,69 +734,8 @@ def getDiscussions(appointmentId):
         }
     })
 
-# @app.route ("/profile", methods=['GET','POST']) # line 78-103 code from lecture 13 def profile(), I changed some columns that need in my database and website. 
-# def profile():
-#     form = ProfileForm()
-#     if not session.get("USERNAME") is None:
-#         if form.validate_on_submit():
-#             user = User.query.filter(User.username == session.get("USERNAME")).first()
-#             stored_profile = Profile.query.filter(Profile.user_id==user.id).first()
-#             if not stored_profile:
-#                 profile = Profile(dob=form.dob.data,phone=form.phone.data,gender=form.gender.data,user_id=user.id)
-#                 db.session.add(profile)
-#             else:
-#                 stored_profile.dob = form.dob.data
-#                 stored_profile.gender = form.gender.data
-#                 stored_profile.phone = form.phone.data
-#             db.session.commit()
-#             return redirect(url_for('personal'))
-#         else:
-#             user = User.query.filter(User.username == session.get("USERNAME")).first()
-#             stored_profile = Profile.query.filter(Profile.user_id==user.id).first()
-#             if not stored_profile:     
-#                 return render_template('profile.html', title='Add your profile',form=form)
-#             else:
-#                 form.dob.data = stored_profile.dob
-#                 form.gender.data = stored_profile.gender
-#                 form.phone.data = stored_profile.phone 
-#                 return render_template('profile.html', title='Modify your profile',form=form)
- 
 
-# @app.route ("/personal", methods=['GET','POST']) # line 110-129 inspiration from lecture 15 def profile() and def post()
-# def personal():
-#     if not session.get("USERNAME") is None:
-#         user = User.query.filter(User.username == session.get("USERNAME")).first()
-#         profile = Profile.query.filter(Profile.user_id == user.id).first()
-#         posts = Post.query.filter(Post.user_id==user.id).all()
-#         if profile is None:
-#             flash("You need to add your profile first!")
-#             return redirect(url_for('profile',user=user))
-#         else:
-#             if profile.gender=='0':
-#                 profile.gender = 'Male'
-#             else:
-#                 profile.gender = 'Female' 
-#             prev_posts = {}
-#             l = len(posts)
-#             for i in range(l):
-#                 str1 = str(posts[i].timestamp).split('.')
-#                 prev_posts[i] = (posts[i].title, str1[0],posts[i].reply,posts[i].id)         
-#             return render_template('personal.html',user=user,profile=profile,prev_posts=prev_posts)       
 
-# @app.route ("/makepost", methods=['GET','POST'])   # line 127-140 code from lecture 13 def makepost()
-# def makepost():
-#     form = PostForm()
-#     if not session.get("USERNAME") is None:
-#         user = User.query.filter(User.username == session.get("USERNAME")).first()
-#         if form.validate_on_submit():
-#             post = Post(title=form.title.data,body=form.body.data,user_id=user.id,good=0,reply=0)
-#             db.session.add(post)
-#             db.session.commit()
-#             flash('Post uploaded and saved')
-#             return redirect(url_for('makepost'))
-#         else:            
-#             prev_posts = Post.query.filter(Post.user_id == user.id).all() 
-#             return render_template('post.html', title='Add your posts',prev_posts=prev_posts,form=form,user=user)
 
 @app.route ("/logout",methods=['POST']) # line 152-155 code from lecture 13 def logout()
 @auth.login_required
@@ -788,66 +749,7 @@ def logout():
         })   
 
 
-# @app.route("/showpost", methods=['GET','POST'])
-# def showpost():
-#     if not session.get("USERNAME") is None:#line 149-150 inspiration from lecture 15 line 99-100. 
-#         user_in_db = User.query.filter(User.username == session.get("USERNAME")).first()
-#         po = Post.query.filter().all()
-#         posts = {}
-#         l = len(po)
-#         for i in range(l):
-#             user = User.query.filter(User.id == po[i].user_id).first()
-#             str1 = str(po[i].timestamp).split('.')
-#             posts[i] = (po[i].title, user.username, str1[0],po[i].reply)
-#         return render_template('showpost.html', user=user_in_db,posts=posts,author=user)
 
-
-# @app.route("/postdetails/<post_title>", methods=['GET','POST'])  # line 161-187 from lecture 15 def post() and def profile()
-# def postdetails(post_title):
-#     form = ReplyForm()
-#     if not session.get("USERNAME") is None:#line 164-166 inspiration from lecture 15 line 99-100.
-#         user_now = User.query.filter(User.username == session.get("USERNAME")).first()
-#         post = Post.query.filter(Post.title == post_title).first()
-#         user = User.query.filter(User.id == post.user_id).first()  #line 167 inspiration from lecture 15 line 99-100.
-#         time = str(post.timestamp).split('.')
-#         b = False
-#         if form.validate_on_submit():#line 170-171 inspiration from lecture 15 line 99-100.
-#             reply = Reply(user_id=user_now.id,post_id=post.id,body=form.body.data)
-#             post.reply = post.reply + 1
-#             db.session.add(reply)
-#             db.session.commit()
-#             return redirect(url_for('postdetails',post_title=post_title))
-#         else:                               
-#             replys = Reply.query.filter(Reply.post_id == post.id).all()
-#             prev_replys = {}
-#             for i in range(len(replys)):
-#                 user_reply = User.query.filter(User.id == replys[i].user_id).first()     
-#                 if user_reply.id==user_now.id:
-#                     b = True
-#                 else:
-#                     b = False          
-#                 str1 = str(replys[i].timestamp).split('.')
-#                 prev_replys[i] = (replys[i].body,user_reply.username,str1[0],replys[i].id,b)
-#             return render_template('postdetail.html', post=post,post_time=time[0],user=user_now,author=user,form=form,prev_replys=prev_replys)
-
-# @app.route("/deletepost/<id>",methods=['GET','POST'])
-# def deletepost(id):
-#     post = Post.query.filter(Post.id == id).first()
-#     reply = Reply.query.filter(Reply.post_id == post.id).all()
-#     for i in range(len(reply)):
-#         db.session.delete(reply[i])
-#     db.session.delete(post)
-#     db.session.commit()
-#     return redirect(url_for('personal'))
-
-# @app.route("/deletereply/<id>",methods=['GET','POST'])
-# def deletereply(id): 
-#     reply = Reply.query.filter(Reply.id == id).first()
-#     post = Post.query.filter(Post.id == reply.post_id).first()
-#     post.reply = post.reply - 1 
-#     db.session.delete(reply)
-#     db.session.commit()
-#     return redirect(url_for('postdetails',post_title=post.title))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

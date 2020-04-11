@@ -28,6 +28,10 @@ td {
 .bg-light-red{
   background: #ffc4c4;
 }
+
+.bg-light-light{
+  background: #e1e5ea;
+}
 </style>
 
 <script>

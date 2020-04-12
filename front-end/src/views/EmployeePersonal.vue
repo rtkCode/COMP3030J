@@ -187,8 +187,6 @@ import calendar from '@/components/Calender.vue';
 export default {
   data() {
     return {
-      url: "http://127.0.0.1:5000/employeeAppointments",
-      updateUrl: "http://127.0.0.1:5000/updateAppointment",
       appointments: [],
       appointments_completed: [],
       appointments_others: [],
@@ -307,7 +305,7 @@ export default {
 
       this.$axios({
           method: 'get',
-          url: this.url,
+          url: this.$global.request("employeeAppointments"),
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             "Authorization": "bearer " + this.$token.getToken(1)
@@ -357,7 +355,7 @@ export default {
 
       this.$axios({
           method: 'put',
-          url: this.updateUrl,
+          url: this.$global.request("updateAppointment"),
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             "Authorization": "bearer " + this.$token.getToken(1)
@@ -424,7 +422,7 @@ export default {
 
       this.$axios({
           method: 'put',
-          url: this.updateUrl,
+          url: this.$global.request("updateAppointment"),
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             "Authorization": "bearer " + this.$token.getToken(1)

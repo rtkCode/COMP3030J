@@ -13,12 +13,14 @@ import Discussion from '../views/Discussion.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
+import global from "../global.js"
 
 Vue.use(VueRouter)
 axios.defaults.headers.post['Content-Type'] = 'Content-Type:application/x-www-form-urlencoded; charset=UTF-8'
 Vue.prototype.$axios = axios
 Vue.prototype.$qs = qs
 Vue.prototype.$token = token
+Vue.prototype.$global = global
 
 const routes = [
   {
@@ -117,7 +119,7 @@ router.beforeEach((to, from, next) => {
       let _token = token;
       axios({
         method: 'post',
-        url: "http://127.0.0.1:5000/verifyToken",
+        url: global.request("verifyToken"),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           "Authorization": "bearer " + token.getToken(1)

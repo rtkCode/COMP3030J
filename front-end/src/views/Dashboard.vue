@@ -189,8 +189,6 @@
   export default {
     data() {
       return {
-        profileUrl: "http://127.0.0.1:5000/profile",
-        updateUrl: "http://127.0.0.1:5000/updateAppointment",
         username: "",
         name: "",
         email: "",
@@ -256,7 +254,7 @@
 
         this.$axios({
             method: 'get',
-            url: this.profileUrl,
+            url: this.$global.request("profile"),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
               "Authorization": "bearer " + this.$token.getToken(1)
@@ -307,7 +305,7 @@
 
         this.$axios({
             method: 'put',
-            url: this.updateUrl,
+            url: this.$global.request("updateAppointment"),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
               "Authorization": "bearer " + this.$token.getToken(1)

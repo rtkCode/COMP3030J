@@ -100,9 +100,8 @@
   export default {
     data() {
       return {
-        baseUrl: "http://127.0.0.1:5000/allAppointments",
+        baseUrl: "",
         url: "",
-        updateUrl: "http://127.0.0.1:5000/updateAppointment",
         appointments: [],
         hintTitle: "",
         hintText: "",
@@ -135,6 +134,7 @@
     },
 
     mounted() {
+      this.baseUrl=this.$global.request("allAppointments");
       this.getAppointments();
     },
 
@@ -223,7 +223,7 @@
 
         this.$axios({
             method: 'put',
-            url: this.updateUrl,
+            url: this.$global.request("updateAppointment"),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
               "Authorization": "bearer " + this.$token.getToken(1)

@@ -68,8 +68,6 @@ import Message from '@/components/Message.vue'
 export default {
   data(){
     return{
-      verifyUserIdUrl: "http://127.0.0.1:5000/verifyUserId",
-      registerUrl: "http://127.0.0.1:5000/register",
       firstName: "",
       lastName: "",
       username: "",
@@ -158,7 +156,7 @@ export default {
 
       this.$axios({
         method: 'post',
-        url: this.registerUrl,
+        url: this.$global.request("register"),
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
         data: this.$qs.stringify({
           firstName: this.firstName,
@@ -211,7 +209,7 @@ export default {
 
       this.$axios({
         method: 'post',
-        url: this.verifyUserIdUrl,
+        url: this.$global.request("verifyUserId"),
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
         data: data,
       })

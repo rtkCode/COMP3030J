@@ -50,8 +50,6 @@
     export default {
         data() {
             return {
-                updateUrl: "http://127.0.0.1:5000/updateProfile",
-                verifyUserIdUrl: "http://127.0.0.1:5000/verifyUserId",
                 firstName: "",
                 lastName: "",
                 email: "",
@@ -95,7 +93,7 @@
                 this.showButton=false;
                 this.$axios({
                         method: 'put',
-                        url: this.updateUrl,
+                        url: this.$global.request("updateProfile"),
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                             "Authorization": "bearer " + this.$token.getToken(1)
@@ -161,7 +159,7 @@
 
                 this.$axios({
                         method: 'post',
-                        url: this.verifyUserIdUrl,
+                        url: this.$global.request("verifyUserId"),
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },

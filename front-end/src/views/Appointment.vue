@@ -66,7 +66,6 @@ import Message from '@/components/Message.vue'
 export default {
   data() {
     return {
-      appointmentUrl: "http://127.0.0.1:5000/appointment",
       dates: [],
       emergency: [false, true],
       pets: ["Dog", "Cat"],
@@ -161,7 +160,7 @@ export default {
       
       this.$axios({
         method: 'post',
-        url: this.appointmentUrl,
+        url: this.$global.request("appointment"),
         headers: {
           'Content-Type':'application/x-www-form-urlencoded',
           "Authorization": "bearer "+this.$token.getToken(1)

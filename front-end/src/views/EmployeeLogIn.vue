@@ -54,7 +54,6 @@
   export default {
     data() {
       return {
-        loginUrl: "http://127.0.0.1:5000/login",
         username: "",
         password: "",
         showButton: true,
@@ -92,7 +91,7 @@
         
         this.$axios({
           method: 'post',
-          url: this.loginUrl,
+          url: this.$global.request("login"),
           headers:{'Content-Type':'application/x-www-form-urlencoded'},
           data: this.$qs.stringify({
             username: this.username,

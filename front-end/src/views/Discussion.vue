@@ -108,8 +108,6 @@ import Footer from "@/components/Footer.vue";
 export default {
   data() {
     return {
-      profileUrl: "http://127.0.0.1:5000/profile",
-      discussionUrl: "http://127.0.0.1:5000/discussion",
       content: "",
       post_time: "",
       employee: "",
@@ -203,7 +201,7 @@ export default {
       this.showButton = false;
       this.$axios({
         method: "post",
-        url: this.discussionUrl,
+        url: this.$global.request("discussion"),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: "bearer " + this.$token.getToken(1)
@@ -257,7 +255,7 @@ export default {
       let _this = this;
       this.$axios({
         method: "get",
-        url: this.profileUrl,
+        url: this.$global.request("profile"),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: "bearer " + this.$token.getToken(1)

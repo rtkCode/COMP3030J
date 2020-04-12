@@ -68,6 +68,10 @@ export default {
   margin-left: 16px;
 }
 
+.hospital-name-sm{
+  display: none;
+}
+
 @media (max-width: 443px) {
   .hospital-name{
     display: none;

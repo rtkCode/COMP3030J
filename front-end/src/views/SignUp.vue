@@ -4,19 +4,19 @@
     <section class="content d-flex flex-column justify-content-center align-items-center">
       <form class="needs-validation" novalidate>
         <div class="form">
-          <div class="row">
+          <div class="col-12 text-left">
             <label for="fn">First name</label>
             <input type="text" class="form-control" id="fn" v-model="firstName" required>
             <small class="invalid">*2-10 letters</small>
           </div>
 
-          <div class="row mt-1">
+          <div class="col-12 text-left mt-1">
             <label for="ln">Last name</label>
             <input type="text" class="form-control" id="ln" v-model="lastName" required>
             <small class="invalid">*2-10 letters</small>
           </div>
 
-          <div class="row mt-1">
+          <div class="col-12 text-left mt-1">
             <label for="validationCustomUsername">Username</label>
             <div class="input-group">
               <div class="input-group-prepend">
@@ -28,25 +28,25 @@
             <small class="error-text">{{usernameErrorText}}</small>
           </div>
 
-          <div class="row mt-1">
+          <div class="col-12 text-left mt-1">
             <label for="ea">Email address</label>
             <input type="email" class="form-control" id="ea" v-model="email" @blur="verifyUserId('email')" required>
             <small class="invalid">*Please input the correct email address</small>
             <small class="error-text">{{emailErrorText}}</small>
           </div>
 
-          <div class="row mt-1">
+          <div class="col-12 text-left mt-1">
             <label for="pw">Password</label>
             <input type="password" class="form-control" id="pw" v-model="password" required>
             <small class="invalid">*6-18</small>
           </div>
 
-          <div class="row mt-1">
+          <div class="col-12 text-left mt-1 mb-2">
             <label for="irc">Internal registration code</label>
             <input type="password" class="form-control" id="irc" v-model="irc" placeholder="Leave it blank if you're a customer">
           </div>
         </div>
-        <small>*By clicking sign up, you agree to the terms and conditions</small>
+        <small class="text-secondary">*By clicking sign up, you agree to the terms and conditions</small>
       </form>
       <button class="btn btn-outline-info mt-2 px-4" type="submit" @click="verifyName()" v-show="showButton">Sign up</button>
       <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>

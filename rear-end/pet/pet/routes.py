@@ -437,6 +437,8 @@ def allAppointments(status="",typ="",sequence=""):
                 appointments = Appointment.query.filter().all()
             elif request_status == "Processing&Operating&Discharged":
                 appointments = Appointment.query.filter(or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged")).all()
+            elif request_status == "Waiting":
+                appointments = Appointment.query.filter(Appointment.status == "").all()
             else:
                 appointments = Appointment.query.filter(Appointment.status == request_status).all()
         else:
@@ -444,6 +446,9 @@ def allAppointments(status="",typ="",sequence=""):
                 appointments = Appointment.query.filter(Appointment.pet_type == request_type).all()
             elif request_status == "Processing&Operating&Discharged":
                 appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type, or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+            elif request_status == "Waiting":
+                appointments = Appointment.query.filter(
+                    and_(Appointment.pet_type == request_type, Appointment.status == "")).all()
             else:
                 appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type, Appointment.status == request_status)).all()
         

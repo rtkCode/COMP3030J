@@ -423,34 +423,107 @@ def updateProfile():
     })
 
 @app.route("/allAppointments", methods=['GET'])
-@app.route("/allAppointments/<status>/<typ>/<sequence>", methods=['GET'])
+@app.route("/allAppointments/<status>/<typ>/<emergency>/<location>/<sequence>", methods=['GET'])
 @auth.login_required
-def allAppointments(status="",typ="",sequence=""):
+def allAppointments(status="",typ="",emergency="",location="",sequence=""):
     employee_in_db = g.employee
     
     request_type = typ
     request_status = status
     request_sequence = sequence
+    
     if employee_in_db:
         if request_type == "all":
             if request_status == "all":
-                appointments = Appointment.query.filter().all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter().all()
+                    else:
+                        appointments = Appointment.query.filter(Appointment.location == location).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(Appointment.emergency == emergency).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency)).all()
+
             elif request_status == "Processing&Operating&Discharged":
-                appointments = Appointment.query.filter(or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged")).all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter(or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged")).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.emergency == emergency,or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency,or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
             elif request_status == "Waiting":
-                appointments = Appointment.query.filter(Appointment.status == "").all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter(Appointment.status == "").all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.status == "")).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.emergency == emergency,Appointment.status == "")).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency,Appointment.status == "")).all()         
             else:
-                appointments = Appointment.query.filter(Appointment.status == request_status).all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter(Appointment.status == request_status).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.status == request_status)).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.emergency == emergency,Appointment.status == request_status)).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency,Appointment.status == request_status)).all()
         else:
             if request_status == "all":
-                appointments = Appointment.query.filter(Appointment.pet_type == request_type).all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter(Appointment.pet_type == request_type).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.pet_type == request_type)).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.emergency == emergency,Appointment.pet_type == request_type)).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency,Appointment.pet_type == request_type)).all()
             elif request_status == "Processing&Operating&Discharged":
-                appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type, or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,Appointment.location == location,or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,Appointment.emergency == emergency,or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,Appointment.location == location,Appointment.emergency == emergency,or_(Appointment.status == "Processing",Appointment.status == "Operating",Appointment.status == "Discharged"))).all()
             elif request_status == "Waiting":
-                appointments = Appointment.query.filter(
-                    and_(Appointment.pet_type == request_type, Appointment.status == "")).all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,Appointment.status == "")).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,Appointment.location == location,Appointment.status == "")).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,Appointment.emergency == emergency,Appointment.status == "")).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type,Appointment.location == location,Appointment.emergency == emergency,Appointment.status == "")).all()
             else:
-                appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type, Appointment.status == request_status)).all()
+                if emergency == "all":
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.pet_type == request_type, Appointment.status == request_status)).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.pet_type == request_type,Appointment.status == request_status)).all()
+                else:
+                    if location == "all":
+                        appointments = Appointment.query.filter(and_(Appointment.emergency == emergency,Appointment.pet_type == request_type,Appointment.status == request_status)).all()
+                    else:
+                        appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency,Appointment.pet_type == request_type,Appointment.status == request_status)).all()
         
         appointment_list = []
         for item in appointments:
@@ -574,8 +647,18 @@ def updateAppointment():
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
 
-        appointment.employee_id = user_in_db.id
-        appointment.attendingDoctor = user_in_db.firstName + " " + employee_in_db.lastName
+        if employee:
+            appointment.employee_id = user_in_db.id
+            appointment.attendingDoctor = user_in_db.firstName + " " + user_in_db.lastName
+
+        else:
+            if "status" in request.form :
+                status = request.form["status"]
+                if (status == "Canceled" and appointment.status == "") or (status == "Completed" and appointment.status == "Discharged"):
+                    appointment.status = status
+                    db.session.commit()
+                    return jsonify({"code": 200, "msg": "Success"})
+            return jsonify({"code": 400, "msg": "Failed"})
 
         if "status" in request.form:
             status = request.form["status"]

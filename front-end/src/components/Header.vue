@@ -21,7 +21,8 @@
             p-id="5180"
           />
         </svg>
-        {{hospital}}
+        <span class="hospital-name ml-1">{{hospital}}</span>
+        <span class="hospital-name-sm ml-1"><small>{{hospital}}</small></span>
       </router-link>
       <!-- nav collapse button -->
       <button
@@ -65,5 +66,22 @@ export default {
 <style scoped>
 .navbar-brand {
   margin-left: 16px;
+}
+
+@media (max-width: 443px) {
+  .hospital-name{
+    display: none;
+  }
+
+  .hospital-name-sm{
+    display: inline;
+  }
+}
+
+@media (max-width: 384px) {
+  .navbar-brand{
+    margin-left: 3px;
+    margin-right: 3px;
+  }
 }
 </style>

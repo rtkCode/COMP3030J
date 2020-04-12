@@ -2,7 +2,7 @@
   <footer>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded p-2 d-flex justify-content-between">
         <div class="m-auto m-sm-auto m-md-0">
-            <small><p class="mb-0 ml-2 my-2">&copy; {{hospital}} {{thisYear}} All Rights Reserved</p></small>
+            <small><p class="m-2">&copy; {{hospital}} <span class="year">{{thisYear}}</span> All Rights Reserved</p></small>
             <!-- <small><router-link class="text-secondary ml-2" to="/tac">Terms and Conditions</router-link></small> -->
         </div>
         <div class="m-auto m-sm-auto m-md-0">
@@ -42,3 +42,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+@media (max-width: 380px) {
+  .year{
+    display: none;
+  }
+}
+</style>

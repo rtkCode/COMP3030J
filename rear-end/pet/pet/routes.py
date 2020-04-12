@@ -422,7 +422,7 @@ def updateProfile():
         "msg": "Failed"        
     })
 
-@app.route("/allAppointments", methods=['GET'])
+
 @app.route("/allAppointments/<status>/<typ>/<emergency>/<location>/<sequence>", methods=['GET'])
 @auth.login_required
 def allAppointments(status="",typ="",emergency="",location="",sequence=""):
@@ -479,6 +479,8 @@ def allAppointments(status="",typ="",emergency="",location="",sequence=""):
                         appointments = Appointment.query.filter(and_(Appointment.emergency == emergency,Appointment.status == request_status)).all()
                     else:
                         appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency,Appointment.status == request_status)).all()
+        elif request_type == "":
+            appointments = Appointment.query.filter().all()
         else:
             if request_status == "all":
                 if emergency == "all":
@@ -525,6 +527,7 @@ def allAppointments(status="",typ="",emergency="",location="",sequence=""):
                     else:
                         appointments = Appointment.query.filter(and_(Appointment.location == location,Appointment.emergency == emergency,Appointment.pet_type == request_type,Appointment.status == request_status)).all()
         
+
         appointment_list = []
         for item in appointments:
             list_item = {}

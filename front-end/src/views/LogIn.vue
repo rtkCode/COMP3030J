@@ -10,7 +10,7 @@
       <form class="needs-validation" novalidate>
         <div class="form">
 
-          <div class="row">
+          <div class="text-left input-div">
             <label for="validationCustomUsername">Username</label>
             <div class="input-group">
               <div class="input-group-prepend">
@@ -21,7 +21,7 @@
             <small class="invalid">*Username format invalid</small>
           </div>
 
-          <div class="row mt-1">
+          <div class="text-left input-div mt-1">
             <label for="pw">Password</label>
             <input type="password" v-model="password" class="form-control" id="pw" required />
             <small class="invalid">*Password format invalid</small>
@@ -145,10 +145,3 @@ export default {
 
 };
 </script>
-
-
-<style scoped>
-.invalid{
-  color: #FF4136;
-}
-</style> 

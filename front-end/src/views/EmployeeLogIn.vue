@@ -2,7 +2,6 @@
   <div>
     <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <section class="content d-flex flex-column justify-content-center align-items-center">
-      <h1 class="mb-3">Employee login</h1>
 
       <div class="alert alert-info alert-dismissible fade show" role="alert">
         {{alertMessage}}
@@ -12,8 +11,9 @@
       </div>
       
       <form class="needs-validation" novalidate>
+        <div class="h3 mb-3 mr-4 text-left">Employee login</div>
         <div class="form">
-          <div class="row">
+          <div class="input-div text-left">
             <label for="validationCustomUsername">Username</label>
             <div class="input-group">
               <div class="input-group-prepend">
@@ -25,7 +25,7 @@
             <small class="invalid">*Username format invalid</small>
           </div>
 
-          <div class="row mt-1">
+          <div class="input-div text-left mt-1">
             <label for="pw">Password</label>
             <input type="password" v-model="password" class="form-control" id="pw" required />
             <small class="invalid">*Password format invalid</small>
@@ -157,10 +157,3 @@
     }
   };
 </script>
-
-
-<style scoped>
-  .invalid {
-    color: #ff4136;
-  }
-</style>

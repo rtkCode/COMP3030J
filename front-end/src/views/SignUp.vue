@@ -232,10 +232,6 @@ export default {
 </script>
 
 <style scoped>
-.invalid{
-  color: #FF4136;
-}
-
 .error-text{
   color: #FF4136;
 }

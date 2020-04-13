@@ -32,6 +32,14 @@ td {
 .bg-light-light{
   background: #e1e5ea;
 }
+
+.invalid{
+  color: #FF4136;
+}
+
+.input-div{
+  min-width: 304px;
+}
 </style>
 
 <script>

@@ -651,8 +651,10 @@ def updateAppointment():
         appointment = Appointment.query.filter(Appointment.id == id).first()
 
         if employee:
-            appointment.employee_id = user_in_db.id
+            if appointment.employee_id is None:
+                appointment.employee_id = user_in_db.id
             appointment.attendingDoctor = user_in_db.firstName + " " + user_in_db.lastName
+            
 
         else:
             if "status" in request.form :
@@ -663,9 +665,14 @@ def updateAppointment():
                     return jsonify({"code": 200, "msg": "Success"})
             return jsonify({"code": 400, "msg": "Failed"})
 
+        if appointment.employee_id != user_in_db.id:
+            return jsonify({"code": 400, "msg": "Failed"})
+
         if "status" in request.form:
             status = request.form["status"]
-            appointment.status = status
+            if status == "Processing" or status == "Operating" or status == "" or status == "Discharged" or status == "Canceled" or status == "Completed":
+                if (status == "Processing" and appointment.status == "") and (appointment.status!="Canceled" or appointment.status!="Completed"):
+                    appointment.status = status
 
         if "operationTime" in request.form: 
             operationTime = request.form["operationTime"]

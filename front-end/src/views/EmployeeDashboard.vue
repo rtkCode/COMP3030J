@@ -28,6 +28,20 @@
         </div>
 
         <div class="px-4 py-2 mx-2">
+          <h5 class="text-left ml-1">Location</h5>
+          <div class="d-flex flex-wrap">
+            <button class="btn btn-outline-info button-c p-2 m-2" v-for="(sta,index) in locations" :key="index" :class="{checked:index==l}" @click="changeLocation(index)">{{sta}}</button>
+          </div>
+        </div>
+
+        <div class="px-4 py-2 mx-2">
+          <h5 class="text-left ml-1">Emergency</h5>
+          <div class="d-flex flex-wrap">
+            <button class="btn btn-outline-info button-c p-2 m-2" v-for="(sta,index) in emergencys" :key="index" :class="{checked:index==e}" @click="changeEmergency(index)">{{sta}}</button>
+          </div>
+        </div>
+
+        <div class="px-4 py-2 mx-2">
           <h5 class="text-left ml-1">Order</h5>
           <div class="d-flex flex-wrap">
             <button class="btn btn-outline-info button-c p-2 m-2" v-for="(sta,index) in orders" :key="index" :class="{checked:index==o}" @click="changeOrder(index)">{{sta}}</button>
@@ -115,6 +129,12 @@
         o: 0,
         selectedOrder: "normal",
         orders: ["normal", "by date"],
+        selectedEmergency: "all",
+        emergencys: ["all", "true", "false"],
+        e: 0,
+        selectedLocation: "all",
+        locations: ["all", "Shanghai", "Chengdu", "Beijing"],
+        l: 0,
       };
     },
 
@@ -140,7 +160,7 @@
 
     methods: {
       updateTheUrl(){
-        this.url=this.baseUrl+"/"+this.selectedStatus+"/"+this.selectedPet+"/"+this.selectedOrder;
+        this.url=this.baseUrl+"/"+this.selectedStatus+"/"+this.selectedPet+"/"+this.selectedEmergency+"/"+this.selectedLocation+"/"+this.selectedOrder;
       },
 
       changeStatus(index) {
@@ -156,6 +176,16 @@
       changeOrder(index) {
         this.o = index;
         this.selectedOrder=this.orders[index];
+      },
+
+      changeLocation(index) {
+        this.l = index;
+        this.selectedLocation=this.locations[index];
+      },
+
+      changeEmergency(index) {
+        this.e = index;
+        this.selectedEmergency=this.emergencys[index];
       },
 
       getHintTitle(data){

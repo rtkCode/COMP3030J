@@ -12,7 +12,7 @@
 
       <div class="p-4">
         <h4 class="text-left">Pet Types</h4>
-        <div>
+        <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(pet,index) in pets" :key="index" :class="{checked:index==p}" @click="changePet(index)">{{pet}}</button>
         </div>
       </div>
@@ -38,17 +38,26 @@
         </div>
       </div>
 
-      <div class="p-4" style="width: 80%">
+      <div class="p-4" style="width: 100%">
         <h4 class="text-left">Leave a message</h4>
-        <div class="d-flex">
-          <textarea class="form-control flex-grow-1  p-2 m-2" rows="4" v-model="message" placeholder="Anything that you want to tell or remind the doctor, or any other symptoms of the pet"></textarea>
-          <button @click="makeAppointment()" v-show="showButton" class="btn btn-info align-self-center ml-5">
+        <div class="d-flex flex-wrap">
+          <textarea class="form-control flex-grow-1  p-2 m-2 mr-4" rows="4" v-model="message" placeholder="Anything that you want to tell or remind the doctor, or any other symptoms of the pet"></textarea>
+          <button @click="makeAppointment()" v-show="showButton" class="btn btn-info align-self-center ml-1 submit-arrow-lg">
             <svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </button>
 
-          <button class="btn btn-info align-self-center ml-5" v-show="!showButton" style="width: 205px; height: 126px;" disabled>
+          <button class="btn btn-success button-c p-2 m-2 submit-arrow" @click="makeAppointment()" v-show="showButton">Submit</button>
+          <button class="btn btn-success button-c p-2 m-2 submit-arrow" v-show="!showButton">
+            <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
+            Loading...
+          </button>
+
+          <button class="btn btn-info align-self-center ml-1 submit-arrow-lg" v-show="!showButton" style="width: 205px; height: 126px;" disabled>
             <span class="spinner-border" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></span>
           </button>
+
+          <button class="btn btn-outline-danger button-c p-2 m-2 submit-arrow">Cancel</button>
+
         </div>
       </div>
     </div>
@@ -239,5 +248,23 @@ svg{
 svg:hover{
   cursor: pointer;
   width: 130px;
+}
+
+textarea{
+  min-width: 220px;
+  max-width: 410px;
+}
+
+.submit-arrow{
+  display: none;
+}
+
+@media (max-width: 633px) {
+  .submit-arrow-lg{
+    display: none;
+  }
+  .submit-arrow{
+    display: block;
+  }
 }
 </style>

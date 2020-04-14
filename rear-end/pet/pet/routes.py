@@ -1,6 +1,7 @@
 from pet import app
 from flask import request, jsonify,g
 from flask_cors import CORS
+from .key import key
 from .models import User, Pet, Transcript, Appointment, Employee,Discussion
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -197,6 +198,13 @@ def register():
                     'msg': 'Username already exists'
                 })
         else:
+            if not "IRC" in request.form:
+                return jsonify({
+                    'code': 400,
+                    'msg': 'Lack of data'
+                })
+            IRC = request.form["IRC"]
+            
             email_in_db = Employee.query.filter(Employee.email == email).first()
             employee_in_db = Employee.query.filter(Employee.username == username).first()
             if employee_in_db:			
@@ -249,9 +257,15 @@ def register():
         passw_hash = generate_password_hash(password)
         # print(employee)
         if employee == "1":
-            emp = Employee(username=username, email=email, password_hash=passw_hash,firstName=firstName, lastName=lastName, others=others)
-            db.session.add(emp)
-            db.session.commit()
+            if IRC == key:
+                emp = Employee(username=username, email=email, password_hash=passw_hash,firstName=firstName, lastName=lastName, others=others)
+                db.session.add(emp)
+                db.session.commit()
+            else:
+                return jsonify({
+                    'code': 400,
+                    'msg': 'register failed'
+                 })
         else:
             user = User(username=username, email=email, password_hash=passw_hash, firstName=firstName, lastName=lastName, others=others)
             db.session.add(user)

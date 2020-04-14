@@ -90,7 +90,10 @@ const routes = [
   {
     path: '/employee/personal',
     name: 'EmployeePersonal',
-    component: EmployeePersonal
+    component: EmployeePersonal,
+    meta: {
+      requireAuth: true
+    },
   },
   {
     path: '/discussion',
@@ -141,14 +144,25 @@ router.beforeEach((to, from, next) => {
         .catch(function (error) {
           if (error.response) {
             if (error.response.status == 401) {
-              token.removeToken();
-              next({
-                name: 'LogIn',
-                query: {
-                  message: "Login status expired, please log in again",
-                  from: to.path
-                }
-              });
+              if(_token.isEmployee()=="true"){
+                token.removeToken();
+                next({
+                  name: 'EmployeeLogIn',
+                  query: {
+                    message: "Login status expired, please log in again",
+                    from: to.path
+                  }
+                });
+              }else if(_token.isEmployee()=="false"){
+                token.removeToken();
+                next({
+                  name: 'LogIn',
+                  query: {
+                    message: "Login status expired, please log in again",
+                    from: to.path
+                  }
+                });
+              }
             } else {
               console.log(error);
             }

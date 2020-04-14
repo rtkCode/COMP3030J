@@ -2,15 +2,15 @@
   <div>
     <HeaderIf :hospital="hospital"></HeaderIf>
     <div class="content">
-      <div class="title text-left text-info mt-4 p-2 ml-5">
-        <h3>Welcome {{username}}, you have {{appointments.length}} appointments.</h3>
+      <div class="title text-left text-info mt-4 p-2 mx-3 mx-sm-5">
+        <h3>Welcome {{username}}, you have <strong>{{appointments.length}}</strong> appointments.</h3>
       </div>
       <div class="col-12 row d-flex flex-wrap-reverse">
-        <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
+        <div class="col-lg-8 col-md-12 col-sm-12 col-12 mx-2 p-0">
           <div v-for="(a,index) in appointments_others" :key="index">
-            <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
+            <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
-              <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
+              <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
               <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
               <div class="dropleft">
                   <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation</button>
@@ -52,7 +52,7 @@
           </div>
           <!-- <a href class="mt-2 text-info">View more appointments</a> -->
         </div>
-        <div class="col ml-4">
+        <div class="col mx-4 px-0 px-sm-4">
           <div class="card card-body">
             <table class="table table-borderless">
               <tbody>
@@ -76,16 +76,16 @@
           </div>
         </div>
       </div>
-      <div class="text-left p-2 ml-5">
+      <div class="text-left p-2 mx-3 mx-sm-5">
         <a class="text-info" data-toggle="collapse" href="#completedAppointments" role="button" aria-expanded="false" aria-controls="completedAppointments">View completed appointments</a>
       </div>
       <div class="collapse" id="completedAppointments">
         <div class="col-12 row d-flex flex-wrap-reverse">
-          <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
+          <div class="col-lg-8 col-md-12 col-sm-12 col-12 mx-2 p-0">
             <div v-for="(a,index) in appointments_completed" :key="index">
-              <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
+              <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
                 <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
-                <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
+                <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
                 <a class="text-info" data-toggle="collapse" :href="'#a2'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
                 <div class="dropleft">
                     <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>Operation</button>
@@ -355,3 +355,11 @@
 
   };
 </script>
+
+<style scoped>
+@media (max-width: 420px) {
+  .hide-sm{
+    display: none;
+  }
+}
+</style>

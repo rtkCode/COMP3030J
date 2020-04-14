@@ -165,7 +165,8 @@ export default {
           email: this.email,
           password: this.password,
           others: "test",
-          employee: this.employee
+          employee: this.employee,
+          IRC: this.irc
         })
       })
       .then(function (response) {

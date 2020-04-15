@@ -4,10 +4,10 @@
     <section class="content d-flex justify-content-center align-items-center" :style="bg">
       <div class>
         <h1 class="seven24">7<small>x</small>24</h1>
-        <h1>Take care of your pet in all aspects</h1>
+        <h1>{{$t("string.hospital.AD")}}</h1>
         <button
           class="btn btn-outline-info rounded-pill p-3 mt-2"
-          @click="appointment">start appointment now</button>
+          @click="appointment">{{$t("string.hospital.SAN")}}</button>
       </div>
     </section>
     <Footer :hospital="hospital"></Footer>

@@ -4,12 +4,12 @@
 
     <div class="content d-flex justify-content-center align-items-center">
       <div class="confirm">
-        <h2>Confirm</h2>
+        <h2>{{$t("string.user.confirm")}}</h2>
         <hr />
-        <h4>You have already logged in, you need to log out before logging in as different user.</h4>
+        <h4 class="m-4">{{$t("string.user.logoutHint")}}</h4>
         <hr />
-        <button class="btn btn-outline-info rounded-pill mt-2 px-4" @click="logout" id="logout">log out</button>
-        <button class="btn btn-outline-info rounded-pill mt-2 px-4" @click="cancel" id="cancel">cancel</button>
+        <button class="btn btn-outline-danger rounded-pill mt-2 px-4" @click="logout" id="logout">{{$t("string.user.logout")}}</button>
+        <button class="btn btn-outline-info rounded-pill mt-2 px-4" @click="cancel" id="cancel">{{$t("string.user.cancel")}}</button>
       </div>
     </div>
 
@@ -39,7 +39,7 @@ export default {
   },
 
   created() {
-    document.title = `Log Out | ${this.hospital}`;
+    document.title = this.$t("string.user.logout") + " | " + this.hospital;
   },
 
   methods: {

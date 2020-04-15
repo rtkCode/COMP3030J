@@ -40,15 +40,15 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- links -->
         <nav class="navbar-nav m-auto">
-          <router-link class="nav-link" to="/appointment" ref="appointment">Appointment</router-link>
-          <router-link class="nav-link" to="/">Announcement</router-link>
-          <router-link class="nav-link" to="/discussion">Discussion</router-link>
-          <router-link class="nav-link" to="/">About</router-link>
+          <router-link class="nav-link" to="/appointment" ref="appointment">{{$t("string.hospital.appointment")}}</router-link>
+          <router-link class="nav-link" to="/announcement">{{$t("string.hospital.announcement")}}</router-link>
+          <router-link class="nav-link" to="/discussion">{{$t("string.hospital.discussion")}}</router-link>
+          <router-link class="nav-link" to="/about">{{$t("string.hospital.about")}}</router-link>
         </nav>
         <!-- login & register links -->
         <nav class="navbar-nav ml-auto">
-          <router-link class="nav-link" to="/login">Log in</router-link>
-          <router-link class="nav-link" to="/register">Sign up</router-link>
+          <router-link class="nav-link" to="/login">{{$t("string.user.login")}}</router-link>
+          <router-link class="nav-link" to="/register">{{$t("string.user.register")}}</router-link>
         </nav>
       </div>
     </nav>

@@ -11,10 +11,10 @@
       </div>
       
       <form class="needs-validation" novalidate>
-        <div class="h3 mb-3 mr-4 text-left">Employee login</div>
+        <div class="h3 mb-3 mr-4 text-left">{{$t("string.user.employeeLogin")}}</div>
         <div class="form">
           <div class="input-div text-left">
-            <label for="validationCustomUsername">Username</label>
+            <label for="validationCustomUsername">{{$t("string.user.username")}}</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
@@ -22,21 +22,20 @@
               <input type="text" v-model="username" class="form-control" id="validationCustomUsername"
                 aria-describedby="inputGroupPrepend" required />
             </div>
-            <small class="invalid">*Username format invalid</small>
+            <small class="invalid">{{$t("string.user.usernameInvalid")}}</small>
           </div>
 
           <div class="input-div text-left mt-1">
-            <label for="pw">Password</label>
+            <label for="pw">{{$t("string.user.password")}}</label>
             <input type="password" v-model="password" class="form-control" id="pw" required />
-            <small class="invalid">*Password format invalid</small>
+            <small class="invalid">{{$t("string.user.passwordInvalid")}}</small>
           </div>
         </div>
       </form>
-      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">Log
-        in</button>
+      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">{{$t("string.user.login")}}</button>
       <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-        Loading...
+        {{$t("string.user.loading")}}
       </button>
     </section>
     <Message :hintTitle="loginHintTitle" :hintText="loginHintText" :failure="messageFailure"></Message>
@@ -81,7 +80,7 @@
     },
 
     created() {
-      document.title = `Employee Login | ${this.hospital}`;
+      document.title = this.$t("string.user.employeeLogin") + " | " + this.hospital;
     },
 
     methods: {
@@ -104,8 +103,8 @@
           if(response.data.code==400){
             $('.toast').toast('show');
             _this.messageFailure=true;
-            _this.loginHintTitle="Login failed";
-            _this.loginHintText=response.data.msg+", please correct and resubmit";
+            _this.loginHintTitle=_this.$t("string.user.loginFailed");
+            _this.loginHintText=response.data.msg+_this.$t("string.user.loginFailedHint");
           }else if(response.data.code==200){
             let token=response.data.token;
             _this.$token.storeEmployeeToken(token);
@@ -122,8 +121,8 @@
           _this.showButton=true;
           _this.messageFailure=true;
           $('.toast').toast('show');
-          _this.loginHintTitle="Unknown error";
-          _this.loginHintText="unknown error, please check console log";
+          _this.loginHintTitle=_this.$t("string.user.unknowError");
+          _this.loginHintText=_this.$t("string.user.unknowErrorHint");
         });
       },
 

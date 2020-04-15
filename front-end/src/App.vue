@@ -47,7 +47,7 @@ td {
 export default {
   data(){
     return{
-      hospital: "Healing Paws Veterinary Hospital",
+      hospital: this.$t("string.hospital.name"),
     }
   }
 }

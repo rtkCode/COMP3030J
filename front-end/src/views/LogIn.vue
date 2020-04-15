@@ -11,27 +11,27 @@
         <div class="form">
 
           <div class="text-left input-div">
-            <label for="validationCustomUsername">Username</label>
+            <label for="validationCustomUsername">{{$t("string.user.username")}}</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
               </div>
               <input type="text" v-model="username" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required />
             </div>
-            <small class="invalid">*Username format invalid</small>
+            <small class="invalid">{{$t("string.user.usernameInvalid")}}</small>
           </div>
 
           <div class="text-left input-div mt-1">
-            <label for="pw">Password</label>
+            <label for="pw">{{$t("string.user.password")}}</label>
             <input type="password" v-model="password" class="form-control" id="pw" required />
-            <small class="invalid">*Password format invalid</small>
+            <small class="invalid">{{$t("string.user.passwordInvalid")}}</small>
           </div>
         </div>
       </form>
-      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">Log in</button>
+      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">{{$t("string.user.login")}}</button>
       <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-        Loading...
+        {{$t("string.user.loading")}}
       </button>
     </section>
     <Message :hintTitle="loginHintTitle" :hintText="loginHintText" :failure="messageFailure"></Message>
@@ -76,7 +76,7 @@ export default {
   },
 
   created() {
-    document.title = `Log In | ${this.hospital}`;
+    document.title = this.$t("string.user.login") + " | " + this.hospital;
   },
 
   methods: {
@@ -119,8 +119,8 @@ export default {
         if(response.data.code==400){
           $('.toast').toast('show');
           _this.messageFailure=true;
-          _this.loginHintTitle="Login failed";
-          _this.loginHintText=response.data.msg+", please correct and resubmit";
+          _this.loginHintTitle=_this.$t("string.user.loginFailed");
+          _this.loginHintText=response.data.msg+_this.$t("string.user.loginFailedHint");
         }else if(response.data.code==200){
           let token=response.data.token;
           _this.$token.storeToken(token);
@@ -136,8 +136,8 @@ export default {
         _this.showButton=true;
         _this.messageFailure=true;
         $('.toast').toast('show');
-        _this.loginHintTitle="Unknown error";
-        _this.loginHintText="unknown error, please check console log";
+        _this.loginHintTitle=_this.$t("string.user.unknowError");
+        _this.loginHintText=_this.$t("string.user.unknowErrorHint");
       });
     },
 

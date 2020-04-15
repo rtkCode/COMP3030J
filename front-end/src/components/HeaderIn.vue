@@ -40,10 +40,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- links -->
         <nav class="navbar-nav m-auto">
-          <router-link class="nav-link" to="/appointment" ref="appointment">Appointment</router-link>
-          <router-link class="nav-link" to="/announcement">Announcement</router-link>
-          <router-link class="nav-link" to="/discussion">Discussion</router-link>
-          <router-link class="nav-link" to="/about">About</router-link>
+          <router-link class="nav-link" to="/appointment" ref="appointment">{{$t("string.hospital.appointment")}}</router-link>
+          <router-link class="nav-link" to="/announcement">{{$t("string.hospital.announcement")}}</router-link>
+          <router-link class="nav-link" to="/discussion">{{$t("string.hospital.discussion")}}</router-link>
+          <router-link class="nav-link" to="/about">{{$t("string.hospital.about")}}</router-link>
         </nav>
         <!-- login & register links -->
         <nav class="navbar-nav ml-auto">
@@ -56,9 +56,9 @@
             aria-expanded="false"
             aria-controls="collapse"
           ></span>
-          <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
+          <router-link class="nav-link" to="/dashboard">{{$t("string.user.dashboard")}}</router-link>
           <div class="collapse multi-collapse" id="collapse">
-            <router-link class="nav-link text-danger" to="/logout">logout</router-link>
+            <router-link class="nav-link text-danger" to="/logout">{{$t("string.user.logout")}}</router-link>
           </div>
         </nav>
       </div>

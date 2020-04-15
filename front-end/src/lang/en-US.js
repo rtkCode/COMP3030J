@@ -1,0 +1,41 @@
+export const string = {
+    hospital: {
+        name: "Healing Paws Veterinary Hospital",
+        ARR: "All Rights Reserved",
+        appointment: "Appointemnt",
+        announcement: "Announcement",
+        about: "About",
+        discussion: "Discussion",
+        seven24: "7x24",
+        AD: "Take care of your pet in all aspects",
+        SAN: "start appointment now",
+        language: "language",
+    },
+
+    user: {
+        login: "Log in",
+        register: "Sign up",
+        employeeLogin: "Employee login",
+        username: "Username",
+        password: "Password",
+        firstmane: "First name",
+        lsatname: "Last name",
+        email: "Email address",
+        IRC: "Internal registration code",
+        LIBIYRAC: "Leave it blank if you're a customer",
+        registerHint: "*By clicking sign up, you agree to the terms and conditions",
+        logout: "logout",
+        dashboard: "Dashboard",
+        loading: "Loading...",
+        usernameInvalid: "*Username format invalid",
+        passwordInvalid: "*Password format invalid",
+        loginFailed: "Login failed",
+        loginFailedHint: ", please correct and resubmit",
+        unknowError: "Unknown error",
+        unknowErrorHint: "unknown error, please check console log",
+
+        confirm: "Confirm",
+        cancel: "Cancel",
+        logoutHint: "You have already logged in, you need to log out before logging in as different user.",
+    }
+}

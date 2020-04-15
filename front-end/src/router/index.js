@@ -98,7 +98,10 @@ const routes = [
   {
     path: '/discussion',
     name: 'Discussion',
-    component: Discussion
+    component: Discussion,
+    meta: {
+      requireAuth: true
+    },
   }
 ]
 
@@ -144,7 +147,7 @@ router.beforeEach((to, from, next) => {
         .catch(function (error) {
           if (error.response) {
             if (error.response.status == 401) {
-              if(_token.isEmployee()=="true"){
+              if (_token.isEmployee() == "true") {
                 token.removeToken();
                 next({
                   name: 'EmployeeLogIn',
@@ -153,7 +156,7 @@ router.beforeEach((to, from, next) => {
                     from: to.path
                   }
                 });
-              }else if(_token.isEmployee()=="false"){
+              } else if (_token.isEmployee() == "false") {
                 token.removeToken();
                 next({
                   name: 'LogIn',

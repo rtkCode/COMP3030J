@@ -2,19 +2,19 @@
   <div>
     <HeaderIf :hospital="hospital"></HeaderIf>
     <div class="content">
-      <div class="title text-left text-info mt-4 p-2 ml-5">
+      <div class="title text-left text-info mt-4 p-2 ml-5">
         <h3>Select an appointment to contact with the attending doctor:</h3>
       </div>
-      <div class="col-12 row d-flex flex-wrap-reverse">
-        <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
+      <div class="col-12 row d-flex flex-wrap-reverse">
+        <div class="col-lg-8 col-md-12 col-sm-12 col ml-2">
           <div v-for="(a,index) in appointments" :key="index">
             <div
-              class="d-flex justify-content-around m-4 p-1 rounded-lg"
-              :class="{'bg-light-red': a.emergency}"
+              class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg"
+              :class="{'bg-light-red':a.emergency}"
             >
               <span
-                class="d-flex align-items-center badge badge-pill"
-                :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']"
+                class="d-flex align-items-center badge badge-pill"
+                :class="[a.status=='Waiting'?'badge-secondary':'',a.status=='Processing'?'badge-info':'',a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']"
               >{{a.status}}</span>
               <span>{{a.id}}</span>
               <span>{{a.type}}</span>
@@ -31,16 +31,16 @@
 
               <div class="dropleft">
                 <button
-                  class="btn btn-outline-info badge p-1"
+                  class="btn btn-outline-info badge p-1"
                   type="button"
-                  id="dropdownMenuButton"
+                  id="selectButton"
                   @click="getAppointmentId(a.id)"
                 >Select</button>
               </div>
             </div>
 
             <table
-              class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11"
+              class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11"
               :id="'a'+index"
             >
               <tbody>
@@ -106,9 +106,9 @@
             </table>
           </div>
         </div>
-        <div class="col ml-4">
-          <div class="card card-body">
-            <table class="table table-borderless">
+        <div class="col ml-4">
+          <div class="card card-body">
+            <table class="table table-borderless">
               <tbody>
                 <tr>
                   <td>
@@ -124,7 +124,7 @@
                 <tr>
                   <td>
                     <a
-                      class="text-info text-left"
+                      class="text-info text-left"
                       href="#exampleModal"
                       data-toggle="modal"
                     >Edit your information</a>
@@ -141,19 +141,19 @@
         </div>
       </div>
       <div id="selected" style="display:none">
-        <div class="title text-left text-info mt-4 ml-5">
+        <div class="title text-left text-info mt-4 ml-5">
           <h3>
             You have selected No.
             <strong>{{appointmentId}}</strong> appointment.
           </h3>
         </div>
-        <div class="col-12 row mt-4 p-2 ml-5">
+        <div class="col-12 row mt-4 p-2 ml-5">
           <div
-            class="col-lg-8 col-md-12 col-sm-12 col"
-            style="height:200px;overflow-y:auto;border:1px solid #d1d0d0;border-style:solid solid none solid;"
+            class="col-lg-8 col-md-12 col-sm-12 col"
+            style="height:200px;overflow-y:auto;border:1px solid #d1d0d0; border-style:solid solid none solid;"
           >
             <div v-for="(i,index) in discussions" :key="index">
-              <table class="table table-borderless p-1 col-12" style="table-layout:fixed;">
+              <table class="table table-borderless p-1 col-12" style="table-layout:fixed;">
                 <tr>
                   <td style="word-wrap:break-word;">
                     <h5 style="text-align:left">
@@ -169,13 +169,13 @@
             </div>
           </div>
 
-          <table class="table table-bordered col-8">
+          <table class="table table-bordered col-8">
             <tr>
               <td>
                 Please enter your message:
                 <small class="invalid">*Please enter something</small>
                 <div style="float:right">
-                  <button class="btn btn-outline-info badge p-2" type="button" @click="send">Send</button>
+                  <button class="btn btn-outline-info badge p-2" type="button" @click="send">Send</button>
                 </div>
               </td>
             </tr>

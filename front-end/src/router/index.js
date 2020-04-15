@@ -113,7 +113,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    if (token == null) {
+    if (token.getToken(0) == null) {
       next({
         name: 'LogIn',
         query: {

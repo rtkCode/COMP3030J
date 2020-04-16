@@ -4,59 +4,59 @@
     <div class="d-flex align-items-start flex-column content">
 
       <div class="p-4">
-        <h4 class="text-left">Appointment Date</h4>
+        <h4 class="text-left">{{$t("string.appointment.date")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(date,index) in dates" :key="index" :class="{checked:index==d}" @click="changeDate(index)">{{date.date}}, {{date.day}}</button>
         </div>
       </div>
 
       <div class="p-4">
-        <h4 class="text-left">Pet Types</h4>
+        <h4 class="text-left">{{$t("string.appointment.type")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(pet,index) in pets" :key="index" :class="{checked:index==p}" @click="changePet(index)">{{pet}}</button>
         </div>
       </div>
       
       <div class="p-4">
-        <h4 class="text-left">Hospital Location</h4>
+        <h4 class="text-left">{{$t("string.appointment.location")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(city,index) in cities" :key="index" :class="{checked:index==c}" @click="changeCity(index)">{{city}}</button>
         </div>
       </div>
 
       <div class="p-4">
-        <h4 class="text-left">Where do you think your pet is going wrong</h4>
+        <h4 class="text-left">{{$t("string.appointment.symptom")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(type,index) in types" :key="index" :class="{checked:index==t}" @click="changeType(index)">{{type}}</button>
         </div>
       </div>
 
       <div class="p-4">
-        <h4 class="text-left">Whether your pet has an emergency</h4>
+        <h4 class="text-left">{{$t("string.appointment.emergency")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(i,index) in emergency" :key="index" :class="{checked:index==e}" @click="changeEmergency(index)">{{i}}</button>
         </div>
       </div>
 
       <div class="p-4" style="width: 100%">
-        <h4 class="text-left">Leave a message</h4>
+        <h4 class="text-left">{{$t("string.appointment.message")}}</h4>
         <div class="d-flex flex-wrap">
-          <textarea class="form-control flex-grow-1  p-2 m-2 mr-4" rows="4" v-model="message" placeholder="Anything that you want to tell or remind the doctor, or any other symptoms of the pet"></textarea>
+          <textarea class="form-control flex-grow-1  p-2 m-2 mr-4" rows="4" v-model="message" :placeholder="$t('string.appointment.messageHint')"></textarea>
           <button @click="makeAppointment()" v-show="showButton" class="btn btn-info align-self-center ml-1 submit-arrow-lg">
             <svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </button>
 
-          <button class="btn btn-success button-c p-2 m-2 submit-arrow" @click="makeAppointment()" v-show="showButton">Submit</button>
+          <button class="btn btn-success button-c p-2 m-2 submit-arrow" @click="makeAppointment()" v-show="showButton">{{$t("string.button.submit")}}</button>
           <button class="btn btn-success button-c p-2 m-2 submit-arrow" v-show="!showButton">
             <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-            Loading...
+            {{$t("string.user.loading")}}
           </button>
 
           <button class="btn btn-info align-self-center ml-1 submit-arrow-lg" v-show="!showButton" style="width: 205px; height: 126px;" disabled>
             <span class="spinner-border" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></span>
           </button>
 
-          <button class="btn btn-outline-danger button-c p-2 m-2 submit-arrow">Cancel</button>
+          <button class="btn btn-outline-danger button-c p-2 m-2 submit-arrow">{{$t("string.button.cancel")}}</button>
 
         </div>
       </div>
@@ -119,7 +119,7 @@ export default {
   },
 
   created() {
-    document.title = `Appointment | ${this.hospital}`;
+    document.title = this.$t("string.hospital.appointment") + " | " + this.hospital;
   },
 
   methods: {
@@ -190,13 +190,13 @@ export default {
         if(response.data.code==200){
           _this.messageFailure=false;
           _this.hintTitle=response.data.msg;
-          _this.hintText="The doctor has received your appointment";
+          _this.hintText=_this.$t("string.appointment.appointmentSuccess");
           setTimeout(_this.route,2000);
         }
         if(response.data.code==400){
           _this.messageFailure=true;
-          _this.hintTitle="Failed to make appointment";
-          _this.hintText=response.data.msg+", please correct and resubmit";
+          _this.hintTitle=_this.$t("string.appointment.appointmentFailed");
+          _this.hintText=response.data.msg+_this.$t("string.user.loginFailedHint");
         }
       })
       .catch(function (error) {
@@ -206,7 +206,7 @@ export default {
             _this.$router.push({
               name: 'LogIn',
               query:{ 
-                message: "Login status expired, please log in again",
+                message: _this.$t("string.appointment.loginExpired"),
                 from: "/appointment"
               }
             });
@@ -216,8 +216,8 @@ export default {
           _this.showButton=true;
           _this.messageFailure=true;
           $('.toast').toast('show');
-          _this.hintTitle="Failed to make appointment";
-          _this.hintText="unknown error, please check console log";
+          _this.hintTitle=_this.$t("string.appointment.appointmentFailed");
+          _this.hintText=_this.$t("string.user.unknowErrorHint");
         }
       });
     },

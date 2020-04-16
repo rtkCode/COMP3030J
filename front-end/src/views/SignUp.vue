@@ -5,19 +5,19 @@
       <form class="needs-validation" novalidate>
         <div class="form">
           <div class="col-12 text-left">
-            <label for="fn">First name</label>
+            <label for="fn">{{$t("string.user.firstname")}}</label>
             <input type="text" class="form-control" id="fn" v-model="firstName" required>
             <small class="invalid">*2-10 letters</small>
           </div>
 
           <div class="col-12 text-left mt-1">
-            <label for="ln">Last name</label>
+            <label for="ln">{{$t("string.user.lastname")}}</label>
             <input type="text" class="form-control" id="ln" v-model="lastName" required>
             <small class="invalid">*2-10 letters</small>
           </div>
 
           <div class="col-12 text-left mt-1">
-            <label for="validationCustomUsername">Username</label>
+            <label for="validationCustomUsername">{{$t("string.user.username")}}</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
@@ -29,29 +29,29 @@
           </div>
 
           <div class="col-12 text-left mt-1">
-            <label for="ea">Email address</label>
+            <label for="ea">{{$t("string.user.email")}}</label>
             <input type="email" class="form-control" id="ea" v-model="email" @blur="verifyUserId('email')" required>
             <small class="invalid">*Please input the correct email address</small>
             <small class="error-text">{{emailErrorText}}</small>
           </div>
 
           <div class="col-12 text-left mt-1">
-            <label for="pw">Password</label>
+            <label for="pw">{{$t("string.user.password")}}</label>
             <input type="password" class="form-control" id="pw" v-model="password" required>
             <small class="invalid">*6-18</small>
           </div>
 
           <div class="col-12 text-left mt-1 mb-2">
-            <label for="irc">Internal registration code</label>
-            <input type="password" class="form-control" id="irc" v-model="irc" placeholder="Leave it blank if you're a customer">
+            <label for="irc">{{$t("string.user.IRC")}}</label>
+            <input type="password" class="form-control" id="irc" v-model="irc" :placeholder="$t('string.user.LIBIYRAC')">
           </div>
         </div>
-        <small class="text-secondary">*By clicking sign up, you agree to the terms and conditions</small>
+        <small class="text-secondary">{{$t("string.user.registerHint")}}</small>
       </form>
-      <button class="btn btn-outline-info mt-2 px-4" type="submit" @click="verifyName()" v-show="showButton">Sign up</button>
+      <button class="btn btn-outline-info mt-2 px-4" type="submit" @click="verifyName()" v-show="showButton">{{$t("string.user.register")}}</button>
       <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-        Loading...
+        {{$t("string.user.loading")}}
       </button>
     </section>
     <Message :hintTitle="registerHintTitle" :hintText="registerHintText" :failure="messageFailure"></Message>
@@ -99,7 +99,7 @@ export default {
   },
 
   created(){
-    document.title = `Sign up | ${this.hospital}`;
+    document.title = this.$t("string.user.register") + " | " + this.hospital;
   },
 
   methods:{
@@ -174,14 +174,14 @@ export default {
         $('.toast').toast('show');
         if(response.data.code==200){
           _this.messageFailure=false;
-          _this.registerHintTitle="Register success";
-          _this.registerHintText=response.data.msg+", it will jump to the login page in 2 seconds";
+          _this.registerHintTitle=_this.$t("string.user.registerSuccess");
+          _this.registerHintText=response.data.msg+_this.$t("string.user.registerSuccessHint");
           setTimeout(_this.routeToLogin,2000);
         }
         if(response.data.code==400){
           _this.messageFailure=true;
-          _this.registerHintTitle="Register failed";
-          _this.registerHintText=response.data.msg+", please correct and resubmit";
+          _this.registerHintTitle=_this.$t("string.user.registerFailed");
+          _this.registerHintText=response.data.msg+_this.$t("string.user.loginFailedHint");
         }
       })
       .catch(function (error) {
@@ -189,8 +189,8 @@ export default {
         _this.showButton=true;
         $('.toast').toast('show');
         _this.messageFailure=true;
-        _this.registerHintTitle="Unknown error";
-        _this.registerHintText="unknown error, please check console log";
+        _this.registerHintTitle=_this.$t("string.user.unknowError");
+        _this.registerHintText=_this.$t("string.user.unknowErrorHint");
       });
     },
 

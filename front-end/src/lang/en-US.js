@@ -18,8 +18,8 @@ export const string = {
         employeeLogin: "Employee login",
         username: "Username",
         password: "Password",
-        firstmane: "First name",
-        lsatname: "Last name",
+        firstname: "First name",
+        lastname: "Last name",
         email: "Email address",
         IRC: "Internal registration code",
         LIBIYRAC: "Leave it blank if you're a customer",
@@ -37,5 +37,27 @@ export const string = {
         confirm: "Confirm",
         cancel: "Cancel",
         logoutHint: "You have already logged in, you need to log out before logging in as different user.",
+
+        registerFailed: "Register failed",
+        registerSuccess: "Register success",
+        registerSuccessHint: ", it will jump to the login page in 2 seconds",
+    },
+
+    appointment: {
+        date: "Appointment Date",
+        type: "Pet Types",
+        location: "Hospital Location",
+        symptom: "Where do you think your pet is going wrong",
+        emergency: "Whether your pet has an emergency",
+        message: "Leave a message",
+        messageHint: "Anything that you want to tell or remind the doctor, or any other symptoms of the pet",
+        appointmentFailed: "Failed to make appointment",
+        appointmentSuccess: "The doctor has received your appointment",
+        loginExpired: "Login status expired, please log in again",
+    },
+
+    button: {
+        submit: "Submit",
+        cancel: "Cancel"
     }
 }

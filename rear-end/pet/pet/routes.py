@@ -14,7 +14,8 @@ import re
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
 from flask_httpauth import HTTPTokenAuth
-from sqlalchemy import or_,and_
+from sqlalchemy import or_, and_
+from .mail import MailSender
 
 
 auth = HTTPTokenAuth()
@@ -271,6 +272,10 @@ def register():
             db.session.add(user)
             db.session.commit()
         
+        # MailSender
+        mail_sender = MailSender(email)
+        mail_sender.send_register_mail()
+
         return jsonify({
             'code': 200,
             'msg': 'register success'

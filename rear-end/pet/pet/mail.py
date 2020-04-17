@@ -16,8 +16,10 @@ from email.header import Header
         {"code": 400, "msg": "xxxx"}
 """
 
+
 class MailSender:
     def __init__(self, to_address):
+        # do not change these
         self.__to_address = to_address
         self.__mail_host = "smtp.qq.com"
         self.__mail_user = "dog.cat.hospital@foxmail.com"
@@ -27,11 +29,11 @@ class MailSender:
         self.__receivers.append(self.__to_address)
 
     def send_register_mail(self):
-        message = MIMEText('You have successfully registered Dog&cat Hospital', 'plain', 'utf-8')
-        message['From'] = Header("Dog&cat Hospital", 'utf-8')
+        message = MIMEText('You have successfully registered Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
 
-        subject = 'Dog&cat Hospital register'
+        subject = 'Healing Paws Veterinary Hospital Register'
         message['Subject'] = Header(subject, 'utf-8')
 
         try:
@@ -44,3 +46,26 @@ class MailSender:
         except smtplib.SMTPException:
             traceback.print_exc()
             return {"code": 400, "msg": "Fail to sent register mail"}
+
+    def send_appointment_mail(self):
+        # send when make appointment successfully
+        return {}
+
+    def send_operation_mail(self):
+        # send when operation date settled or do operation
+        return {}
+
+    def send_discharge_mail(self):
+        # send when discharge date settled or discharge
+        return {}
+
+    def send_finish_mail(self):
+        # send when appointment finished
+        return {}
+
+    def send_finish_mail(self):
+        # send when appointment canceled
+        return {}
+
+    def send_discussion_mail(self):
+        return {}

@@ -62,6 +62,35 @@ export const string = {
 
     button: {
         submit: "提交",
-        cancel: "取消"
+        cancel: "取消",
+        confirm: "确认",
+        close: "关闭",
+        save: "保存",
+    },
+
+    dashboard: {
+        welcome: "欢迎",
+        youHave: "，你有",
+        appointments: "个预约",
+        VCA: "查看已经完成的预约",
+        details: "详细",
+        operation: "更多操作",
+        RYP: "取回此宠物",
+        CTA: "取消此预约",
+        status: "订单状态: ",
+        emergency: "急诊信息: ",
+        appointmentDate: "预约日期: ",
+        location: "预约地点: ",
+        symptom: "宠物症状: ",
+        type: "宠物种类: ",
+        customerNote: "客户留言: ",
+        operationDate: "手术日期: ",
+        attendingDoctor: "主治医师: ",
+        dischargeDate: "出院日期: ",
+        username: "用户名: ",
+        email: "电子邮件: ",
+        EYI: "修改个人信息",
+        RHint: "如果您已经取回您的宠物，点击确认，这个订单将会被标记为完成",
+        CHint: "您正在执行危险的操作。取消后，医生将不会处理您的订单。",
     }
 }

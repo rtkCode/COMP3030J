@@ -58,6 +58,35 @@ export const string = {
 
     button: {
         submit: "Submit",
-        cancel: "Cancel"
+        cancel: "Cancel",
+        confirm: "Confirm",
+        close: "Close",
+        save: "save",
+    },
+
+    dashboard: {
+        welcome: "Welcome",
+        youHave: ", you have",
+        appointments: "appointments",
+        VCA: "View completed appointments",
+        details: "Details",
+        operation: "Operation",
+        RYP: "Retrieve your pet",
+        CTA: "Cancel the appointment",
+        status: "Status: ",
+        emergency: "Emergency: ",
+        appointmentDate: "Appointment date: ",
+        location: "Location: ",
+        symptom: "Symptom: ",
+        type: "Type: ",
+        customerNote: "Customer's Notes: ",
+        operationDate: "Operation date: ",
+        attendingDoctor: "Attending doctor: ",
+        dischargeDate: "Discharge date: ",
+        username: "Username: ",
+        email: "Email: ",
+        EYI: "Edit your information",
+        RHint: "Click confirm if you have picked your pet.",
+        CHint: "You are performing a dangerous operation. After canceling, the doctor will not process your order.",
     }
 }

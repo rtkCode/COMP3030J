@@ -4,7 +4,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit information</h5>
+                    <h5 class="modal-title">{{$t("string.dashboard.EYI")}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -12,19 +12,19 @@
                 <div class="modal-body">
                     <div class="form p-3">
                         <div class="row">
-                            <label for="fn">First name</label>
+                            <label for="fn">{{$t("string.user.firstname")}}</label>
                             <input type="text" class="form-control" id="fn" v-model="firstName" required>
                             <small class="invalid text-danger">*2-10 letters</small>
                         </div>
 
                         <div class="row mt-1">
-                            <label for="ln">Last name</label>
+                            <label for="ln">{{$t("string.user.lastname")}}</label>
                             <input type="text" class="form-control" id="ln" v-model="lastName" required>
                             <small class="invalid text-danger">*2-10 letters</small>
                         </div>
 
                         <div class="row mt-1">
-                            <label for="ea">Email address</label>
+                            <label for="ea">{{$t("string.user.email")}}</label>
                             <input type="email" class="form-control" id="ea" v-model="email"
                                 @blur="verifyUserId('email')" required>
                             <small class="invalid text-danger">*Please input the correct email address</small>
@@ -33,12 +33,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t("string.button.close")}}</button>
                     <button type="button" class="btn btn-primary" @click="verifyName()"
-                        v-show="showButton">Save</button>
+                        v-show="showButton">{{$t("string.button.save")}}</button>
                     <button class="btn btn-primary" type="button" v-show="!showButton" disabled>
                         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-                        Loading...
+                        {{$t("string.user.loading")}}
                     </button>
                 </div>
             </div>
@@ -130,14 +130,14 @@
                             _this.$router.push({
                                 name: 'LogIn',
                                 query: {
-                                    message: "Login status expired, please log in again",
+                                    message: _this.$t("string.appointment.loginExpired"),
                                     from: "/dashboard"
                                 }
                             });
                         } }else {
                             console.log(error);
                             _this.$emit("messageFailure", true);
-                            _this.$emit("hintTitle", "Unknow error");
+                            _this.$emit("hintTitle", _this.$t("string.user.unknowError"));
                             _this.$emit("hintText", response.data.msg);
                         }
                     });

@@ -3,7 +3,7 @@
     <HeaderIf :hospital="hospital"></HeaderIf>
     <div class="content">
       <div class="title text-left text-info mt-4 p-2 mx-3 mx-sm-5">
-        <h3>Welcome {{username}}, you have <strong>{{appointments.length}}</strong> appointments.</h3>
+        <h3>{{$t("string.dashboard.welcome")}} {{name}}{{$t("string.dashboard.youHave")}} <strong>{{appointments.length}}</strong> {{$t("string.dashboard.appointments")}}.</h3>
       </div>
       <div class="col-12 row d-flex flex-wrap-reverse">
         <div class="col-lg-8 col-md-12 col-sm-12 col-12 mx-2 p-0">
@@ -11,46 +11,42 @@
             <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
               <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
-              <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
+              <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">{{$t("string.dashboard.details")}}</a>
               <div class="dropleft">
-                  <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation</button>
+                  <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$t("string.dashboard.operation")}}</button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <button class="dropdown-item text-success" @click="updateCancelId(a.id)" data-toggle="modal" data-target="#modal5">Retrieve your pet</button>
-                    <button class="dropdown-item text-danger" @click="updateCancelId(a.id)" data-toggle="modal" data-target="#modal4">Cancel the appointment</button>
+                    <button class="dropdown-item text-success" @click="updateCancelId(a.id)" data-toggle="modal" data-target="#modal5">{{$t("string.dashboard.RYP")}}</button>
+                    <button class="dropdown-item text-danger" @click="updateCancelId(a.id)" data-toggle="modal" data-target="#modal4">{{$t("string.dashboard.CTA")}}</button>
                   </div>
                 </div>
             </div>
             <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
               <tbody>
                 <tr>
-                  <td>Status: <span class="text-secondary">{{a.status}}</span></td>
-                  <td>Emergency: <span class="text-secondary">{{a.emergency}}</span></td>
+                  <td>{{$t("string.dashboard.status")}}<span class="text-secondary">{{a.status}}</span></td>
+                  <td>{{$t("string.dashboard.emergency")}}<span class="text-secondary">{{a.emergency}}</span></td>
                 </tr>
                 <tr>
-                  <td>Appointment date: <span class="text-secondary">{{a.date}}</span></td>
-                  <td>Location: <span class="text-secondary">{{a.location}}</span></td>
+                  <td>{{$t("string.dashboard.appointmentDate")}}<span class="text-secondary">{{a.date}}</span></td>
+                  <td>{{$t("string.dashboard.location")}}<span class="text-secondary">{{a.location}}</span></td>
                 </tr>
                 <tr>
-                  <td>Syptom: <span class="text-secondary">{{a.symptom}}</span></td>
-                  <td>Type: <span class="text-secondary">{{a.type}}</span></td>
+                  <td>{{$t("string.dashboard.symptom")}}<span class="text-secondary">{{a.symptom}}</span></td>
+                  <td>{{$t("string.dashboard.type")}}<span class="text-secondary">{{a.type}}</span></td>
                 </tr>
                 <tr>
-                  <td>Customer's Notes: <span class="text-secondary">{{a.message}}</span></td>
+                  <td>{{$t("string.dashboard.customerNote")}}<span class="text-secondary">{{a.message}}</span></td>
                 </tr>
                 <tr>
-                  <td>Operation date: <span class="text-secondary">{{a.operationTime}}</span></td>
-                  <td>Attending doctor: <span class="text-secondary">{{a.attendingDoctor}}</span></td>
+                  <td>{{$t("string.dashboard.operationDate")}}<span class="text-secondary">{{a.operationTime}}</span></td>
+                  <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
                 </tr>
                 <tr>
-                  <td>Discharge date: <span class="text-secondary">{{a.dischargeDate}}</span></td>
-                </tr>
-                <tr>
-                  <td>Doctor's Notes: <span class="text-secondary">Undetermined</span></td>
+                  <td>{{$t("string.dashboard.dischargeDate")}}<span class="text-secondary">{{a.dischargeDate}}</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <!-- <a href class="mt-2 text-info">View more appointments</a> -->
         </div>
         <div class="col mx-4 px-0 px-sm-4">
           <div class="card card-body">
@@ -62,13 +58,13 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Username: {{username}}</td>
+                  <td>{{$t("string.dashboard.username")}}{{username}}</td>
                 </tr>
                 <tr>
-                  <td>Email: {{email}}</td>
+                  <td>{{$t("string.dashboard.email")}}{{email}}</td>
                 </tr>
                 <tr>
-                  <td><a class="text-info text-left" href="#exampleModal" data-toggle="modal">Edit your information</a></td>
+                  <td><a class="text-info text-left" href="#exampleModal" data-toggle="modal">{{$t("string.dashboard.EYI")}}</a></td>
                   <Model @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></Model>
                 </tr>
               </tbody>
@@ -77,7 +73,7 @@
         </div>
       </div>
       <div class="text-left p-2 mx-3 mx-sm-5">
-        <a class="text-info" data-toggle="collapse" href="#completedAppointments" role="button" aria-expanded="false" aria-controls="completedAppointments">View completed appointments</a>
+        <a class="text-info" data-toggle="collapse" href="#completedAppointments" role="button" aria-expanded="false" aria-controls="completedAppointments">{{$t("string.dashboard.VCA")}}</a>
       </div>
       <div class="collapse" id="completedAppointments">
         <div class="col-12 row d-flex flex-wrap-reverse">
@@ -86,37 +82,34 @@
               <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
                 <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
                 <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
-                <a class="text-info" data-toggle="collapse" :href="'#a2'+index" role="button" aria-expanded="false" :aria-controls="index">Details</a>
+                <a class="text-info" data-toggle="collapse" :href="'#a2'+index" role="button" aria-expanded="false" :aria-controls="index">{{$t("string.dashboard.details")}}</a>
                 <div class="dropleft">
-                    <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>Operation</button>
+                    <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>{{$t("string.dashboard.operation")}}</button>
                 </div>
               </div>
               <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a2'+index">
                 <tbody>
                   <tr>
-                    <td>Status: <span class="text-secondary">{{a.status}}</span></td>
-                    <td>Emergency: <span class="text-secondary">{{a.emergency}}</span></td>
+                    <td>{{$t("string.dashboard.status")}}<span class="text-secondary">{{a.status}}</span></td>
+                    <td>{{$t("string.dashboard.emergency")}}<span class="text-secondary">{{a.emergency}}</span></td>
                   </tr>
                   <tr>
-                    <td>Appointment date: <span class="text-secondary">{{a.date}}</span></td>
-                    <td>Location: <span class="text-secondary">{{a.location}}</span></td>
+                    <td>{{$t("string.dashboard.appointmentDate")}}<span class="text-secondary">{{a.date}}</span></td>
+                    <td>{{$t("string.dashboard.location")}}<span class="text-secondary">{{a.location}}</span></td>
                   </tr>
                   <tr>
-                    <td>Syptom: <span class="text-secondary">{{a.symptom}}</span></td>
-                    <td>Type: <span class="text-secondary">{{a.type}}</span></td>
+                    <td>{{$t("string.dashboard.symptom")}}<span class="text-secondary">{{a.symptom}}</span></td>
+                    <td>{{$t("string.dashboard.type")}}<span class="text-secondary">{{a.type}}</span></td>
                   </tr>
                   <tr>
-                    <td>Customer's Notes: <span class="text-secondary">{{a.message}}</span></td>
+                    <td>{{$t("string.dashboard.customerNote")}}<span class="text-secondary">{{a.message}}</span></td>
                   </tr>
                   <tr>
-                    <td>Operation date: <span class="text-secondary">{{a.operationTime}}</span></td>
-                    <td>Attending doctor: <span class="text-secondary">{{a.attendingDoctor}}</span></td>
+                    <td>{{$t("string.dashboard.operationDate")}}<span class="text-secondary">{{a.operationTime}}</span></td>
+                    <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
                   </tr>
                   <tr>
-                    <td>Discharge date: <span class="text-secondary">{{a.dischargeDate}}</span></td>
-                  </tr>
-                  <tr>
-                    <td>Doctor's Notes: <span class="text-secondary">Undetermined</span></td>
+                    <td>{{$t("string.dashboard.dischargeDate")}}<span class="text-secondary">{{a.dischargeDate}}</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -130,21 +123,22 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Confirm</h5>
+                    <h5 class="modal-title">{{$t("string.button.confirm")}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    You are performing a dangerous operation. After canceling, the doctor will not process your order.
+                    {{$t("string.dashboard.CHint")}} 
+                    <span class="badge badge-pill badge-secondary">Waiting</span> only
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t("string.button.close")}}</button>
                     <button type="button" class="btn btn-danger" @click="updateStatus(deleteId, 'Canceled')"
-                        v-show="showButton">Confirm</button>
+                        v-show="showButton">{{$t("string.button.confirm")}}</button>
                     <button class="btn btn-danger" type="button" v-show="!showButton" disabled>
                         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-                        Loading...
+                        {{$t("string.user.loading")}}
                     </button>
                 </div>
             </div>
@@ -155,21 +149,22 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Confirm</h5>
+                    <h5 class="modal-title">{{$t("string.button.confirm")}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    Click confirm if you have picked your pet.
+                    {{$t("string.dashboard.RHint")}} 
+                    <span class="badge badge-pill badge-success">Discharged</span> only
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t("string.button.close")}}</button>
                     <button type="button" class="btn btn-success" @click="updateStatus(deleteId, 'Completed')"
-                        v-show="showButton">Confirm</button>
+                        v-show="showButton">{{$t("string.button.confirm")}}</button>
                     <button class="btn btn-success" type="button" v-show="!showButton" disabled>
                         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-                        Loading...
+                        {{$t("string.user.loading")}}
                     </button>
                 </div>
             </div>
@@ -275,8 +270,8 @@
             if (response.data.code == 400) {
               $('.toast').toast('show');
               _this.messageFailure=true;
-              _this.hintTitle="Unknow error";
-              _this.hintText=response.data.msg+", please refresh the page";
+              _this.hintTitle=_this.$t("string.user.unknowError");
+              _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
             }
           })
           .catch(function (error) {
@@ -286,7 +281,7 @@
               _this.$router.push({
                 name: 'LogIn',
                 query: {
-                  message: "Login status expired, please log in again",
+                  message: _this.$t("string.appointment.loginExpired"),
                   from: "/dashboard"
                 }
               });
@@ -294,8 +289,8 @@
               $('.toast').toast('show');
               console.log(error);
               _this.messageFailure=true;
-              _this.hintTitle="Unknow error";
-              _this.hintText=response.data.msg+", please check console log";
+              _this.hintTitle=_this.$t("string.user.unknowError");
+              _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
             }
           });
       },
@@ -338,7 +333,7 @@
               _this.$router.push({
                 name: 'LogIn',
                 query: {
-                  message: "Login status expired, please log in again",
+                  message: _this.$t("string.appointment.loginExpired"),
                   from: "/dashboard"
                 }
               });
@@ -346,8 +341,8 @@
               $('.toast').toast('show');
               console.log(error);
               _this.messageFailure=true;
-              _this.hintTitle="Unknow error";
-              _this.hintText=response.data.msg+", please check console log";
+              _this.hintTitle=_this.$t("string.user.unknowError");
+              _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
             }
           });
       },

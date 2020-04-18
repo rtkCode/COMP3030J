@@ -470,12 +470,6 @@
 </script>
 
 <style scoped>
-@media (max-width: 420px) {
-  .hide-sm{
-    display: none;
-  }
-}
-
 .bubble{
   max-width: 70%; 
   width: fit-content;

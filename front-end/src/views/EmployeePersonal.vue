@@ -5,11 +5,11 @@
       <div>
         <h5 class="text-left p-4">{{$t("string.personal.AP")}} ({{appointments_others.length}}):</h5>
         <div class="col-12 row d-flex flex-wrap-reverse">
-          <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
+          <div class="col-lg-12 col-md-12 col-sm-12 col mx-2 p-0">
             <div v-for="(a,index) in appointments_others" :key="index">
-              <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
+              <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
                 <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
-                <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
+                <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
                 <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">{{$t("string.dashboard.details")}}</a>
                 <div class="dropleft">
                   <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$t("string.dashboard.operation")}}</button>
@@ -84,11 +84,11 @@
       <div>
         <h5 class="text-left p-4">{{$t("string.personal.CP")}} ({{appointments_completed.length}}):</h5>
         <div class="col-12 row d-flex flex-wrap-reverse">
-          <div class="col-lg-12 col-md-12 col-sm-12 col ml-2">
+          <div class="col-lg-12 col-md-12 col-sm-12 col mx-2 p-0">
             <div v-for="(a,index) in appointments_completed" :key="index">
-              <div class="d-flex justify-content-around m-4 p-1 rounded-lg" :class="{'bg-light-red': a.emergency}">
+              <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
                 <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
-                <span>{{a.id}}</span><span>{{a.type}}</span><span>{{a.date}}</span>
+                <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
                 <a class="text-info" data-toggle="collapse" :href="'#a2'+index" role="button" aria-expanded="false" :aria-controls="index">{{$t("string.dashboard.details")}}</a>
                 <div class="dropleft">
                   <button class="btn btn-outline-info badge badge-info p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>{{$t("string.dashboard.operation")}}</button>

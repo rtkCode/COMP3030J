@@ -40,6 +40,12 @@ td {
 .input-div{
   min-width: 304px;
 }
+
+@media (max-width: 420px) {
+  .hide-sm{
+    display: none;
+  }
+}
 </style>
 
 <script>

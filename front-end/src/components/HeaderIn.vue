@@ -115,7 +115,7 @@ export default {
   display: none;
 }
 
-@media (max-width: 990px) {
+@media (max-width: 991px) {
   .left-arrow {
     display: none;
   }

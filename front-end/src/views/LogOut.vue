@@ -8,8 +8,8 @@
         <hr />
         <h4 class="m-4">{{$t("string.user.logoutHint")}}</h4>
         <hr />
-        <button class="btn btn-outline-danger rounded-pill mt-2 px-4" @click="logout" id="logout">{{$t("string.user.logout")}}</button>
-        <button class="btn btn-outline-info rounded-pill mt-2 px-4" @click="cancel" id="cancel">{{$t("string.user.cancel")}}</button>
+        <button class="btn btn-outline-danger rounded-pill mt-2 px-3" @click="logout" id="logout">{{$t("string.user.logout")}}</button>
+        <button class="btn btn-outline-info rounded-pill mt-2 px-3" @click="cancel" id="cancel">{{$t("string.user.cancel")}}</button>
       </div>
     </div>
 

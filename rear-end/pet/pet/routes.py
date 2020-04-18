@@ -98,8 +98,10 @@ def appointment():
         real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date() 
         fake_date = datetime.datetime.strptime("1970-01-01",'%Y-%m-%d').date()  
         appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message,operationTime=fake_date,dischargeDate=fake_date)
-        db.session.add(appointment)
+        db.session.add(appointment)        
         db.session.commit()
+        mail_sender = MailSender(user.email)
+        mail_sender.send_appointment_mail()
         return jsonify({
             "code": 200,
             "msg": "Appointment success",
@@ -668,7 +670,8 @@ def updateAppointment():
     if user_in_db:
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
-
+        customer = User.query.filter(User.id == appointment.customer_id).first()
+        mail_sender = MailSender(customer.email)
         if employee:
             if appointment.employee_id is None:
                 appointment.employee_id = user_in_db.id
@@ -678,9 +681,11 @@ def updateAppointment():
         else:
             if "status" in request.form :
                 status = request.form["status"]
-                if (status == "Canceled" and appointment.status == "") or (status == "Completed" and appointment.status == "Discharged"):
+                if status == "Completed" and appointment.status == "Discharged":
                     appointment.status = status
                     db.session.commit()
+                    
+                    mail_sender.send_finish_mail()
                     return jsonify({"code": 200, "msg": "Success"})
             return jsonify({"code": 400, "msg": "Failed"})
 
@@ -692,14 +697,20 @@ def updateAppointment():
             if status == "Processing" or status == "Operating" or status == "" or status == "Discharged" or status == "Canceled" or status == "Completed":
                 if (status == "Processing" and appointment.status == "") and (appointment.status!="Canceled" or appointment.status!="Completed"):
                     appointment.status = status
+                    if status =="Discharged":
+                        mail_sender.send_discharge_mail()
+                    elif status == "Operating":
+                        mail_sender.send_operation_mail()
 
         if "operationTime" in request.form: 
             operationTime = request.form["operationTime"]
             appointment.operationTime = datetime.datetime.strptime(operationTime, '%Y-%m-%d').date()
+            mail_sender.send_operation_mail()
 
         if "dischargeDate" in request.form:
             dischargeDate = request.form["dischargeDate"]
             appointment.dischargeDate = datetime.datetime.strptime(dischargeDate, '%Y-%m-%d').date()
+            mail_sender.send_discharge_mail()
 
         if "attendingDoctor" in request.form:
             attendingDoctor = request.form["attendingDoctor"]
@@ -720,10 +731,13 @@ def deleteAppointment():
     if employee_in_db and "id" in request.form:
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
-
+        customer = User.query.filter(User.id == appointment.customer_id).first()
+        mail_sender = MailSender(customer.email)
         if appointment.employee_id == employee_in_db.id:
             appointment.status = "Canceled"
             db.session.commit()
+            
+            mail_sender.send_cancel_mail()
             return jsonify({"code": 200, "msg": "Success"}) 
         else:
             return jsonify({"code": 200, "msg": "Failed"})
@@ -733,9 +747,13 @@ def deleteAppointment():
     elif user_in_db and "id" in request.form:
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
+        
+        mail_sender = MailSender(user_in_db.email)
         if appointment.customer_id == user_in_db.id and appointment.status == "":
             appointment.status = "Canceled"
             db.session.commit()
+            mail_sender = MailSender(email)
+            mail_sender.send_cancel_mail()
             return jsonify({"code": 200, "msg": "Success"}) 
         else:
             return jsonify({"code": 200, "msg": "Failed"})

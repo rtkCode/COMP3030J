@@ -48,24 +48,106 @@ class MailSender:
             return {"code": 400, "msg": "Fail to sent register mail"}
 
     def send_appointment_mail(self):
-        # send when make appointment successfully
-        return {}
+        message = MIMEText('You have successfully made an appointment in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
+        message['To'] = Header(self.__to_address, 'utf-8')
+
+        subject = 'Healing Paws Veterinary Hospital appointment made'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        try:
+            smtp_obj = smtplib.SMTP_SSL(self.__mail_host, 465)
+            smtp_obj.set_debuglevel(1)
+            smtp_obj.login(self.__mail_user, self.__mail_pass)
+            smtp_obj.sendmail(self.__sender, self.__receivers, message.as_string())
+            smtp_obj.quit()
+            return {"code": 200, "msg": "Appointment mail sent successfully"}
+        except smtplib.SMTPException:
+            traceback.print_exc()
+            return {"code": 400, "msg": "Fail to sent appointment mail"}
+        
 
     def send_operation_mail(self):
         # send when operation date settled or do operation
-        return {}
+        message = MIMEText('Operation date is settled or processed in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
+        message['To'] = Header(self.__to_address, 'utf-8')
+
+        subject = 'Healing Paws Veterinary Hospital Operation'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        try:
+            smtp_obj = smtplib.SMTP_SSL(self.__mail_host, 465)
+            smtp_obj.set_debuglevel(1)
+            smtp_obj.login(self.__mail_user, self.__mail_pass)
+            smtp_obj.sendmail(self.__sender, self.__receivers, message.as_string())
+            smtp_obj.quit()
+            return {"code": 200, "msg": "Operation mail sent successfully"}
+        except smtplib.SMTPException:
+            traceback.print_exc()
+            return {"code": 400, "msg": "Fail to sent operation mail"}
 
     def send_discharge_mail(self):
         # send when discharge date settled or discharge
-        return {}
+        message = MIMEText('Discharge date is settled in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
+        message['To'] = Header(self.__to_address, 'utf-8')
+
+        subject = 'Healing Paws Veterinary Hospital discharge'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        try:
+            smtp_obj = smtplib.SMTP_SSL(self.__mail_host, 465)
+            smtp_obj.set_debuglevel(1)
+            smtp_obj.login(self.__mail_user, self.__mail_pass)
+            smtp_obj.sendmail(self.__sender, self.__receivers, message.as_string())
+            smtp_obj.quit()
+            return {"code": 200, "msg": "Discharge mail sent successfully"}
+        except smtplib.SMTPException:
+            traceback.print_exc()
+            return {"code": 400, "msg": "Fail to sent discharge mail"}
+
 
     def send_finish_mail(self):
         # send when appointment finished
-        return {}
+        message = MIMEText('An appointment is completed in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
+        message['To'] = Header(self.__to_address, 'utf-8')
 
-    def send_finish_mail(self):
+        subject = 'Healing Paws Veterinary Hospital completion'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        try:
+            smtp_obj = smtplib.SMTP_SSL(self.__mail_host, 465)
+            smtp_obj.set_debuglevel(1)
+            smtp_obj.login(self.__mail_user, self.__mail_pass)
+            smtp_obj.sendmail(self.__sender, self.__receivers, message.as_string())
+            smtp_obj.quit()
+            return {"code": 200, "msg": "Completion mail sent successfully"}
+        except smtplib.SMTPException:
+            traceback.print_exc()
+            return {"code": 400, "msg": "Fail to sent completion mail"}
+
+
+    def send_cancel_mail(self):
         # send when appointment canceled
-        return {}
+        message = MIMEText('An appointment is canceled in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
+        message['To'] = Header(self.__to_address, 'utf-8')
+
+        subject = 'Healing Paws Veterinary Hospital canceling'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        try:
+            smtp_obj = smtplib.SMTP_SSL(self.__mail_host, 465)
+            smtp_obj.set_debuglevel(1)
+            smtp_obj.login(self.__mail_user, self.__mail_pass)
+            smtp_obj.sendmail(self.__sender, self.__receivers, message.as_string())
+            smtp_obj.quit()
+            return {"code": 200, "msg": "Cancel mail sent successfully"}
+        except smtplib.SMTPException:
+            traceback.print_exc()
+            return {"code": 400, "msg": "Fail to sent cancel mail"}
 
     def send_discussion_mail(self):
         return {}

@@ -60,7 +60,7 @@
                       <div class="message-container" :id="'dm'+a.id">
                         <div v-for="(d,index) in discussions" :key="index">
                           <div class="small text-secondary">{{d.postTime}}</div>
-                          <div class="bg-info rounded-lg py-1 px-2 my-4 text-left text-white bubble" :class="[d.employee?'mr-auto':'ml-auto']">{{d.content}}</div>
+                          <div class="bg-info rounded-lg py-1 px-2 my-4 text-left text-white bubble" :class="[!d.employee?'mr-auto':'ml-auto']">{{d.content}}</div>
                         </div>
                       </div>
                       <hr/>
@@ -459,6 +459,101 @@ export default {
             $('.toast').toast('show');
             _this.messageFailure=true;
             _this.hintTitle="Handle failed";
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        })
+        .catch(function (error) {
+          if(!error.response==undefined){
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: 'LogIn',
+              query: {
+                message: _this.$t("string.appointment.loginExpired"),
+                from: "/dashboard"
+              }
+            });
+          } }else {
+            $('.toast').toast('show');
+            console.log(error);
+            _this.messageFailure=true;
+            _this.hintTitle=_this.$t("string.user.unknowError");
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        });
+    },
+
+    getDiscussion(discussionId) {
+      let _this = this;
+      this.discussion=[];
+
+      this.$axios({
+          method: 'get',
+          url: this.$global.request("discussion/"+discussionId),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": "bearer " + this.$token.getToken(1)
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+          if (response.data.code == 200) {
+            _this.discussions=response.data.data.discussions;
+          }
+          if (response.data.code == 400) {
+            $('.toast').toast('show');
+            _this.messageFailure=true;
+            _this.hintTitle=_this.$t("string.user.unknowError");
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        })
+        .catch(function (error) {
+          if(!error.response==undefined){
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: 'LogIn',
+              query: {
+                message: _this.$t("string.appointment.loginExpired"),
+                from: "/dashboard"
+              }
+            });
+          } }else {
+            $('.toast').toast('show');
+            console.log(error);
+            _this.messageFailure=true;
+            _this.hintTitle=_this.$t("string.user.unknowError");
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        });
+    },
+
+    postDiscussion(appointmentId) {
+      let _this = this;
+
+      this.$axios({
+          method: 'post',
+          url: this.$global.request("discussion"),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": "bearer " + this.$token.getToken(1)
+          },
+          data: this.$qs.stringify({
+            appointmentId: appointmentId,
+            token: this.$token.getToken(0),
+            content: this.messageText[appointmentId]
+          })
+        })
+        .then(function (response) {
+          _this.messageText[appointmentId]="";
+          console.log(response);
+          if (response.data.code == 200) {
+            _this.getDiscussion(appointmentId);
+          }
+          if (response.data.code == 400) {
+            $('.toast').toast('show');
+            _this.messageFailure=true;
+            _this.hintTitle=_this.$t("string.user.unknowError");
             _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
           }
         })

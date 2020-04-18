@@ -47,7 +47,7 @@
                 
                 <a class="text-left" data-toggle="collapse" :href="'#d'+a.id" role="button" aria-expanded="false" :aria-controls="'d'+a.id" @click="getDiscussion(a.id)">
                   <svg t="1587111515032" class="icon mb-1 mr-1" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2472" width="20" height="20"><path d="M808.533333 397.866667v-2.133334c0-157.866667-167.466667-286.933333-372.266666-286.933333S64 236.8 64 395.733333c0 88.533333 51.2 169.6 140.8 225.066667l24.533333 183.466667 152.533334-124.8c18.133333 2.133333 36.266667 3.2 54.4 3.2h2.133333c45.866667 72.533333 140.8 119.466667 246.4 119.466666h16l148.266667 112 11.733333-162.133333c62.933333-40.533333 98.133333-99.2 98.133333-163.2 1.066667-82.133333-57.6-154.666667-150.4-190.933333zM378.666667 635.733333l-9.6-1.066666-107.733334 88.533333-17.066666-129.066667-9.6-5.333333c-82.133333-46.933333-128-117.333333-128-193.066667 0-134.4 148.266667-244.266667 329.6-244.266666s329.6 109.866667 329.6 244.266666C765.866667 530.133333 617.6 640 436.266667 640c-19.2 0-38.4-2.133333-57.6-4.266667z m452.266666 85.333334l-9.6 5.333333-8.533333 105.6-98.133333-74.666667-7.466667 1.066667c-7.466667 0-14.933333 1.066667-21.333333 1.066667-81.066667 0-153.6-29.866667-196.266667-78.933334 160-18.133333 288-114.133333 314.666667-237.866666 69.333333 29.866667 113.066667 85.333333 113.066666 146.133333 0 51.2-32 99.2-86.4 132.266667z" p-id="2473" fill="#8a8a8a"></path><path d="M245.333333 317.866667h373.333334v42.666666H245.333333zM245.333333 434.133333h373.333334v42.666667H245.333333z" p-id="2474" fill="#8a8a8a"></path></svg>
-                  Discuss with attending doctor
+                  {{$t("string.discussion.DWAD")}}
                 </a>
                 <div class="collapse pt-1" :id="'d'+a.id">
                   <div class="card card-body">
@@ -59,8 +59,8 @@
                     </div>
                     <hr/>
                     <div>
-                      <textarea class="form-control border-0" rows="2" placeholder="input your message here" v-model="messageText[a.id]"></textarea>
-                      <div class="text-right pt-1"><button class="btn btn-outline-info rounded" @click="postDiscussion(a.id)">Send</button></div>
+                      <textarea class="form-control border-0" rows="2" :placeholder="$t('string.discussion.IYMH')" v-model="messageText[a.id]"></textarea>
+                      <div class="text-right pt-1"><button class="btn btn-outline-info rounded" @click="postDiscussion(a.id)">{{$t("string.button.send")}}</button></div>
                     </div>
                   </div>
                 </div>

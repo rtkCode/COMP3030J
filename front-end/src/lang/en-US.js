@@ -62,6 +62,7 @@ export const string = {
         confirm: "Confirm",
         close: "Close",
         save: "save",
+        send: "Send",
     },
 
     dashboard: {
@@ -88,5 +89,33 @@ export const string = {
         EYI: "Edit your information",
         RHint: "Click confirm if you have picked your pet.",
         CHint: "You are performing a dangerous operation. After canceling, the doctor will not process your order.",
+        handleFailed: "Handle failed",
+        handleSuccess: "Handle success",
+        handleSuccessHint: "you can view this appointment in your personal panel",
+    },
+
+    discussion: {
+        DWAD: "Discuss with attending doctor",
+        IYMH: "input your message here",
+        handle: "Handle",
+        showFilter: "Show filter",
+        TAC: "There are currently",
+        AITS: "appointments in the system.",
+        status: "Status",
+        pet: "Pet",
+        location: "Location",
+        emergency: "Emergency",
+        order: "Order",
+    },
+
+    personal: {
+        pPanel: "Personal Panel",
+        COD: "Choose operation date",
+        DAO: "Do an operation",
+        ETO: "End the operation",
+        CDD: "Choose discharge date",
+        CTA: "Cancel the appointment",
+        AP: "Accepted appointments",
+        CP: "Completed appointments"
     }
 }

@@ -66,6 +66,7 @@ export const string = {
         confirm: "确认",
         close: "关闭",
         save: "保存",
+        send: "发送",
     },
 
     dashboard: {
@@ -92,5 +93,33 @@ export const string = {
         EYI: "修改个人信息",
         RHint: "如果您已经取回您的宠物，点击确认，这个订单将会被标记为完成",
         CHint: "您正在执行危险的操作。取消后，医生将不会处理您的订单。",
+        handleFailed: "接手失败",
+        handleSuccess: "接手成功",
+        handleSuccessHint: "您可以在您的个人面板中查看此预约",
+    },
+
+    discussion: {
+        DWAD: "与主治医师讨论",
+        IYMH: "输入你要发送的信息",
+        handle: "接手",
+        showFilter: "筛选条件",
+        TAC: "系统中目前有",
+        AITS: "个预约",
+        status: "状态",
+        pet: "猫狗",
+        location: "地点",
+        emergency: "急诊",
+        order: "顺序",
+    },
+
+    personal: {
+        pPanel: "个人面板",
+        COD: "选择手术日期",
+        DAO: "开始手术",
+        ETO: "办理出院",
+        CDD: "选择出院日期",
+        CTA: "取消预约",
+        AP: "接受的预约",
+        CP: "完成的预约"
     }
 }

@@ -8,3 +8,7 @@ rear-end/flaskenv/
 front-end/node_modules/
 
 rear-end/pet/.idea/
+
+rear-end/pet/flaskenv/
+
+rear-end/pet/pet/__pycache__/

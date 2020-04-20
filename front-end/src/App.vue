@@ -46,6 +46,10 @@ td {
     display: none;
   }
 }
+
+.text-shadow{
+  text-shadow:3px 2px 1px #212121;
+}
 </style>
 
 <script>

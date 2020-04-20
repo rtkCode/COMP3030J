@@ -1,45 +1,40 @@
 <template>
   <div>
-    <Header :hospital="hospital" ref="header"></Header>
-    <div id="toast-container" aria-live="polite" aria-atomic="true">
-      <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
-        <div class="toast-header">
-          <strong class="mr-auto">{{loginHintTitle}}</strong>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body text-white">{{loginHintText}}</div>
-      </div>
-    </div>
+    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <section class="content d-flex flex-column justify-content-center align-items-center">
+      <div class="alert alert-info alert-dismissible fade show" role="alert">{{alertMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <form class="needs-validation" novalidate>
         <div class="form">
 
-          <div class="row">
-            <label for="validationCustomUsername">Username</label>
+          <div class="text-left input-div">
+            <label for="validationCustomUsername">{{$t("string.user.username")}}</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
               </div>
               <input type="text" v-model="username" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required />
             </div>
-            <small class="invalid">*Username format invalid</small>
+            <small class="invalid">{{$t("string.user.usernameInvalid")}}</small>
           </div>
 
-          <div class="row mt-1">
-            <label for="pw">Password</label>
+          <div class="text-left input-div mt-1">
+            <label for="pw">{{$t("string.user.password")}}</label>
             <input type="password" v-model="password" class="form-control" id="pw" required />
-            <small class="invalid">*Password format invalid</small>
+            <small class="invalid">{{$t("string.user.passwordInvalid")}}</small>
           </div>
         </div>
       </form>
-      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">Log in</button>
+      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">{{$t("string.user.login")}}</button>
       <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-        Loading...
+        {{$t("string.user.loading")}}
       </button>
     </section>
+    <Message :hintTitle="loginHintTitle" :hintText="loginHintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -47,19 +42,21 @@
 
 
 <script>
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
+import Message from '@/components/Message.vue'
 
 export default {
   data(){
     return{
-      loginUrl: "http://127.0.0.1:5000/login",
       username: this.$route.query.username,
       password: "",
       showButton: true,
       loginHintText: "",
       loginHintTitle: "",
+      fromPath: this.$route.query.from,
+      alertMessage: this.$route.query.message,
+      messageFailure: false,
     }
   },
 
@@ -68,26 +65,21 @@ export default {
   },
 
   components: {
-    Header,
-    SideBar,
-    Footer
+    HeaderIf,
+    Footer,
+    Message
   },
 
   mounted() {
     $(".invalid").hide();
-    this.hilight();
+    if(this.alertMessage==undefined) $(".alert").alert('close');
   },
 
   created() {
-    document.title = `Log In | ${this.hospital}`;
+    document.title = this.$t("string.user.login") + " | " + this.hospital;
   },
 
   methods: {
-    hilight() {
-      let dom = this.$refs.header.$refs.login;
-      $(dom).addClass("active");
-    },
-
     verifyUsername(){
       let usernameReg=/^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){3,15}$/;
       if(usernameReg.test(this.username)){
@@ -114,29 +106,38 @@ export default {
       
       this.$axios({
         method: 'post',
-        url: this.loginUrl,
+        url: this.$global.request("login"),
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
         data: this.$qs.stringify({
           username: this.username,
-          password: this.password
+          password: this.password,
+          employee:  "0"
         })
       })
       .then(function (response) {
         _this.showButton=true;
         if(response.data.code==400){
           $('.toast').toast('show');
-          $(".toast").addClass("bg-danger border-danger");
-          _this.loginHintTitle="Login failed";
-          _this.loginHintText=response.data.msg+", please correct and resubmit";
+          _this.messageFailure=true;
+          _this.loginHintTitle=_this.$t("string.user.loginFailed");
+          _this.loginHintText=response.data.msg+_this.$t("string.user.loginFailedHint");
+        }else if(response.data.code==200){
+          let token=response.data.token;
+          _this.$token.storeToken(token);
+          if(_this.fromPath==undefined){
+              _this.$router.push("/");
+          }else{
+              _this.$router.push(_this.fromPath);
+          }
         }
       })
       .catch(function (error) {
         console.log(error);
         _this.showButton=true;
+        _this.messageFailure=true;
         $('.toast').toast('show');
-        $(".toast").addClass("bg-danger border-danger");
-        _this.loginHintTitle="Unknown error";
-        _this.loginHintText="unknown error, please check console log";
+        _this.loginHintTitle=_this.$t("string.user.unknowError");
+        _this.loginHintText=_this.$t("string.user.unknowErrorHint");
       });
     },
 
@@ -144,28 +145,3 @@ export default {
 
 };
 </script>
-
-
-
-
-
-<style scoped>
-.content {
-  height: 90vh;
-}
-
-.invalid{
-  color: #FF4136;
-}
-
-#toast-container{
-  position: relative;
-}
-
-.toast{
-  position: absolute; 
-  top: 10px;
-  right: 10px;
-  min-width: 300px;
-}
-</style> 

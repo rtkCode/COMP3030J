@@ -47,8 +47,19 @@
         </nav>
         <!-- login & register links -->
         <nav class="navbar-nav ml-auto">
-          <router-link class="nav-link" to="/login">{{$t("string.user.login")}}</router-link>
-          <router-link class="nav-link" to="/register">{{$t("string.user.register")}}</router-link>
+          <span
+            :class="[{ 'left-arrow-tran135': arrow }, 'left-arrow', 'align-self-center']"
+            @click="changeArrow()"
+            data-toggle="collapse"
+            href="#collapse"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapse"
+          ></span>
+          <router-link class="nav-link" to="/dashboard">{{$t("string.user.dashboard")}}</router-link>
+          <div class="collapse multi-collapse" id="collapse">
+            <router-link class="nav-link text-danger" to="/logout">{{$t("string.user.logout")}}</router-link>
+          </div>
         </nav>
       </div>
     </nav>
@@ -57,8 +68,20 @@
 
 <script>
 export default {
+  data() {
+    return {
+      arrow: false
+    };
+  },
+
   props: {
     hospital: String
+  },
+
+  methods: {
+    changeArrow() {
+      this.arrow = !this.arrow;
+    }
   }
 };
 </script>
@@ -68,8 +91,38 @@ export default {
   margin-left: 16px;
 }
 
+.left-arrow {
+  width: 9px;
+  height: 9px;
+  border-top: 1px solid #9da3ab;
+  border-left: 1px solid #9da3ab;
+  display: inline-block;
+  transform: rotate(-45deg);
+  transition: all 0.5s;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.left-arrow-tran45 {
+  transform: rotate(-45deg);
+}
+
+.left-arrow-tran135 {
+  transform: rotate(135deg);
+}
+
 .hospital-name-sm{
   display: none;
+}
+
+@media (max-width: 991px) {
+  .left-arrow {
+    display: none;
+  }
+
+  #collapse {
+    display: block;
+  }
 }
 
 @media (max-width: 443px) {

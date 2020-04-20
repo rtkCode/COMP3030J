@@ -1,34 +1,23 @@
 <template>
   <div>
-    <Header :hospital="hospital" ref="header"></Header>
-    <div id="toast-container" aria-live="polite" aria-atomic="true">
-      <div class="toast border rounded-lg" role="alert" aria-live="assertive" aria-atomic="true" data-delay="15000" style="right: 10; top: 70;">
-        <div class="toast-header">
-          <strong class="mr-auto">{{registerHintTitle}}</strong>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body text-white">{{registerHintText}}</div>
-      </div>
-    </div>
+    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <section class="content d-flex flex-column justify-content-center align-items-center">
       <form class="needs-validation" novalidate>
         <div class="form">
-          <div class="row">
-            <label for="fn">First name</label>
+          <div class="col-12 text-left">
+            <label for="fn">{{$t("string.user.firstname")}}</label>
             <input type="text" class="form-control" id="fn" v-model="firstName" required>
             <small class="invalid">*2-10 letters</small>
           </div>
 
-          <div class="row mt-1">
-            <label for="ln">Last name</label>
+          <div class="col-12 text-left mt-1">
+            <label for="ln">{{$t("string.user.lastname")}}</label>
             <input type="text" class="form-control" id="ln" v-model="lastName" required>
             <small class="invalid">*2-10 letters</small>
           </div>
 
-          <div class="row mt-1">
-            <label for="validationCustomUsername">Username</label>
+          <div class="col-12 text-left mt-1">
+            <label for="validationCustomUsername">{{$t("string.user.username")}}</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
@@ -39,42 +28,46 @@
             <small class="error-text">{{usernameErrorText}}</small>
           </div>
 
-          <div class="row mt-1">
-            <label for="ea">Email address</label>
+          <div class="col-12 text-left mt-1">
+            <label for="ea">{{$t("string.user.email")}}</label>
             <input type="email" class="form-control" id="ea" v-model="email" @blur="verifyUserId('email')" required>
             <small class="invalid">*Please input the correct email address</small>
             <small class="error-text">{{emailErrorText}}</small>
           </div>
 
-          <div class="row mt-1">
-            <label for="pw">Password</label>
+          <div class="col-12 text-left mt-1">
+            <label for="pw">{{$t("string.user.password")}}</label>
             <input type="password" class="form-control" id="pw" v-model="password" required>
             <small class="invalid">*6-18</small>
           </div>
+
+          <div class="col-12 text-left mt-1 mb-2">
+            <label for="irc">{{$t("string.user.IRC")}}</label>
+            <input type="password" class="form-control" id="irc" v-model="irc" :placeholder="$t('string.user.LIBIYRAC')">
+          </div>
         </div>
-        <small>*By clicking sign up, you agree to the terms and conditions</small>
+        <small class="text-secondary">{{$t("string.user.registerHint")}}</small>
       </form>
-      <button class="btn btn-outline-info mt-2 px-4" type="submit" @click="verifyName()" v-show="showButton">Sign up</button>
+      <button class="btn btn-outline-info mt-2 px-4" type="submit" @click="verifyName()" v-show="showButton">{{$t("string.user.register")}}</button>
       <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-        Loading...
+        {{$t("string.user.loading")}}
       </button>
     </section>
+    <Message :hintTitle="registerHintTitle" :hintText="registerHintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
 
 
 <script>
-import Header from '@/components/Header.vue'
-import SideBar from '@/components/SideBar.vue'
+import HeaderIf from '@/components/HeaderIf.vue'
 import Footer from '@/components/Footer.vue'
+import Message from '@/components/Message.vue'
 
 export default {
   data(){
     return{
-      verifyUserIdUrl: "http://127.0.0.1:5000/verifyUserId",
-      registerUrl: "http://127.0.0.1:5000/register",
       firstName: "",
       lastName: "",
       username: "",
@@ -85,6 +78,9 @@ export default {
       registerHintTitle: "",
       registerHintText: "",
       showButton: true,
+      messageFailure: false,
+      irc: "",
+      employee: "0"
     }
   },
 
@@ -93,25 +89,20 @@ export default {
   },
 
   components: {
-    Header,
-    SideBar,
-    Footer
+    HeaderIf,
+    Footer,
+    Message
   },
 
   mounted(){
     $(".invalid").hide();
-    this.hilight();
   },
 
   created(){
-    document.title = `Sign up | ${this.hospital}`;
+    document.title = this.$t("string.user.register") + " | " + this.hospital;
   },
 
   methods:{
-    hilight(){
-      let dom=this.$refs.header.$refs.register;
-      $(dom).addClass("active");
-    },
 
     verifyName(){
       let nameReg=/^[A-Za-z]{2,10}$/;
@@ -161,10 +152,11 @@ export default {
     register(){
       let _this=this;
       this.showButton=false;
+      if(this.irc!="") this.employee="1";
 
       this.$axios({
         method: 'post',
-        url: this.registerUrl,
+        url: this.$global.request("register"),
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
         data: this.$qs.stringify({
           firstName: this.firstName,
@@ -173,33 +165,32 @@ export default {
           email: this.email,
           password: this.password,
           others: "test",
+          employee: this.employee,
+          IRC: this.irc
         })
       })
       .then(function (response) {
         _this.showButton=true;
         $('.toast').toast('show');
         if(response.data.code==200){
-          $(".toast").removeClass("bg-danger border-danger");
-          $(".toast").addClass("bg-success border-success");
-          _this.registerHintTitle="Register success";
-          _this.registerHintText=response.data.msg+", it will jump to the login page in 3 seconds";
-          setTimeout(_this.routeToLogin,3000);
+          _this.messageFailure=false;
+          _this.registerHintTitle=_this.$t("string.user.registerSuccess");
+          _this.registerHintText=response.data.msg+_this.$t("string.user.registerSuccessHint");
+          setTimeout(_this.routeToLogin,2000);
         }
         if(response.data.code==400){
-          $(".toast").removeClass("bg-success border-success");
-          $(".toast").addClass("bg-danger border-danger");
-          _this.registerHintTitle="Register failed";
-          _this.registerHintText=response.data.msg+", please correct and resubmit";
+          _this.messageFailure=true;
+          _this.registerHintTitle=_this.$t("string.user.registerFailed");
+          _this.registerHintText=response.data.msg+_this.$t("string.user.loginFailedHint");
         }
       })
       .catch(function (error) {
         console.log(error);
         _this.showButton=true;
         $('.toast').toast('show');
-        $(".toast").removeClass("bg-success border-success");
-        $(".toast").addClass("bg-danger border-danger");
-        _this.registerHintTitle="Unknown error";
-        _this.registerHintText="unknown error, please check console log";
+        _this.messageFailure=true;
+        _this.registerHintTitle=_this.$t("string.user.unknowError");
+        _this.registerHintText=_this.$t("string.user.unknowErrorHint");
       });
     },
 
@@ -219,7 +210,7 @@ export default {
 
       this.$axios({
         method: 'post',
-        url: this.verifyUserIdUrl,
+        url: this.$global.request("verifyUserId"),
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
         data: data,
       })
@@ -242,26 +233,7 @@ export default {
 </script>
 
 <style scoped>
-.content{
-  height: 90vh;
-}
-
-.invalid{
-  color: #FF4136;
-}
-
 .error-text{
   color: #FF4136;
-}
-
-#toast-container{
-  position: relative;
-}
-
-.toast{
-  position: absolute; 
-  top: 10px;
-  right: 10px;
-  min-width: 300px;
 }
 </style>

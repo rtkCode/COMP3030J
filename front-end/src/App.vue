@@ -17,10 +17,6 @@
   color: rgba(0,0,0,.9) !important;
 }
 
-.content{
-  min-height: 87vh;
-}
-
 td {
   text-align: left;
 }

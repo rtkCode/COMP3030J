@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded p-2 d-flex justify-content-between">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm rounded-top p-2 d-flex justify-content-between">
         <div class="m-auto m-sm-auto m-md-0">
             <small><p class="m-2">&copy; {{hospital}} <span class="year">{{thisYear}}</span> {{$t("string.hospital.ARR")}}</p></small>
             <!-- <small><router-link class="text-secondary ml-2" to="/tac">Terms and Conditions</router-link></small> -->

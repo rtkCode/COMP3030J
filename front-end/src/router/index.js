@@ -23,6 +23,10 @@ Vue.prototype.$qs = qs
 Vue.prototype.$token = token
 Vue.prototype.$global = global
 
+window.onresize = function(){
+  global.resizeContent();
+}
+
 const routes = [
   {
     path: '/',

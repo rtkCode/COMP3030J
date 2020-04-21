@@ -10,6 +10,7 @@ import EmployeeLogIn from '../views/EmployeeLogIn.vue'
 import EmployeeDashboard from '../views/EmployeeDashboard.vue'
 import EmployeePersonal from '../views/EmployeePersonal.vue'
 import Discussion from '../views/Discussion.vue'
+import EmployeeDiscussion from '../views/EmployeeDiscussion.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
@@ -102,6 +103,11 @@ const routes = [
     meta: {
       requireAuth: true
     },
+  },
+  {
+    path: '/employee/discussion',
+    name: 'EmployeeDiscussion',
+    component: EmployeeDiscussion
   }
 ]
 

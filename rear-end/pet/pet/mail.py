@@ -4,9 +4,10 @@ from email.mime.text import MIMEText
 from email.header import Header
 
 """
-    description: send email using smtplib
-    author: Tianze Wen
+    description: Send email using smtplib
+    author: Tianze Wen & Fei Teng
     date: 2020-03-15
+    lastUpdate: 2020-04-22
     usage: 
         from mail import MailSender
         mail_sender = MailSender("xxxxxx@xxxxxx.com")
@@ -29,10 +30,9 @@ class MailSender:
         self.__receivers.append(self.__to_address)
 
     def send_register_mail(self):
-        message = MIMEText('You have successfully registered Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message = MIMEText('You have successfully registered Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
         message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
-
         subject = 'Healing Paws Veterinary Hospital Register'
         message['Subject'] = Header(subject, 'utf-8')
 
@@ -48,11 +48,10 @@ class MailSender:
             return {"code": 400, "msg": "Fail to sent register mail"}
 
     def send_appointment_mail(self):
-        message = MIMEText('You have successfully made an appointment in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message = MIMEText('You have successfully made an appointment in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
         message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
-
-        subject = 'Healing Paws Veterinary Hospital appointment made'
+        subject = 'Healing Paws Veterinary Hospital Appointment Made'
         message['Subject'] = Header(subject, 'utf-8')
 
         try:
@@ -65,14 +64,11 @@ class MailSender:
         except smtplib.SMTPException:
             traceback.print_exc()
             return {"code": 400, "msg": "Fail to sent appointment mail"}
-        
 
     def send_operation_mail(self):
-        # send when operation date settled or do operation
-        message = MIMEText('Operation date is settled or processed in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message = MIMEText('An operation date is settled or an operation is processed in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
         message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
-
         subject = 'Healing Paws Veterinary Hospital Operation'
         message['Subject'] = Header(subject, 'utf-8')
 
@@ -88,12 +84,10 @@ class MailSender:
             return {"code": 400, "msg": "Fail to sent operation mail"}
 
     def send_discharge_mail(self):
-        # send when discharge date settled or discharge
-        message = MIMEText('Discharge date is settled in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message = MIMEText('Discharge date is settled in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
         message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
-
-        subject = 'Healing Paws Veterinary Hospital discharge'
+        subject = 'Healing Paws Veterinary Hospital Discharge'
         message['Subject'] = Header(subject, 'utf-8')
 
         try:
@@ -107,14 +101,11 @@ class MailSender:
             traceback.print_exc()
             return {"code": 400, "msg": "Fail to sent discharge mail"}
 
-
     def send_finish_mail(self):
-        # send when appointment finished
-        message = MIMEText('An appointment is completed in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message = MIMEText('An appointment is completed in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
         message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
-
-        subject = 'Healing Paws Veterinary Hospital completion'
+        subject = 'Healing Paws Veterinary Hospital Appointment Completed'
         message['Subject'] = Header(subject, 'utf-8')
 
         try:
@@ -128,14 +119,11 @@ class MailSender:
             traceback.print_exc()
             return {"code": 400, "msg": "Fail to sent completion mail"}
 
-
     def send_cancel_mail(self):
-        # send when appointment canceled
-        message = MIMEText('An appointment is canceled in Healing Paws Veterinary Hospital', 'plain', 'utf-8')
+        message = MIMEText('An appointment is canceled in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
         message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
-
-        subject = 'Healing Paws Veterinary Hospital canceling'
+        subject = 'Healing Paws Veterinary Hospital Appointment Canceled'
         message['Subject'] = Header(subject, 'utf-8')
 
         try:

@@ -21,6 +21,10 @@ td {
   text-align: left;
 }
 
+.bg-white50{
+  background: rgba(255,255,255,0.7) !important;
+}
+
 .bg-light-red{
   background: #ffc4c4;
 }
@@ -30,6 +34,10 @@ td {
 }
 
 .invalid{
+  color: #FF4136;
+}
+
+.error-text{
   color: #FF4136;
 }
 
@@ -45,6 +53,16 @@ td {
 
 .text-shadow{
   text-shadow:3px 2px 1px #212121;
+}
+
+.button-gradient{
+  background: linear-gradient(146deg, rgba(143,255,165,1) 1%, rgba(14,92,173,1) 100%);
+  opacity: 0.8;
+  transition: all 0.3s;
+}
+
+.button-gradient:hover{
+  opacity: 1;
 }
 </style>
 

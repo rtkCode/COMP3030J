@@ -127,7 +127,7 @@ router.beforeEach((to, from, next) => {
       next({
         name: 'LogIn',
         query: {
-          message: "In order to complete this operation, you must log in",
+          message: "Login to complete this operation",
           from: to.path
         }
       });
@@ -162,7 +162,7 @@ router.beforeEach((to, from, next) => {
                 next({
                   name: 'EmployeeLogIn',
                   query: {
-                    message: "Login status expired, please log in again",
+                    message: "Status expired, please login again",
                     from: to.path
                   }
                 });
@@ -171,7 +171,7 @@ router.beforeEach((to, from, next) => {
                 next({
                   name: 'LogIn',
                   query: {
-                    message: "Login status expired, please log in again",
+                    message: "Status expired, please login again",
                     from: to.path
                   }
                 });

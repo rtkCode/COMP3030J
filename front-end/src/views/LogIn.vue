@@ -1,38 +1,44 @@
 <template>
-  <div>
-    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
+  <div :style="bg">
+    <HeaderIf :hospital="hospital" :transparent="true" ref="header"></HeaderIf>
     <section class="content d-flex flex-column justify-content-center align-items-center">
-      <div class="alert alert-info alert-dismissible fade show" role="alert">{{alertMessage}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form class="needs-validation" novalidate>
-        <div class="form">
 
-          <div class="text-left input-div">
-            <label for="validationCustomUsername">{{$t("string.user.username")}}</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroupPrepend">@</span>
-              </div>
-              <input type="text" v-model="username" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required />
-            </div>
-            <small class="invalid">{{$t("string.user.usernameInvalid")}}</small>
-          </div>
-
-          <div class="text-left input-div mt-1">
-            <label for="pw">{{$t("string.user.password")}}</label>
-            <input type="password" v-model="password" class="form-control" id="pw" required />
-            <small class="invalid">{{$t("string.user.passwordInvalid")}}</small>
-          </div>
+      <div class="login-card card px-4 py-5 shadow-lg">
+        <div class="alert alert-info alert-dismissible fade show" role="alert">{{alertMessage}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-      </form>
-      <button class="btn btn-outline-info mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">{{$t("string.user.login")}}</button>
-      <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
-        <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-        {{$t("string.user.loading")}}
-      </button>
+        <form class="needs-validation" novalidate>
+          <div class="form">
+
+            <div class="text-left input-div">
+              <label for="validationCustomUsername" class="text-white">{{$t("string.user.username")}}</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text button-gradient text-white" id="inputGroupPrepend">@</span>
+                </div>
+                <input type="text" v-model="username" class="form-control bg-white50" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required />
+              </div>
+              <small class="invalid">{{$t("string.user.usernameInvalid")}}</small>
+            </div>
+
+            <div class="text-left input-div mt-1">
+              <label for="pw" class="text-white">{{$t("string.user.password")}}</label>
+              <input type="password" v-model="password" class="form-control bg-white50" id="pw" required />
+              <small class="invalid">{{$t("string.user.passwordInvalid")}}</small>
+            </div>
+          </div>
+        </form>
+        <div>
+          <button class="btn button-gradient text-white rounded border-white mt-3 px-4" type="submit" @click="verifyUsername()" v-show="showButton">{{$t("string.user.login")}}</button>
+          <button class="btn button-gradient text-white rounded border-white mt-3 px-4" type="button" v-show="!showButton" disabled>
+            <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
+            {{$t("string.user.loading")}}
+          </button>
+        </div>
+      </div>
+
     </section>
     <Message :hintTitle="loginHintTitle" :hintText="loginHintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
@@ -49,6 +55,13 @@ import Message from '@/components/Message.vue'
 export default {
   data(){
     return{
+      bg: {
+        backgroundImage: "url(" + require("../../public/img/index.jpeg") + ")",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center"
+      },
+
       username: this.$route.query.username,
       password: "",
       showButton: true,
@@ -72,6 +85,7 @@ export default {
 
   mounted() {
     $(".invalid").hide();
+    this.$global.resizeContent();
     if(this.alertMessage==undefined) $(".alert").alert('close');
   },
 
@@ -145,3 +159,11 @@ export default {
 
 };
 </script>
+
+<style scoped>
+.login-card{
+  border-radius: 10px !important;
+  border: none !important;
+  background: rgba(0, 110, 117, 0.4);
+}
+</style>

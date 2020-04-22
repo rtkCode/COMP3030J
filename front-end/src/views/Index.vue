@@ -35,7 +35,8 @@ export default {
       bg: {
         backgroundImage: "url(" + require("../../public/img/index.jpeg") + ")",
         backgroundRepeat: "no-repeat",
-        backgroundSize: "100% auto"
+        backgroundSize: "cover",
+        backgroundPosition: "center"
       },
 
       swiperOption: {
@@ -76,15 +77,5 @@ export default {
 <style scoped>
 .seven24 {
   font-size: 70px;
-}
-
-.button-gradient{
-  background: linear-gradient(146deg, rgba(143,255,165,1) 1%, rgba(14,92,173,1) 100%);
-  opacity: 0.8;
-  transition: all 0.3s;
-}
-
-.button-gradient:hover{
-  opacity: 1;
 }
 </style>

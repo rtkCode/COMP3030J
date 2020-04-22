@@ -655,10 +655,12 @@ def employeeAppointments():
 @app.route ("/updateAppointment",methods=['PUT'])
 @auth.login_required
 def updateAppointment():
-    user = ""
     user_in_db = ""
+
+    # user type
     employee = False
 
+    # Determine the user type
     if g.user is not None:
         user = g.user.username
         user_in_db = User.query.filter(User.username == user).first()
@@ -666,61 +668,81 @@ def updateAppointment():
         user = g.employee.username
         user_in_db = Employee.query.filter(Employee.username == user).first()
         employee = True
+    else:
+        return jsonify({"code": 400, "msg": "User type invalid"})
 
-    if user_in_db:
+    if "id" in request.form:
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
+
         customer = User.query.filter(User.id == appointment.customer_id).first()
         mail_sender = MailSender(customer.email)
+
+        if not employee:
+            if appointment.customer_id != user_in_db.id:
+                return jsonify({"code": 400, "msg": "Failed"})
+
+        # add employee name and id to appointments
         if employee:
+            if appointment.employee_id != user_in_db.id:
+                return jsonify({"code": 400, "msg": "Failed"})
+
             if appointment.employee_id is None:
                 appointment.employee_id = user_in_db.id
-            appointment.attendingDoctor = user_in_db.firstName + " " + user_in_db.lastName
-            
-
-        else:
-            if "status" in request.form :
-                status = request.form["status"]
-                if status == "Completed" and appointment.status == "Discharged":
-                    appointment.status = status
-                    db.session.commit()
-                    
-                    mail_sender.send_finish_mail()
-                    return jsonify({"code": 200, "msg": "Success"})
-            return jsonify({"code": 400, "msg": "Failed"})
-
-        if appointment.employee_id != user_in_db.id:
-            return jsonify({"code": 400, "msg": "Failed"})
+                appointment.attendingDoctor = user_in_db.firstName + " " + user_in_db.lastName
 
         if "status" in request.form:
             status = request.form["status"]
-            if status == "Processing" or status == "Operating" or status == "" or status == "Discharged" or status == "Canceled" or status == "Completed":
-                if (status == "Processing" and appointment.status == "") and (appointment.status!="Canceled" or appointment.status!="Completed"):
+            # for customer
+            if not employee:
+                if status == "Completed" and appointment.status == "Discharged":
                     appointment.status = status
-                    if status =="Discharged":
+                    db.session.commit()
+                    mail_sender.send_finish_mail()
+                    return jsonify({"code": 200, "msg": "Appointment completed"})
+                elif status == "Canceled" and appointment.status == "":
+                    appointment.status = status
+                    db.session.commit()
+                    mail_sender.send_cancel_mail()
+                    return jsonify({"code": 200, "msg": "Appointment canceled"})
+                else:
+                    return jsonify({"code": 400, "msg": "Permission denied"})
+            # for employee
+            if employee:
+                if status == "Processing" and appointment.status == "":
+                    appointment.status = status
+                    db.session.commit()
+                    mail_sender.send_processing_mail()
+                    return jsonify({"code": 200, "msg": "Appointment processing"})
+
+                appointment_status_set = set(["Processing", "Operating", "Discharged"])
+                request_status_set = set(["Discharged", "Operating", "Canceled"])
+
+                if status in request_status_set and appointment.status in appointment_status_set:
+                    appointment.status = status
+                    db.session.commit()
+                    if status == "Discharged":
                         mail_sender.send_discharge_mail()
                     elif status == "Operating":
                         mail_sender.send_operation_mail()
+                    elif status == "Canceled":
+                        mail_sender.send_cancel_mail()
+                    return jsonify({"code": 200, "msg": "Operation success"})
 
-        if "operationTime" in request.form: 
+        if "operationTime" in request.form and employee:
             operationTime = request.form["operationTime"]
             appointment.operationTime = datetime.datetime.strptime(operationTime, '%Y-%m-%d').date()
             mail_sender.send_operation_mail()
-
-        if "dischargeDate" in request.form:
+        if "dischargeDate" in request.form and employee:
             dischargeDate = request.form["dischargeDate"]
             appointment.dischargeDate = datetime.datetime.strptime(dischargeDate, '%Y-%m-%d').date()
             mail_sender.send_discharge_mail()
-
-        if "attendingDoctor" in request.form:
-            attendingDoctor = request.form["attendingDoctor"]
-            appointment.attendingDoctor = attendingDoctor
-
         db.session.commit()
-        return jsonify({"code": 200, "msg": "Success"})
+        return jsonify({"code": 200, "msg": "Operation success"})
 
     else:
         return jsonify({"code": 400, "msg": "Failed"})
+
 
 @app.route ("/deleteAppointment",methods=['PUT'])
 @auth.login_required

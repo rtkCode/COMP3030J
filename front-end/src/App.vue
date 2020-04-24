@@ -64,6 +64,10 @@ td {
 .button-gradient:hover{
   opacity: 1;
 }
+
+.border-radius10{
+  border-radius: 10px !important;
+}
 </style>
 
 <script>

@@ -2,11 +2,37 @@
   <div>
     <HeaderIf :hospital="hospital"></HeaderIf>
     <div class="content">
-      <div class="title text-left text-info mt-4 p-2 mx-3 mx-sm-5">
-        <h3>{{$t("string.dashboard.welcome")}} {{name}}{{$t("string.dashboard.youHave")}} <strong>{{appointments.length}}</strong> {{$t("string.dashboard.appointments")}}.</h3>
+      <div class="dashboard-bg d-flex align-items-start flex-column p-4 shadow-lg">
+        <h1 class="text-left text-white mt-auto mx-xl-4">Personal Dashboard</h1>
+        <div class="d-flex flex-wrap status-cards mx-xl-4">
+          <div class="d-flex justify-content-around flex-column card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
+            <span class="h2 m-0">10</span>
+            <small>All appointments</small>
+          </div>
+          <div class="d-flex justify-content-around flex-column card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
+            <span class="h2 m-0 text-secondary">2</span>
+            <small>Waiting</small>
+          </div>
+          <div class="d-flex justify-content-around flex-column card-hide card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
+            <span class="h2 m-0 text-info">3</span>
+            <small>Processing / Operating</small>
+          </div>
+          <div class="d-flex justify-content-around flex-column card-hide card border-radius10 status-card p-3 border-0 shadow">
+            <span class="h2 m-0 text-success">3</span>
+            <small>Discharged / Completed</small>
+          </div>
+        </div>
       </div>
-      <div class="col-12 row d-flex flex-wrap-reverse">
-        <div class="col-lg-8 col-md-12 col-sm-12 col-12 mx-2 p-0">
+
+      <!-- <div class="title text-left text-info mt-4 p-2 mx-3 mx-sm-5">
+        <h3>{{$t("string.dashboard.welcome")}} {{name}}{{$t("string.dashboard.youHave")}} <strong>{{appointments.length}}</strong> {{$t("string.dashboard.appointments")}}.</h3>
+      </div> -->
+
+      <!-- placeholder -->
+      <div class="mt-5 pt-5"></div>
+
+      <div class="col-12 mb-4 d-flex flex-wrap-reverse justify-content-center">
+        <div class="col-xl-8 col-12 mx-4 px-0 py-2 shadow border-radius10">
           <div v-for="(a,index) in appointments_others" :key="index">
             <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
@@ -68,37 +94,12 @@
               </tbody>
             </table>
           </div>
-        </div>
-        <div class="col mx-4 px-0 px-sm-4">
-          <div class="card card-body">
-            <table class="table table-borderless">
-              <tbody>
-                <tr>
-                  <td>
-                    <h3>{{name}}</h3>
-                  </td>
-                </tr>
-                <tr>
-                  <td>{{$t("string.dashboard.username")}}{{username}}</td>
-                </tr>
-                <tr>
-                  <td>{{$t("string.dashboard.email")}}{{email}}</td>
-                </tr>
-                <tr>
-                  <td><a class="text-info text-left" href="#exampleModal" data-toggle="modal">{{$t("string.dashboard.EYI")}}</a></td>
-                  <Model @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></Model>
-                </tr>
-              </tbody>
-            </table>
+
+          <div class="text-left p-2 mx-3 mx-sm-5">
+            <a class="text-info" data-toggle="collapse" href="#completedAppointments" role="button" aria-expanded="false" aria-controls="completedAppointments">{{$t("string.dashboard.VCA")}}</a>
           </div>
-        </div>
-      </div>
-      <div class="text-left p-2 mx-3 mx-sm-5">
-        <a class="text-info" data-toggle="collapse" href="#completedAppointments" role="button" aria-expanded="false" aria-controls="completedAppointments">{{$t("string.dashboard.VCA")}}</a>
-      </div>
-      <div class="collapse" id="completedAppointments">
-        <div class="col-12 row d-flex flex-wrap-reverse">
-          <div class="col-lg-8 col-md-12 col-sm-12 col-12 mx-2 p-0">
+
+          <div class="collapse" id="completedAppointments">
             <div v-for="(a,index) in appointments_completed" :key="index">
               <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
                 <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
@@ -137,7 +138,17 @@
             </div>
           </div>
         </div>
+
+        <div class="info-card col-xl-3 col-12 p-4 mx-4 mb-4 shadow border-radius10 text-left">
+          <h3 class="my-0">Personal Info</h3>
+          <p class="my-3">Name: {{name}}</p>
+          <p class="my-3">{{$t("string.dashboard.username")}}{{username}}</p>
+          <p class="my-3">{{$t("string.dashboard.email")}}{{email}}</p>
+          <a class="text-info my-3" href="#exampleModal" data-toggle="modal">{{$t("string.dashboard.EYI")}}</a>
+          <Model @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></Model>
+        </div>
       </div>
+
     </div>
     <div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -237,6 +248,7 @@
     },
 
     mounted() {
+      this.$global.resizeContent();
       this.getProfile();
     },
 
@@ -478,5 +490,38 @@
 .message-container{
   height: 300px; 
   overflow-y: scroll;
+}
+
+.info-card{
+  max-height: 260px;
+}
+
+.status-card{
+  /* width: 220px; */
+  min-width: 200px;
+  max-width: 220px;
+  height: 100px;
+}
+
+.status-cards{
+  position: relative;
+  top: 80px;
+}
+
+.dashboard-bg h1{
+  position: relative;
+  top: 60px;
+}
+
+.dashboard-bg{
+  height: 300px;
+  background: rgb(143,255,163);
+  background: linear-gradient(146deg, rgba(143,255,163,1) 0%, rgba(14,92,173,1) 100%);
+}
+
+@media (max-width: 496px) {
+  .card-hide{
+    display: none !important;
+  }
 }
 </style>

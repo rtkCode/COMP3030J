@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderIn v-if="$token.hasToken()" :hospital="hospital" :transparent="transparent"></HeaderIn>
+        <HeaderIn v-if="$token.hasToken()" :hospital="hospital" :transparent="transparent" :type="type"></HeaderIn>
         <Header v-else :hospital="hospital" :transparent="transparent"></Header>
     </div>
 </template>
@@ -16,7 +16,8 @@
         },
         props: {
             hospital: String,
-            transparent: Boolean
+            transparent: Boolean,
+            type: String,
         },
     };
 </script>

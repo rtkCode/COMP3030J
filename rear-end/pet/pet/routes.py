@@ -332,15 +332,12 @@ def error_handler():
         })
 
 
-@app.route ("/profile",methods=['GET'])
+
+@app.route ("/customerAppointments",methods=['GET'])
 @auth.login_required
-def profile():
-    user = g.user   
-    
-    # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
-    user_in_db = User.query.filter(User.username == user.username).first() 
-    if user_in_db:
-        appointment = Appointment.query.filter(Appointment.customer_id == user_in_db.id).all()
+def customerAppointments():
+    if g.user is not None:
+        appointment = Appointment.query.filter(Appointment.customer_id == g.user.id).all()
         appointment_list = []
         for item in appointment:
             list_item = {}
@@ -373,6 +370,41 @@ def profile():
             else:
                 list_item["dischargeDate"] = str(item.dischargeDate)
             appointment_list.append(list_item)
+        return jsonify({
+            "code": 200,
+            "msg": "Success",
+            "data":{
+                "appointments":appointment_list
+            }
+                   
+        })
+    else:
+        return jsonify({
+            "code": 401,
+            "msg": "Unauthorized"
+                   
+        })
+
+
+@app.route ("/profile",methods=['GET'])
+@auth.login_required
+def profile():
+    user = g.user   
+    employee = g.employee
+    user_in_db = None
+    if g.user is not None:
+        user_in_db = User.query.filter(User.username == user.username).first()
+    # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
+    elif g.employee is not None:
+        user_in_db = Employee.query.filter(Employee.username == employee.username).first()
+    else:
+        return jsonify({
+            "code": 401,
+            "msg": "Unauthorized"
+                   
+        })
+    if user_in_db:
+        
         user = {}
         user["username"] = user_in_db.username
         user["firstName"] = user_in_db.firstName
@@ -382,8 +414,8 @@ def profile():
             "code": 200,
             "msg": "Success",
             "data":{
-                "basic":user,
-                "appointments":appointment_list
+                "basic":user
+                
             }
                    
         })

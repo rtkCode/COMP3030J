@@ -96,6 +96,13 @@ export const string = {
         handleFailed: "接手失败",
         handleSuccess: "接手成功",
         handleSuccessHint: "您可以在您的个人面板中查看此预约",
+        PD: "个人中心",
+        PI: "个人信息",
+        name: "名字",
+        AA: "所有预约",
+        waiting: "等待处理",
+        POO: "处理中 / 手术中",
+        DOC: "已出院 / 已完成"
     },
 
     discussion: {

@@ -3,23 +3,23 @@
     <HeaderIf :hospital="hospital"></HeaderIf>
     <div class="content">
       <div class="dashboard-bg d-flex align-items-start flex-column p-4 shadow-lg">
-        <h1 class="text-left text-white mt-auto mx-xl-4">Personal Dashboard</h1>
+        <h1 class="text-left text-white mt-auto mx-xl-4">{{$t("string.dashboard.PD")}}</h1>
         <div class="d-flex flex-wrap status-cards mx-xl-4">
           <div class="d-flex justify-content-around flex-column card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
-            <span class="h2 m-0">10</span>
-            <small>All appointments</small>
+            <span class="h2 m-0">{{allNum}}</span>
+            <small>{{$t("string.dashboard.AA")}}</small>
           </div>
           <div class="d-flex justify-content-around flex-column card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
-            <span class="h2 m-0 text-secondary">2</span>
-            <small>Waiting</small>
+            <span class="h2 m-0 text-secondary">{{waitNun}}</span>
+            <small>{{$t("string.dashboard.waiting")}}</small>
           </div>
           <div class="d-flex justify-content-around flex-column card-hide card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
-            <span class="h2 m-0 text-info">3</span>
-            <small>Processing / Operating</small>
+            <span class="h2 m-0 text-info">{{pooNum}}</span>
+            <small>{{$t("string.dashboard.POO")}}</small>
           </div>
           <div class="d-flex justify-content-around flex-column card-hide card border-radius10 status-card p-3 border-0 shadow">
-            <span class="h2 m-0 text-success">3</span>
-            <small>Discharged / Completed</small>
+            <span class="h2 m-0 text-success">{{docNum}}</span>
+            <small>{{$t("string.dashboard.DOC")}}</small>
           </div>
         </div>
       </div>
@@ -136,7 +136,7 @@
         </div>
 
         <div class="info-card col-xl-3 col-12 p-4 mx-4 mb-4 shadow border-radius10 text-left">
-          <h3 class="my-0">Personal Info</h3>
+          <h3 class="my-0">{{$t("string.dashboard.PI")}}</h3>
           <p class="my-3">Name: {{name}}</p>
           <p class="my-3">{{$t("string.dashboard.username")}}{{username}}</p>
           <p class="my-3">{{$t("string.dashboard.email")}}{{email}}</p>
@@ -225,6 +225,10 @@
         deleteId: -1,
         messageText: {},
         discussions: [],
+        allNum: 0,
+        waitNun: 0,
+        pooNum: 0,
+        docNum: 0
       };
     },
 
@@ -268,12 +272,21 @@
 
       handleAppointments(appointments){
         for(let i=0;i<appointments.length;i++){
+          if(appointments[i].status=="Waiting"){
+            this.waitNun++;
+          }else if(appointments[i].status=="Processing"||appointments[i].status=="Operating"){
+            this.pooNum++;
+          }else if(appointments[i].status=="Discharged"||appointments[i].status=="Completed"){
+            this.docNum++;
+          }
+
           if(appointments[i].status=="Completed"||appointments[i].status=="Canceled"){
             this.appointments_completed.push(appointments[i]);
           }else{
             this.appointments_others.push(appointments[i]);
           }
         }
+        this.allNum=appointments.length;
       },
 
       getProfile() {

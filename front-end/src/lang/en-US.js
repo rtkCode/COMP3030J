@@ -92,6 +92,13 @@ export const string = {
         handleFailed: "Handle failed",
         handleSuccess: "Handle success",
         handleSuccessHint: "you can view this appointment in your personal panel",
+        PD: "Personal Dashboard",
+        PI: "Personal Info",
+        name: "Name",
+        AA: "All appointments",
+        waiting: "Waiting",
+        POO: "Processing / Operating",
+        DOC: "Discharged / Completed"
     },
 
     discussion: {

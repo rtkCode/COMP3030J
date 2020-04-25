@@ -1,7 +1,7 @@
 <template>
   <header>
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm" :class="{'opacity07': transparent, 'linear-header-bg': type=='1'}">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm" :class="{'opacity07': transparent}">
       <!-- nav title -->
       <router-link class="navbar-brand" to="/">
         <svg
@@ -22,8 +22,8 @@
             :fill="blackOrWhite"
           />
         </svg>
-        <span class="hospital-name ml-1" :class="{'text-white': transparent, 'text-white': type=='1'}">{{hospital}}</span>
-        <span class="hospital-name-sm ml-1" :class="{'text-white': transparent, 'text-white': type=='1'}"><small>{{hospital}}</small></span>
+        <span class="hospital-name ml-1" :class="{'text-white': transparent}">{{hospital}}</span>
+        <span class="hospital-name-sm ml-1" :class="{'text-white': transparent}"><small>{{hospital}}</small></span>
       </router-link>
       <!-- nav collapse button -->
       <button

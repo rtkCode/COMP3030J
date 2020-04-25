@@ -24,10 +24,6 @@
         </div>
       </div>
 
-      <!-- <div class="title text-left text-info mt-4 p-2 mx-3 mx-sm-5">
-        <h3>{{$t("string.dashboard.welcome")}} {{name}}{{$t("string.dashboard.youHave")}} <strong>{{appointments.length}}</strong> {{$t("string.dashboard.appointments")}}.</h3>
-      </div> -->
-
       <!-- placeholder -->
       <div class="mt-5 pt-5"></div>
 
@@ -250,6 +246,7 @@
     mounted() {
       this.$global.resizeContent();
       this.getProfile();
+      this.getAppointment();
     },
 
     methods: {
@@ -299,6 +296,56 @@
               _this.username = response.data.data.basic.username;
               _this.email = response.data.data.basic.email;
               _this.name = response.data.data.basic.firstName + " " +response.data.data.basic.lastName;
+            }
+            if (response.data.code == 400) {
+              $('.toast').toast('show');
+              _this.messageFailure=true;
+              _this.hintTitle=_this.$t("string.user.unknowError");
+              _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+            }
+          })
+          .catch(function (error) {
+            if(!error.response==undefined){
+            if (error.response.status == 401) {
+              _this.$token.removeToken();
+              _this.$router.push({
+                name: 'LogIn',
+                query: {
+                  message: _this.$t("string.appointment.loginExpired"),
+                  from: "/dashboard"
+                }
+              });
+            } }else {
+              $('.toast').toast('show');
+              console.log(error);
+              _this.messageFailure=true;
+              _this.hintTitle=_this.$t("string.user.unknowError");
+              _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+            }
+          });
+      },
+
+      getAppointment() {
+        let _this = this;
+        this.appointments=[];
+        this.appointments_completed=[];
+        this.appointments_others=[];
+        this.messageText={};
+        this.discussions=[];
+        this.$axios({
+            method: 'get',
+            url: this.$global.request("customerAppointments"),
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              "Authorization": "bearer " + this.$token.getToken(1)
+            },
+            data: this.$qs.stringify({
+              token: this.$token.getToken(0),
+            })
+          })
+          .then(function (response) {
+            console.log(response);
+            if (response.data.code == 200) {
               _this.appointments = response.data.data.appointments.reverse();
               _this.handleAppointments(_this.appointments);
             }
@@ -332,7 +379,7 @@
 
       updateStatus(id, status){
         let _this = this;
-
+        this.showButton=false;
         this.$axios({
             method: 'put',
             url: this.$global.request("updateAppointment"),
@@ -347,12 +394,14 @@
             })
           })
           .then(function (response) {
+            _this.showButton=true;
             if (response.data.code == 200) {
               $('.toast').toast('show');
               _this.messageFailure=false;
               _this.hintTitle="Success";
               _this.hintText="operation success";
-              setTimeout("location.reload()",2000);
+              _this.getAppointment();
+              $('.modal').modal('hide');
             }
             if (response.data.code == 400) {
               $('.toast').toast('show');
@@ -362,6 +411,7 @@
             }
           })
           .catch(function (error) {
+            _this.showButton=true;
             if(!error.response==undefined){
             if (error.response.status == 401) {
               _this.$token.removeToken();

@@ -240,6 +240,7 @@ export default {
 
   mounted() {
     this.getProfile();
+    this.getAppointment();
   },
 
   methods: {
@@ -278,6 +279,53 @@ export default {
               response.data.data.basic.firstName +
               " " +
               response.data.data.basic.lastName;
+          }
+          if (response.data.code == 400) {
+            $(".toast").toast("show");
+            _this.messageFailure = true;
+            _this.hintTitle = "Unknow error";
+            _this.hintText = response.data.msg + ", please refresh the page";
+          }
+        })
+        .catch(function(error) {
+          if (!error.response == undefined) {
+            if (error.response.status == 401) {
+              _this.$token.removeToken();
+              _this.$router.push({
+                name: "LogIn",
+                query: {
+                  message: "Login status expired, please log in again",
+                  from: "/discussion"
+                }
+              });
+            }
+          } else {
+            $(".toast").toast("show");
+            console.log(error);
+            _this.messageFailure = true;
+            _this.hintTitle = "Unknow error";
+            _this.hintText = response.data.msg + ", please check console log";
+          }
+        });
+    },
+
+    getAppointment() {
+      let _this = this;
+
+      this.$axios({
+        method: "get",
+        url: this.$global.request("customerAppointments"),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: "bearer " + this.$token.getToken(1)
+        },
+        data: this.$qs.stringify({
+          token: this.$token.getToken(0)
+        })
+      })
+        .then(function(response) {
+          console.log(response);
+          if (response.data.code == 200) {
             _this.appointments = response.data.data.appointments.reverse();
           }
           if (response.data.code == 400) {
@@ -308,6 +356,7 @@ export default {
           }
         });
     },
+
     getDiscussion(discussionId) {
       let _this = this;
       this.discussion = [];

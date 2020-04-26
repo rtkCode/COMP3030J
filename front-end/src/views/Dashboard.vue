@@ -560,7 +560,6 @@
 }
 
 .status-card{
-  /* width: 220px; */
   min-width: 200px;
   max-width: 220px;
   height: 100px;

@@ -123,6 +123,11 @@ export const string = {
         CDD: "Choose discharge date",
         CTA: "Cancel the appointment",
         AP: "Accepted appointments",
-        CP: "Completed appointments"
+        CP: "Completed appointments",
+        ED: "Employee Dashboard",
+        accepted: "Accepted",
+        operating: "Operating",
+        discharged: "Discharged",
+        completed: "Completed"
     }
 }

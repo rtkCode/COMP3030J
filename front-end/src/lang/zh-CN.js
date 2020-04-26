@@ -127,6 +127,11 @@ export const string = {
         CDD: "选择出院日期",
         CTA: "取消预约",
         AP: "接受的预约",
-        CP: "完成的预约"
+        CP: "完成的预约",
+        ED: "雇员面板",
+        accepted: "已接受",
+        operating: "手术中",
+        discharged: "已出院",
+        completed: "已完成"
     }
 }

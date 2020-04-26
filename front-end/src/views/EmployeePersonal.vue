@@ -4,7 +4,10 @@
     <div class="content">
 
       <div class="dashboard-bg d-flex align-items-start flex-column p-4 shadow-lg">
-        <h1 class="text-left text-white mt-auto mx-xl-4">{{$t("string.personal.ED")}}</h1>
+        <h1 class="text-left text-white mt-auto mx-xl-4">{{$t("string.personal.ED")}}<br/>
+          <small><small>{{name}}</small></small>
+          <svg t="1587899208338" class="icon ml-2" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2046" width="18" height="18"><path d="M307.933767 709.191401l55.608246-121.906912 70.215853 67.788777-125.824099 54.118135z m95.818675-171.645022l366.409348-352.874171 82.001279 80.116062-365.732025 352.095249-82.678602-79.33714z m550.042994-370.90226l-50.505744 48.372175-81.854525-80.116062 49.704244-47.593254c8.003704-7.958549 23.435387-6.513593 32.150281 2.144858l48.281866 46.182162c5.147657 5.03477 8.071436 11.559652 8.071436 18.039379 0.011289 5.046059-2.201301 9.36964-5.847558 12.970742zM313.792614 530.299019c-0.745056 0.767633-1.467534 1.478823-2.21259 2.889913L259.640613 717.217683c-2.923779 10.78073 0 22.340381 8.071436 30.310219 6.581325 5.779826 14.607607 9.290618 23.390233 9.290619 2.935068 0 5.113791-0.699901 8.03757-1.399802l190.147239-49.749399h0.79021a8.048859 8.048859 0 0 0 5.791115-2.178724l507.721574-489.208069c15.28493-14.40441 23.356366-33.888744 23.356367-55.551803 0-24.519105-10.927483-49.03821-29.215214-67.077588l-48.281865-46.182163c-19.010208-18.039378-43.935707-28.853974-69.572396-28.853974-22.577445 0-43.145497 7.935972-57.707948 23.074149L314.503803 528.109007c-0.71119 0.699901-0.71119 1.478823-0.711189 2.190012zM100.932466 0C45.358086 0 0 44.70334 0 99.555242V923.530372c0 54.806747 45.358086 99.555242 100.932466 99.555241h806.082505c55.57438 0 100.864734-44.748495 100.864734-99.555241V397.543645h-86.290994v451.729511c0 49.049498-40.221718 87.939147-89.214772 87.939147H175.539632c-49.004344 0-89.214772-38.889648-89.214773-87.939147V173.157711c0-48.338309 40.210429-88.040745 89.214773-88.040745h457.904443V0H100.932466z" fill="#ffffff" p-id="2047"></path></svg>
+        </h1>
         <div class="d-flex flex-wrap status-cards mx-xl-4">
           <div class="d-flex justify-content-around flex-column card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
             <span class="h2 m-0">{{allNum}}</span>
@@ -235,6 +238,7 @@ export default {
       accNun: 0,
       opeNum: 0,
       docNum: 0,
+      name: "",
 
       calendar1:{
         value:[2017,7,20],
@@ -282,6 +286,7 @@ export default {
   mounted() {
     this.$global.resizeContent();
     this.getAppointments();
+    this.getProfile();
     this.calendar1.value=this.getToday();
     this.operationDate=this.getToday();
     let _this=this;
@@ -376,6 +381,54 @@ export default {
         .catch(function (error) {
           _this.showButton=true;
           console.log(error);
+          if(!error.response==undefined){
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: 'LogIn',
+              query: {
+                message: _this.$t("string.appointment.loginExpired"),
+                from: "/dashboard"
+              }
+            });
+          } }else {
+            $('.toast').toast('show');
+            console.log(error);
+            _this.messageFailure=true;
+            _this.hintTitle=_this.$t("string.user.unknowError");
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        });
+    },
+
+    getProfile() {
+      let _this = this;
+
+      this.$axios({
+          method: 'get',
+          url: this.$global.request("profile"),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": "bearer " + this.$token.getToken(1)
+          },
+          data: this.$qs.stringify({
+            token: this.$token.getToken(0),
+          })
+        })
+        .then(function (response) {
+          if (response.data.code == 200) {
+            // _this.username = response.data.data.basic.username;
+            // _this.email = response.data.data.basic.email;
+            _this.name = response.data.data.basic.firstName + " " +response.data.data.basic.lastName;
+          }
+          if (response.data.code == 400) {
+            $('.toast').toast('show');
+            _this.messageFailure=true;
+            _this.hintTitle=_this.$t("string.user.unknowError");
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        })
+        .catch(function (error) {
           if(!error.response==undefined){
           if (error.response.status == 401) {
             _this.$token.removeToken();
@@ -659,6 +712,15 @@ export default {
 .message-container{
   height: 300px; 
   overflow-y: scroll;
+}
+
+svg{
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+svg:hover{
+  opacity: 1;
 }
 
 .info-card{

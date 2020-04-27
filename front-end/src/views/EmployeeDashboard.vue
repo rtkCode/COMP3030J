@@ -151,6 +151,7 @@
     },
 
     mounted() {
+      this.$global.resizeContent();
       this.baseUrl=this.$global.request("allAppointments");
       this.getAppointments();
     },

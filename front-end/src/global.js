@@ -21,4 +21,19 @@ global.minHeight=function(){
     return bHeigh-header-footer;
 };
 
+global.bg1={
+    backgroundImage: "url(" + require("../public/img/index.jpeg") + ")",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center"
+};
+
+global.bg2={
+    backgroundImage: "url(" + require("../public/img/appointment.png") + ")",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundAttachment: "fixed",
+};
+
 export default global

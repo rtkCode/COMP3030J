@@ -1,5 +1,5 @@
 <template>
-  <div class="Appointment" :style="bg">
+  <div class="Appointment" :style="$global.bg2">
     <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <div class="d-flex align-items-start flex-column content">
 
@@ -75,14 +75,6 @@ import Message from '@/components/Message.vue'
 export default {
   data() {
     return {
-      bg: {
-        backgroundImage: "url(" + require("../../public/img/appointment.png") + ")",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      },
-
       dates: [],
       emergency: [false, true],
       pets: ["Dog", "Cat"],

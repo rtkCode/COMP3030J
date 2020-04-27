@@ -114,6 +114,9 @@ export const string = {
         location: "Location",
         emergency: "Emergency",
         order: "Order",
+        ED: "Employee Discussion",
+        EDH: "You can discuss with all appointment customers",
+        discuss: "discuss",
     },
 
     personal: {

@@ -1,5 +1,5 @@
 <template>
-  <div :style="bg">
+  <div :style="$global.bg1">
     <HeaderIf :hospital="hospital" :transparent="true" ref="header"></HeaderIf>
     <section class="content d-flex flex-column justify-content-center align-items-center">
 
@@ -73,13 +73,6 @@ import Message from '@/components/Message.vue'
 export default {
   data(){
     return{
-      bg: {
-        backgroundImage: "url(" + require("../../public/img/index.jpeg") + ")",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-      },
-
       firstName: "",
       lastName: "",
       username: "",

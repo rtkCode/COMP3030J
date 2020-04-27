@@ -118,6 +118,9 @@ export const string = {
         location: "地点",
         emergency: "急诊",
         order: "顺序",
+        ED: "雇员讨论区",
+        EDH: "你可以在此与所有预约客户讨论",
+        discuss: "讨论",
     },
 
     personal: {

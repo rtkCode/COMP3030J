@@ -1,5 +1,5 @@
 <template>
-  <div :style="bg">
+  <div :style="$global.bg1">
     <HeaderIf :hospital="hospital" :transparent="true" ref="header"></HeaderIf>
 
     <div class="content d-flex justify-content-center align-items-center">
@@ -29,13 +29,6 @@ export default {
 
   data(){
     return{
-      bg: {
-        backgroundImage: "url(" + require("../../public/img/index.jpeg") + ")",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-      },
-
       fromPath: this.$route.query.from,
       toPath: this.$route.query.to,
     }
@@ -74,7 +67,6 @@ h2 {
 }
 
 .confirm {
-  /* border: 1px solid #d1d0d0; */
   padding: 40px;
   margin-left: 30px;
   margin-right: 30px;

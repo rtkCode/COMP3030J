@@ -1,5 +1,5 @@
 <template>
-  <div class="Index" :style="bg">
+  <div class="Index" :style="$global.bg1">
     <HeaderIf :hospital="hospital" :transparent="true"></HeaderIf>
     <swiper class="swiper" :options="swiperOption">
       <swiper-slide>
@@ -32,13 +32,6 @@ export default {
   name: "Index",
   data(){
     return{
-      bg: {
-        backgroundImage: "url(" + require("../../public/img/index.jpeg") + ")",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-      },
-
       swiperOption: {
         direction: 'vertical',
         slidesPerView: 1,

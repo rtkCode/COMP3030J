@@ -103,6 +103,7 @@ export const string = {
 
     discussion: {
         DWAD: "Discuss with attending doctor",
+        DWC: "Discuss with your customer",
         IYMH: "input your message here",
         handle: "Handle",
         showFilter: "Show filter",

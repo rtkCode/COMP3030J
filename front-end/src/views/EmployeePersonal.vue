@@ -8,7 +8,7 @@
           <small><small>{{name}}</small></small>
           <svg type="button" data-target="#exampleModal" data-toggle="modal" t="1587899208338" class="icon ml-2" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2046" width="18" height="18"><path d="M307.933767 709.191401l55.608246-121.906912 70.215853 67.788777-125.824099 54.118135z m95.818675-171.645022l366.409348-352.874171 82.001279 80.116062-365.732025 352.095249-82.678602-79.33714z m550.042994-370.90226l-50.505744 48.372175-81.854525-80.116062 49.704244-47.593254c8.003704-7.958549 23.435387-6.513593 32.150281 2.144858l48.281866 46.182162c5.147657 5.03477 8.071436 11.559652 8.071436 18.039379 0.011289 5.046059-2.201301 9.36964-5.847558 12.970742zM313.792614 530.299019c-0.745056 0.767633-1.467534 1.478823-2.21259 2.889913L259.640613 717.217683c-2.923779 10.78073 0 22.340381 8.071436 30.310219 6.581325 5.779826 14.607607 9.290618 23.390233 9.290619 2.935068 0 5.113791-0.699901 8.03757-1.399802l190.147239-49.749399h0.79021a8.048859 8.048859 0 0 0 5.791115-2.178724l507.721574-489.208069c15.28493-14.40441 23.356366-33.888744 23.356367-55.551803 0-24.519105-10.927483-49.03821-29.215214-67.077588l-48.281865-46.182163c-19.010208-18.039378-43.935707-28.853974-69.572396-28.853974-22.577445 0-43.145497 7.935972-57.707948 23.074149L314.503803 528.109007c-0.71119 0.699901-0.71119 1.478823-0.711189 2.190012zM100.932466 0C45.358086 0 0 44.70334 0 99.555242V923.530372c0 54.806747 45.358086 99.555242 100.932466 99.555241h806.082505c55.57438 0 100.864734-44.748495 100.864734-99.555241V397.543645h-86.290994v451.729511c0 49.049498-40.221718 87.939147-89.214772 87.939147H175.539632c-49.004344 0-89.214772-38.889648-89.214773-87.939147V173.157711c0-48.338309 40.210429-88.040745 89.214773-88.040745h457.904443V0H100.932466z" fill="#ffffff" p-id="2047"></path></svg>
         </h1>
-        <Model @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></Model>
+        <UModel @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></UModel>
         <div class="d-flex flex-wrap status-cards mx-xl-4">
           <div class="d-flex justify-content-around flex-column card border-radius10 status-card p-3 mr-4 mb-4 border-0 shadow">
             <span class="h2 m-0">{{allNum}}</span>
@@ -80,25 +80,10 @@
                   <td>{{$t("string.dashboard.dischargeDate")}}<span class="text-secondary">{{a.dischargeDate}}</span></td>
                 </tr>
 
-                <a class="text-left" data-toggle="collapse" :href="'#d'+a.id" role="button" aria-expanded="false" :aria-controls="'d'+a.id" @click="getDiscussion(a.id)">
+                <a class="text-left" data-toggle="collapse" :href="'#d'+a.id" @click="loadDiscussion(a.id)">
                   <svg t="1587111515032" class="icon mb-1 mr-1" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2472" width="20" height="20"><path d="M808.533333 397.866667v-2.133334c0-157.866667-167.466667-286.933333-372.266666-286.933333S64 236.8 64 395.733333c0 88.533333 51.2 169.6 140.8 225.066667l24.533333 183.466667 152.533334-124.8c18.133333 2.133333 36.266667 3.2 54.4 3.2h2.133333c45.866667 72.533333 140.8 119.466667 246.4 119.466666h16l148.266667 112 11.733333-162.133333c62.933333-40.533333 98.133333-99.2 98.133333-163.2 1.066667-82.133333-57.6-154.666667-150.4-190.933333zM378.666667 635.733333l-9.6-1.066666-107.733334 88.533333-17.066666-129.066667-9.6-5.333333c-82.133333-46.933333-128-117.333333-128-193.066667 0-134.4 148.266667-244.266667 329.6-244.266666s329.6 109.866667 329.6 244.266666C765.866667 530.133333 617.6 640 436.266667 640c-19.2 0-38.4-2.133333-57.6-4.266667z m452.266666 85.333334l-9.6 5.333333-8.533333 105.6-98.133333-74.666667-7.466667 1.066667c-7.466667 0-14.933333 1.066667-21.333333 1.066667-81.066667 0-153.6-29.866667-196.266667-78.933334 160-18.133333 288-114.133333 314.666667-237.866666 69.333333 29.866667 113.066667 85.333333 113.066666 146.133333 0 51.2-32 99.2-86.4 132.266667z" p-id="2473" fill="#8a8a8a"></path><path d="M245.333333 317.866667h373.333334v42.666666H245.333333zM245.333333 434.133333h373.333334v42.666667H245.333333z" p-id="2474" fill="#8a8a8a"></path></svg>
-                  {{$t("string.discussion.DWAD")}}
+                  {{$t("string.discussion.DWC")}}
                 </a>
-                <div class="collapse pt-1" :id="'d'+a.id">
-                  <div class="card card-body">
-                    <div class="message-container" :id="'dm'+a.id">
-                      <div v-for="(d,index) in discussions" :key="index">
-                        <div class="small text-secondary">{{d.postTime}}</div>
-                        <div class="bg-info rounded-lg py-1 px-2 my-4 text-left text-white bubble" :class="[!d.employee?'mr-auto':'ml-auto']">{{d.content}}</div>
-                      </div>
-                    </div>
-                    <hr/>
-                    <div>
-                      <textarea class="form-control border-0" rows="2" :placeholder="$t('string.discussion.IYMH')" v-model="messageText[a.id]"></textarea>
-                      <div class="text-right pt-1"><button class="btn btn-outline-info rounded" @click="postDiscussion(a.id)">{{$t("string.button.send")}}</button></div>
-                    </div>
-                  </div>
-                </div>
 
               </tbody>
             </table>
@@ -210,6 +195,7 @@
     </div>
     <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
+    <DModel :key="timer" :discussionId="discussionId" :showModal="showModal" :employee="true"></DModel>
   </div>
 </template>
 
@@ -218,7 +204,8 @@ import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
 import Message from '@/components/Message.vue';
 import calendar from '@/components/Calender.vue';
-import Model from "@/components/UpdateProfileModel.vue";
+import UModel from "@/components/UpdateProfileModel.vue";
+import DModel from "@/components/DiscussionModel.vue";
 
 export default {
   data() {
@@ -234,13 +221,14 @@ export default {
       operationId: -1,
       operationDate: "",
       operationText: "operation",
-      messageText: {},
-      discussions: [],
       allNum: 0,
       accNun: 0,
       opeNum: 0,
       docNum: 0,
       name: "",
+      timer: "",
+      discussionId: -1,
+      showModal: false,
 
       calendar1:{
         value:[2017,7,20],
@@ -275,7 +263,8 @@ export default {
     Footer,
     Message,
     calendar,
-    Model
+    UModel,
+    DModel,
   },
 
   props: {
@@ -299,6 +288,12 @@ export default {
   },
 
   methods: {
+    loadDiscussion(id){
+      this.showModal=true;
+      this.discussionId=id;
+      this.timer = new Date().getTime();
+    },
+
     getHintTitle(data){
       this.hintTitle=data;
     },
@@ -582,153 +577,11 @@ export default {
           }
         });
     },
-
-    getDiscussion(discussionId) {
-      let _this = this;
-      this.discussion=[];
-
-      this.$axios({
-          method: 'get',
-          url: this.$global.request("discussion/"+discussionId),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            "Authorization": "bearer " + this.$token.getToken(1)
-          }
-        })
-        .then(function (response) {
-          console.log(response);
-          if (response.data.code == 200) {
-            _this.discussions=response.data.data.discussions;
-          }
-          if (response.data.code == 400) {
-            $('.toast').toast('show');
-            _this.messageFailure=true;
-            _this.hintTitle=_this.$t("string.user.unknowError");
-            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
-          }
-        })
-        .catch(function (error) {
-          if(!error.response==undefined){
-          if (error.response.status == 401) {
-            _this.$token.removeToken();
-            _this.$router.push({
-              name: 'LogIn',
-              query: {
-                message: _this.$t("string.appointment.loginExpired"),
-                from: "/dashboard"
-              }
-            });
-          } }else {
-            $('.toast').toast('show');
-            console.log(error);
-            _this.messageFailure=true;
-            _this.hintTitle=_this.$t("string.user.unknowError");
-            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
-          }
-        });
-    },
-
-    postDiscussion(appointmentId) {
-      let _this = this;
-
-      this.$axios({
-          method: 'post',
-          url: this.$global.request("discussion"),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            "Authorization": "bearer " + this.$token.getToken(1)
-          },
-          data: this.$qs.stringify({
-            appointmentId: appointmentId,
-            token: this.$token.getToken(0),
-            content: this.messageText[appointmentId]
-          })
-        })
-        .then(function (response) {
-          _this.messageText[appointmentId]="";
-          console.log(response);
-          if (response.data.code == 200) {
-            _this.getDiscussion(appointmentId);
-          }
-          if (response.data.code == 400) {
-            $('.toast').toast('show');
-            _this.messageFailure=true;
-            _this.hintTitle=_this.$t("string.user.unknowError");
-            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
-          }
-        })
-        .catch(function (error) {
-          if(!error.response==undefined){
-          if (error.response.status == 401) {
-            _this.$token.removeToken();
-            _this.$router.push({
-              name: 'LogIn',
-              query: {
-                message: _this.$t("string.appointment.loginExpired"),
-                from: "/dashboard"
-              }
-            });
-          } }else {
-            $('.toast').toast('show');
-            console.log(error);
-            _this.messageFailure=true;
-            _this.hintTitle=_this.$t("string.user.unknowError");
-            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
-          }
-        });
-    },
-
-    previous() {
-      let a = this.i;
-      if (a != 0) {
-        a = a - 1;
-        this.i = a;
-      } else {
-        this.i = this.appointments.length - 1;
-      }
-    },
-    next() {
-      let a = this.i;
-      if (a != this.appointments.length - 1) {
-        a = a + 1;
-        this.i = a;
-      } else {
-        this.i = 0;
-      }
-    },
-    completed_previous() {
-      let b = this.n;
-      if (b != 0) {
-        b = b - 1;
-        this.n = b;
-      } else {
-        this.n = this.completed_appointments.length - 1;
-      }
-    },
-    completed_next() {
-      let b = this.n;
-      if (b != this.completed_appointments.length - 1) {
-        b = b + 1;
-        this.n = b;
-      } else {
-        this.n = 0;
-      }
-    }
   }
 };
 </script>
 
 <style scoped>
-.bubble{
-  max-width: 70%; 
-  width: fit-content;
-}
-
-.message-container{
-  height: 300px; 
-  overflow-y: scroll;
-}
-
 svg{
   opacity: 0.7;
   cursor: pointer;

@@ -107,6 +107,7 @@ export const string = {
 
     discussion: {
         DWAD: "与主治医师讨论",
+        DWC: "与你的客户讨论",
         IYMH: "输入你要发送的信息",
         handle: "接手",
         showFilter: "筛选条件",

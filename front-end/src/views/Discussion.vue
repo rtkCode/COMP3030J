@@ -239,6 +239,7 @@ export default {
   },
 
   mounted() {
+    this.$global.resizeContent();
     this.getProfile();
     this.getAppointment();
   },

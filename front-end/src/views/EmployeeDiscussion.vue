@@ -244,6 +244,7 @@ export default {
   },
 
   mounted() {
+    this.$global.resizeContent();
     this.getAppointments();
   },
 

@@ -119,7 +119,9 @@ export const string = {
         emergency: "急诊",
         order: "顺序",
         ED: "雇员讨论区",
+        CD: "顾客讨论区",
         EDH: "你可以在此与所有预约客户讨论",
+        CDH: "你可以在此与主治医师讨论",
         discuss: "讨论",
     },
 

@@ -369,8 +369,4 @@ export default {
   height: 300px;
   overflow-y: scroll;
 }
-
-.opacity{
-  opacity: 0.9;
-}
 </style>

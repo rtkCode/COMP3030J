@@ -68,6 +68,10 @@ td {
 .border-radius10{
   border-radius: 10px !important;
 }
+
+.opacity{
+  opacity: 0.9;
+}
 </style>
 
 <script>

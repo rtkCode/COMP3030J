@@ -62,6 +62,7 @@ class Appointment(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     pet_type = db.Column(db.String(50), index=True)
     emergency = db.Column(db.String(10), index=True)
+    priority = db.Column(db.Integer, index=True,default=0)
     status = db.Column(db.String(50), index=True, default="")
     symptom = db.Column(db.String(150), index=True)
     date = db.Column(db.Date, index=True)

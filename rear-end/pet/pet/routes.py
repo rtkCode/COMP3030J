@@ -94,10 +94,13 @@ def appointment():
         symptom = request.form["symptom"]
         message = request.form["message"]
         emergency = request.form["emergency"]
+        priority = 0
+        if emergency == "True":
+            priority = 0
         user = g.user   
         real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date() 
         fake_date = datetime.datetime.strptime("1970-01-01",'%Y-%m-%d').date()  
-        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message,operationTime=fake_date,dischargeDate=fake_date)
+        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, priority=priority, symptom=symptom, message=message,operationTime=fake_date,dischargeDate=fake_date)
         db.session.add(appointment)        
         db.session.commit()
         mail_sender = MailSender(user.email)
@@ -348,6 +351,7 @@ def customerAppointments():
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
+            list_item["priority"] = item.priority
             if item.emergency == "false":
                 list_item["emergency"] = False
             elif item.emergency == "true":
@@ -430,16 +434,28 @@ def profile():
 def updateProfile():
     if "firstName" in request.form and "lastName" in request.form and "email" in request.form:
         user = g.user
-        if not user:
+        employee = g.employee
+        if_em = 0
+        print(user)
+        if g.user is not None:
+            user_in_db = User.query.filter(User.username == user.username).first()
+            # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
+        elif g.employee is not None:
+            user_in_db = Employee.query.filter(Employee.username == employee.username).first()
+            if_em = 1
+        else:
             return jsonify({
-            "code":401,
-            "msg":"Unauthorized"
-        })
+            "code": 401,
+            "msg": "Unauthorized"
+                   
+            })
         email = request.form["email"]
         firstName = request.form["firstName"]
         lastName = request.form["lastName"]
-        user_in_db = User.query.filter(User.username == user.username).first()
-        email_in_db = User.query.filter(User.email == email).first()
+        if if_em == 0:
+            email_in_db = User.query.filter(User.email == email).first()
+        else:
+            email_in_db = Employee.query.filter(Employee.email == email).first()
         if re.match('^[a-zA-Z]{2,10}$', firstName) is None:
             return jsonify({
                 'code': 400,
@@ -591,6 +607,7 @@ def allAppointments(status="",typ="",emergency="",location="",sequence=""):
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
+            list_item["priority"] = item.priority
             if item.emergency == "false":
                 list_item["emergency"] = False
             elif item.emergency == "true":
@@ -616,6 +633,10 @@ def allAppointments(status="",typ="",emergency="",location="",sequence=""):
         
         if request_sequence == "date":
             appointment_list.sort(key=lambda item:item["date"])
+        if request_sequence == "priority":
+            appointment_list.sort(key=lambda item:item["priority"])
+            appointment_list.reverse()
+        
         return jsonify({
             "code":200,
             "msg":"Success",
@@ -648,6 +669,7 @@ def employeeAppointments():
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
+            list_item["priority"] = item.priority
             if item.emergency == "false":
                 list_item["emergency"] = False
             elif item.emergency == "true":
@@ -670,7 +692,8 @@ def employeeAppointments():
             else:
                 list_item["dischargeDate"] = str(item.dischargeDate)
             appointment_list.append(list_item)
-        
+        appointment_list.sort(key=lambda item:item["priority"])
+        appointment_list.reverse()
         return jsonify({
             "code":200,
             "msg":"Success",
@@ -775,6 +798,27 @@ def updateAppointment():
     else:
         return jsonify({"code": 400, "msg": "Failed"})
 
+
+@app.route ("/updatePriority",methods=['PUT'])
+@auth.login_required
+def updatePriority():
+    employee_in_db = g.employee
+    user_in_db = g.user
+    
+    if employee_in_db and "priority" in request.form and "id" in request.form:
+        id = request.form["id"]
+        priority = request.form["priority"]
+        appointment = Appointment.query.filter(Appointment.id == id).first()
+        # customer = User.query.filter(User.id == appointment.customer_id).first()
+        # mail_sender = MailSender(customer.email)
+        if appointment.employee_id == employee_in_db.id:
+            appointment.priority = priority
+            db.session.commit()
+            
+            # mail_sender.send_cancel_mail()
+            return jsonify({"code": 200, "msg": "Success"}) 
+        else:
+            return jsonify({"code": 200, "msg": "Failed"})
 
 @app.route ("/deleteAppointment",methods=['PUT'])
 @auth.login_required

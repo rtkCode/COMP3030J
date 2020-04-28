@@ -36,4 +36,23 @@ global.bg2={
     backgroundAttachment: "fixed",
 };
 
+global.priority=function(p){
+    let word="";
+    switch(p){
+        case 0:
+            word="Normal";
+            break;
+        case 1:
+            word="Important";
+            break;
+        case 2:
+            word="Urgent";
+            break;
+        case 3:
+            word="Very urgent";
+            break;
+    }
+    return word;
+}
+
 export default global

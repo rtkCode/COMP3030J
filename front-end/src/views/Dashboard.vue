@@ -340,8 +340,10 @@
         this.appointments=[];
         this.appointments_completed=[];
         this.appointments_others=[];
-        this.messageText={};
-        this.discussions=[];
+        this.allNum=0;
+        this.waitNun=0;
+        this.pooNum=0;
+        this.docNum=0;
         this.$axios({
             method: 'get',
             url: this.$global.request("customerAppointments"),

@@ -34,7 +34,37 @@
 
       <div class="col-12 d-flex flex-wrap">
         <div class="col-lg-5 col-sm-12 shadow my-4 mx-lg-4 mx-sm-0 border-radius10">
-          <h5 class="text-left mx-4 my-4 p-1">{{$t("string.personal.AP")}} ({{appointments_others.length}})</h5>
+          <h5 class="text-left mx-4 my-4 p-1 d-flex justify-content-between">{{$t("string.personal.AP")}} ({{appointments_others.length}})
+            <button type="button" class="btn btn-sm rounded-lg border-0 dropdown-toggle" data-toggle="collapse" data-target="#filterCollapse">
+              {{$t("string.personal.filter")}}
+            </button>     
+          </h5>
+
+          <div class="collapse" id="filterCollapse">
+            <div class="px-4 py-2 mx-2">
+              <h6 class="text-left ml-1">{{$t("string.dashboard.priority")}}</h6>
+              <div class="d-flex flex-wrap">
+                <button class="btn btn-sm btn-outline-info button-c p-2 m-2" v-for="(sta,index) in emergencys" :key="index" :class="{checked:index==e}" @click="changeEmergency(index)">{{sta}}</button>
+              </div>
+            </div>
+
+            <div class="px-4 py-2 mx-2">
+              <h6 class="text-left ml-1">{{$t("string.discussion.order")}}</h6>
+              <div class="d-flex flex-wrap">
+                <button class="btn btn-sm btn-outline-info button-c p-2 m-2" v-for="(sta,index) in orders" :key="index" :class="{checked:index==o}" @click="changeOrder(index)">{{sta}}</button>
+              </div>
+            </div>
+
+            <hr class="mx-4 px-1"/>
+
+            <div class="px-4 py-2 mx-2">
+              <div class="d-flex flex-wrap">
+                <a class="btn btn-sm btn-success button-c p-2 m-2" data-toggle="collapse" href="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse" @click="getAppointments()">{{$t("string.button.confirm")}}</a>
+                <a class="btn btn-sm btn-outline-danger button-c p-2 m-2" data-toggle="collapse" href="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">{{$t("string.button.cancel")}}</a>
+              </div>
+            </div>
+          </div>
+
           <div v-for="(a,index) in appointments_others" :key="index">
             <div class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg" :class="{'bg-light-red': a.emergency}">
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
@@ -43,6 +73,8 @@
               <div class="dropleft">
                 <button class="btn btn-outline-info badge badge-info button-gradient p-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$t("string.dashboard.operation")}}</button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <button class="dropdown-item" @click="updatePriorityId(a.id)" data-toggle="modal" data-target="#modalPriority">{{$t("string.dashboard.SP")}}</button>
+                  <div class="dropdown-divider"></div>
                   <button class="dropdown-item" @click="updateOperationId(a.id)" data-toggle="modal" data-target="#modal3">{{$t("string.personal.COD")}}</button>
                   <button class="dropdown-item" @click="updateStatus(a.id, 'Operating')">{{$t("string.personal.DAO")}}</button>
                   <div class="dropdown-divider"></div>
@@ -57,6 +89,10 @@
             </div>
             <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
               <tbody>
+                <tr>
+                  <td>{{$t("string.dashboard.priority")}}: <span class="text-secondary">{{$global.priority(a.priority)}}</span></td>
+                  <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
+                </tr>
                 <tr>
                   <td>{{$t("string.dashboard.status")}}<span class="text-secondary">{{a.status}}</span></td>
                   <td>{{$t("string.dashboard.emergency")}}<span class="text-secondary">{{a.emergency}}</span></td>
@@ -74,9 +110,6 @@
                 </tr>
                 <tr>
                   <td>{{$t("string.dashboard.operationDate")}}<span class="text-secondary">{{a.operationTime}}</span></td>
-                  <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
-                </tr>
-                <tr>
                   <td>{{$t("string.dashboard.dischargeDate")}}<span class="text-secondary">{{a.dischargeDate}}</span></td>
                 </tr>
 
@@ -130,7 +163,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -193,6 +225,28 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="modalPriority" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">{{$t("string.dashboard.SP")}}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="updatePriority(3)" v-show="showButton">Very urgent</button>
+              <button type="button" class="btn btn-warning" data-dismiss="modal" @click="updatePriority(2)" v-show="showButton">Urgent</button>
+              <button type="button" class="btn btn-info" data-dismiss="modal" @click="updatePriority(1)" v-show="showButton">Important</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="updatePriority(0)" v-show="showButton">Normal</button>
+              <button class="btn btn-info" type="button" v-show="!showButton" disabled>
+                  <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
+                  {{$t("string.user.loading")}}
+              </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <Message :hintTitle="hintTitle" :hintText="hintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
     <DModel :key="timer" :discussionId="discussionId" :showModal="showModal" :employee="true"></DModel>
@@ -229,6 +283,7 @@ export default {
       timer: "",
       discussionId: -1,
       showModal: false,
+      priorityId: -1,
 
       calendar1:{
         value:[2017,7,20],
@@ -256,8 +311,26 @@ export default {
       salary: "",
       age: "",
       phoneNumber: "",
+
+      s: 0,
+      selectedStatus: "all",
+      status: ["all", "Waiting", "Processing", "Operating", "Discharged", "Completed", "Canceled"],
+      p: 0,
+      selectedPet: "all",
+      pets: ["all", "Dog", "Cat"],
+      o: 0,
+      selectedOrder: "normal",
+      orders: ["normal", "date", "priority"],
+      selectedEmergency: "all",
+      emergencys: ["all", "true", "false"],
+      e: 0,
+      selectedLocation: "all",
+      locations: ["all", "Shanghai", "Chengdu", "Beijing"],
+      l: 0,
+
     };
   },
+
   components: {
     HeaderIf,
     Footer,
@@ -330,18 +403,6 @@ export default {
       this.operationText="discharge";
     },
 
-    getHintTitle(data){
-      this.hintTitle=data;
-    },
-
-    getHintText(data){
-      this.hintText=data;
-    },
-
-    getMessageFailure(data){
-      this.messageFailure=data;
-    },
-
     handleAppointments(appointments){
       for(let i=0;i<appointments.length;i++){
         if(appointments[i].status=="Operating"){
@@ -363,6 +424,13 @@ export default {
     getAppointments() {
       let _this = this;
       this.showButton=false;
+      this.appointments=[];
+      this.appointments_completed=[];
+      this.appointments_others=[];
+      this.accNun=0;
+      this.opeNum=0;
+      this.allNum=0;
+      this.docNum=0;
 
       this.$axios({
           method: 'get',
@@ -482,7 +550,65 @@ export default {
             _this.messageFailure=false;
             _this.hintTitle="Success";
             _this.hintText="operation success";
-            setTimeout("location.reload()",2000);
+            _this.getAppointments();
+          }
+          if (response.data.code == 400) {
+            $('.toast').toast('show');
+            _this.messageFailure=true;
+            _this.hintTitle="Handle failed";
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        })
+        .catch(function (error) {
+          _this.showButton=true;
+          if(!error.response==undefined){
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: 'LogIn',
+              query: {
+                message: _this.$t("string.appointment.loginExpired"),
+                from: "/dashboard"
+              }
+            });
+          } }else {
+            $('.toast').toast('show');
+            console.log(error);
+            _this.messageFailure=true;
+            _this.hintTitle=_this.$t("string.user.unknowError");
+            _this.hintText=response.data.msg+_this.$t("string.user.unknowErrorHint");
+          }
+        });
+    },
+
+    updatePriorityId(id){
+      this.priorityId=id;
+    }, 
+
+    updatePriority(p){
+      let _this = this;
+      this.showButton=false;
+      this.$axios({
+          method: 'put',
+          url: this.$global.request("updatePriority"),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": "bearer " + this.$token.getToken(1)
+          },
+          data: this.$qs.stringify({
+            id: this.priorityId,
+            token: this.$token.getToken(0),
+            priority: p
+          })
+        })
+        .then(function (response) {
+          _this.showButton=true;
+          if (response.data.code == 200) {
+            $('.toast').toast('show');
+            _this.messageFailure=false;
+            _this.hintTitle="Success";
+            _this.hintText="operation success";
+            _this.getAppointments();
           }
           if (response.data.code == 400) {
             $('.toast').toast('show');
@@ -547,7 +673,7 @@ export default {
             _this.messageFailure=false;
             _this.hintTitle="Success";
             _this.hintText="operation success";
-            setTimeout("location.reload()",2000);
+            _this.getAppointments();
           }
           if (response.data.code == 400) {
             $('.toast').toast('show');
@@ -582,6 +708,16 @@ export default {
 </script>
 
 <style scoped>
+.button-c{
+  width: 70px;
+}
+
+.checked {
+  background-color: #3ba2bd;
+  color: #fff;
+  border: 1px #fff solid;
+}
+
 svg{
   opacity: 0.7;
   cursor: pointer;

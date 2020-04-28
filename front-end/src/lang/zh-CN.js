@@ -88,6 +88,8 @@ export const string = {
         operationDate: "手术日期: ",
         attendingDoctor: "主治医师: ",
         dischargeDate: "出院日期: ",
+        priority: "优先级",
+        SP: "设置优先级",
         username: "用户名: ",
         email: "电子邮件: ",
         EYI: "修改个人信息",
@@ -138,6 +140,7 @@ export const string = {
         accepted: "已接受",
         operating: "手术中",
         discharged: "已出院",
-        completed: "已完成"
+        completed: "已完成",
+        filter: "筛选"
     }
 }

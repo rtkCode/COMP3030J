@@ -84,6 +84,8 @@ export const string = {
         operationDate: "Operation date: ",
         attendingDoctor: "Attending doctor: ",
         dischargeDate: "Discharge date: ",
+        priority: "Priority",
+        SP: "Set priority",
         username: "Username: ",
         email: "Email: ",
         EYI: "Edit your information",
@@ -134,6 +136,7 @@ export const string = {
         accepted: "Accepted",
         operating: "Operating",
         discharged: "Discharged",
-        completed: "Completed"
+        completed: "Completed",
+        filter: "Filter"
     }
 }

@@ -44,7 +44,7 @@
             <div class="px-4 py-2 mx-2">
               <h6 class="text-left ml-1">{{$t("string.dashboard.priority")}}</h6>
               <div class="d-flex flex-wrap">
-                <button class="btn btn-sm btn-outline-info button-c p-2 m-2" v-for="(sta,index) in emergencys" :key="index" :class="{checked:index==e}" @click="changeEmergency(index)">{{sta}}</button>
+                <button class="btn btn-sm btn-outline-info button-c px-2 m-2" v-for="(sta,index) in priorities" :key="index" :class="{checked:index==p}" @click="changePriority(index)">{{sta}}</button>
               </div>
             </div>
 
@@ -59,7 +59,7 @@
 
             <div class="px-4 py-2 mx-2">
               <div class="d-flex flex-wrap">
-                <a class="btn btn-sm btn-success button-c p-2 m-2" data-toggle="collapse" href="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse" @click="getAppointments()">{{$t("string.button.confirm")}}</a>
+                <a class="btn btn-sm btn-success button-c p-2 m-2" data-toggle="collapse" href="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse" @click="getAppointments(selectedOrder,selectedPriority)">{{$t("string.button.confirm")}}</a>
                 <a class="btn btn-sm btn-outline-danger button-c p-2 m-2" data-toggle="collapse" href="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">{{$t("string.button.cancel")}}</a>
               </div>
             </div>
@@ -312,21 +312,12 @@ export default {
       age: "",
       phoneNumber: "",
 
-      s: 0,
-      selectedStatus: "all",
-      status: ["all", "Waiting", "Processing", "Operating", "Discharged", "Completed", "Canceled"],
       p: 0,
-      selectedPet: "all",
-      pets: ["all", "Dog", "Cat"],
       o: 0,
       selectedOrder: "normal",
       orders: ["normal", "date", "priority"],
-      selectedEmergency: "all",
-      emergencys: ["all", "true", "false"],
-      e: 0,
-      selectedLocation: "all",
-      locations: ["all", "Shanghai", "Chengdu", "Beijing"],
-      l: 0,
+      selectedPriority: "all",
+      priorities: ["all", "Very urgent", "Urgent", "Important", "Normal"],
 
     };
   },
@@ -350,7 +341,7 @@ export default {
 
   mounted() {
     this.$global.resizeContent();
-    this.getAppointments();
+    this.getAppointments("normal","all");
     this.getProfile();
     this.calendar1.value=this.getToday();
     this.operationDate=this.getToday();
@@ -361,6 +352,16 @@ export default {
   },
 
   methods: {
+    changeOrder(index) {
+      this.o = index;
+      this.selectedOrder=this.orders[index];
+    },
+
+    changePriority(index) {
+      this.p = index;
+      this.selectedPriority=this.priorities[index];
+    },
+
     loadDiscussion(id){
       this.showModal=true;
       this.discussionId=id;
@@ -421,7 +422,7 @@ export default {
       this.allNum=appointments.length;
     },
 
-    getAppointments() {
+    getAppointments(sequence, priority) {
       let _this = this;
       this.showButton=false;
       this.appointments=[];
@@ -434,7 +435,7 @@ export default {
 
       this.$axios({
           method: 'get',
-          url: this.$global.request("employeeAppointments"),
+          url: this.$global.request("employeeAppointments/"+sequence+"/"+priority),
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             "Authorization": "bearer " + this.$token.getToken(1)

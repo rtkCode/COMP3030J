@@ -97,8 +97,8 @@ def appointment():
         if emergency == "true":
             priority = 3
         user = g.user   
-        real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date() 
-        fake_date = datetime.datetime.strptime("1970-01-01",'%Y-%m-%d').date()  
+        real_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        fake_date = datetime.datetime.strptime("1970-01-01", '%Y-%m-%d').date()
         appointment = Appointment(customer_id=user.id, date=real_date, pet_type=pet_type, location=location, emergency=emergency, priority=priority, symptom=symptom, message=message, operationTime=fake_date, dischargeDate=fake_date)
         db.session.add(appointment)        
         db.session.commit()
@@ -722,7 +722,6 @@ def updateAppointment():
     if "id" in request.form:
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
-
         customer = User.query.filter(User.id == appointment.customer_id).first()
         mail_sender = MailSender(customer.email)
 
@@ -823,18 +822,22 @@ def discussion():
             appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
             if(appointment == None or appointment.employee_id != employee_in_db.id):
                 return jsonify({
-                "code":401,
-                "msg":"Unauthorized"
+                    "code": 401,
+                    "msg": "Unauthorized"
             })
         
             localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            discussion = Discussion(appointment_id=appointmentId, content=post, post_time=localtime, employee="ture")
+            discussion = Discussion(appointment_id=appointmentId, content=post, post_time=localtime, employee="true")
             db.session.add(discussion)
             db.session.commit()
 
+            customer = User.query.filter(User.id == appointment.customer_id).first()
+            mail_sender = MailSender(customer.email)
+            mail_sender.send_discussion_mail()
+
             return jsonify({
-                "code":200,
-                "msg":"Success"
+                "code": 200,
+                "msg": "Success"
             })
 
         elif g.user is not None:
@@ -843,8 +846,8 @@ def discussion():
             appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
             if(appointment == None or appointment.customer_id != user_in_db.id):
                 return jsonify({
-                "code":401,
-                "msg":"Unauthorized"
+                    "code": 401,
+                    "msg": "Unauthorized"
             })
         
             localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -853,8 +856,8 @@ def discussion():
             db.session.commit()
 
             return jsonify({
-                "code":200,
-                "msg":"Success"
+                "code": 200,
+                "msg": "Success"
             })
 
         else:    

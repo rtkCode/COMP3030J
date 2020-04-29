@@ -116,7 +116,7 @@ class MailSender:
         message = MIMEText('You received a discussion message of an appointment.', 'plain', 'utf-8')
         message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
         message['To'] = Header(self.__to_address, 'utf-8')
-        subject = 'Healing Paws Veterinary Hospital Appointment Canceled'
+        subject = 'Healing Paws Veterinary Hospital Appointment Discussion'
         message['Subject'] = Header(subject, 'utf-8')
 
         t = threading.Thread(target=self.send, args=(message,), daemon=True)

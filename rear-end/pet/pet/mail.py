@@ -1,5 +1,6 @@
 import smtplib
 import traceback
+import threading
 from email.mime.text import MIMEText
 from email.header import Header
 
@@ -36,10 +37,10 @@ class MailSender:
             smtp_obj.login(self.__mail_user, self.__mail_pass)
             smtp_obj.sendmail(self.__sender, self.__receivers, message.as_string())
             smtp_obj.quit()
-            return {"code": 200, "msg": "Register mail sent successfully"}
+            print({"code": 200, "msg": "Mail sent successfully"})
         except smtplib.SMTPException:
             traceback.print_exc()
-            return {"code": 400, "msg": "Fail to sent register mail"}
+            print({"code": 400, "msg": "Mail delivery failed"})
 
     def send_register_mail(self):
         message = MIMEText('You have successfully registered Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
@@ -48,7 +49,8 @@ class MailSender:
         subject = 'Healing Paws Veterinary Hospital Register'
         message['Subject'] = Header(subject, 'utf-8')
 
-        self.send(message)
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()
 
     def send_appointment_mail(self):
         message = MIMEText('You have successfully made an appointment in Healing Paws Veterinary Hospital. We will deal with it as soon as possible.', 'plain', 'utf-8')
@@ -57,7 +59,8 @@ class MailSender:
         subject = 'Healing Paws Veterinary Hospital Appointment Made'
         message['Subject'] = Header(subject, 'utf-8')
 
-        self.send(message)
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()
 
     def send_processing_mail(self):
         message = MIMEText('Your appointment is being processed by our doctor.', 'plain', 'utf-8')
@@ -66,7 +69,8 @@ class MailSender:
         subject = 'Healing Paws Veterinary Hospital Appointment Processing'
         message['Subject'] = Header(subject, 'utf-8')
 
-        self.send(message)
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()
 
     def send_operation_mail(self):
         message = MIMEText('An operation date is settled or an operation is processed in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
@@ -75,7 +79,8 @@ class MailSender:
         subject = 'Healing Paws Veterinary Hospital Operation'
         message['Subject'] = Header(subject, 'utf-8')
 
-        self.send(message)
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()
 
     def send_discharge_mail(self):
         message = MIMEText('Discharge date is settled in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
@@ -84,7 +89,8 @@ class MailSender:
         subject = 'Healing Paws Veterinary Hospital Discharge'
         message['Subject'] = Header(subject, 'utf-8')
 
-        self.send(message)
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()
 
     def send_finish_mail(self):
         message = MIMEText('An appointment is completed in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
@@ -93,7 +99,8 @@ class MailSender:
         subject = 'Healing Paws Veterinary Hospital Appointment Completed'
         message['Subject'] = Header(subject, 'utf-8')
 
-        self.send(message)
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()
 
     def send_cancel_mail(self):
         message = MIMEText('An appointment is canceled in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
@@ -102,7 +109,8 @@ class MailSender:
         subject = 'Healing Paws Veterinary Hospital Appointment Canceled'
         message['Subject'] = Header(subject, 'utf-8')
 
-        self.send(message)
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()
 
     def send_discussion_mail(self):
         return {}

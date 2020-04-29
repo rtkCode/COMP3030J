@@ -82,6 +82,7 @@ def login():
                 "msg": "Invalid data"
         })
 
+
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
 def appointment():
@@ -103,6 +104,7 @@ def appointment():
         db.session.commit()
         mail_sender = MailSender(user.email)
         mail_sender.send_appointment_mail()
+
         return jsonify({
             "code": 200,
             "msg": "Appointment success",
@@ -112,6 +114,7 @@ def appointment():
                 "code": 400,
                 "msg": "Invalid data"
             })
+
 
 @app.route("/verifyToken", methods=['POST'])
 @auth.login_required

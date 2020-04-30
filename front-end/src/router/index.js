@@ -11,6 +11,7 @@ import EmployeeDashboard from '../views/EmployeeDashboard.vue'
 import EmployeePersonal from '../views/EmployeePersonal.vue'
 import Discussion from '../views/Discussion.vue'
 import EmployeeDiscussion from '../views/EmployeeDiscussion.vue'
+import NotFound from '../views/NotFound.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
@@ -23,7 +24,7 @@ Vue.prototype.$qs = qs
 Vue.prototype.$token = token
 Vue.prototype.$global = global
 
-window.onresize = function(){
+window.onresize = function () {
   global.resizeContent();
 }
 
@@ -121,6 +122,11 @@ const routes = [
       requireEmployee: true,
       normalPath: "/discussion"
     },
+  },
+  {
+    path: '/notfound',
+    name: 'NotFound',
+    component: NotFound
   }
 ]
 
@@ -158,7 +164,7 @@ router.beforeEach((to, from, next) => {
             if (to.meta.employee) {
               if (_token.isEmployee() == "true") next(to.meta.employeePath);
               else next();
-            } else if(to.meta.requireEmployee){
+            } else if (to.meta.requireEmployee) {
               if (_token.isEmployee() == "false") next(to.meta.normalPath);
               else next();
             } else next();

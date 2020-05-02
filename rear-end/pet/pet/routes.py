@@ -1,15 +1,13 @@
 from pet import app
-from flask import request, jsonify,g
+from flask import request, jsonify, g
 from flask_cors import CORS
 from .key import key
-from .models import User, Pet, Transcript, Appointment, Employee,Discussion
+from .models import User, Appointment, Employee, Discussion
 from pet import db
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
 import time
 import datetime
 from .config import Config
-import json
 import re
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
@@ -84,6 +82,7 @@ def login():
                 "msg": "Invalid data"
         })
 
+
 @app.route("/appointment", methods=['POST'])
 @auth.login_required
 def appointment():
@@ -94,22 +93,28 @@ def appointment():
         symptom = request.form["symptom"]
         message = request.form["message"]
         emergency = request.form["emergency"]
+        priority = 0
+        if emergency == "true":
+            priority = 3
         user = g.user   
-        real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date() 
-        fake_date = datetime.datetime.strptime("1970-01-01",'%Y-%m-%d').date()  
-        appointment = Appointment(customer_id=user.id,date=real_date, pet_type=pet_type, location=location, emergency=emergency, symptom=symptom, message=message,operationTime=fake_date,dischargeDate=fake_date)
-        db.session.add(appointment)
+        real_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        fake_date = datetime.datetime.strptime("1970-01-01", '%Y-%m-%d').date()
+        appointment = Appointment(customer_id=user.id, date=real_date, pet_type=pet_type, location=location, emergency=emergency, priority=priority, symptom=symptom, message=message, operationTime=fake_date, dischargeDate=fake_date)
+        db.session.add(appointment)        
         db.session.commit()
+        mail_sender = MailSender(user.email)
+        mail_sender.send_appointment_mail()
+
         return jsonify({
             "code": 200,
             "msg": "Appointment success",
-                
         })
         
     return jsonify({
                 "code": 400,
                 "msg": "Invalid data"
             })
+
 
 @app.route("/verifyToken", methods=['POST'])
 @auth.login_required
@@ -155,28 +160,6 @@ def verifyUserId():
             "code": 400,
             "msg": "Invalid data"                
         })
-
-# @app.route ("/checkemail", methods=['POST'])  # line 44-53 inspiration from lecture 15 def check_username(), to check if email reused 
-# def check_email():
-#     chosen = request.form['email']
-#     user_in_db = User.query.filter(User.email == chosen).first()
-#     if not user_in_db:
-#         return jsonify({'text': 'Email is available',
-# 						'returnvalue': 0})
-#     else:
-#         return jsonify({'text': 'Sorry! Email is already taken',
-# 						'returnvalue': 1})
-
-# @app.route ("/checkphone", methods=['POST']) # line 55-64 inspiration from lecture 15 def check_username(), to check if the 2 password inputs are same
-# def check_phone():
-#     chosen = request.form['phone']
-#     profile_in_db = Profile.query.filter(Profile.phone == chosen).first()
-#     if not profile_in_db:
-#         return jsonify({'text': 'Phone is available',
-# 						'returnvalue': 0})
-#     else:
-#         return jsonify({'text': 'Sorry! Phone is already taken',
-# 						'returnvalue': 1})
         
 
 @app.route("/register", methods=['POST'])
@@ -287,11 +270,13 @@ def register():
             'msg': 'register failure'
         })
 
+
 def generateToken(user,employee):
     expiration = 3600
     serializer = Serializer(Config.SECRET_KEY,expires_in=expiration) #有效时间为秒
     token = serializer.dumps({"username":user,"employee":employee}).decode("ascii") #解码形式再讨论
     return token
+
 
 @auth.verify_token
 def verify_token(token):   
@@ -321,7 +306,8 @@ def verify_token(token):
             g.user = User.query.filter(User.username == username).first() #g是存用户相关数据的
             # print(g.user.email)
         return True
-    
+
+
 @auth.error_handler
 def error_handler():
     return jsonify({
@@ -330,15 +316,11 @@ def error_handler():
         })
 
 
-@app.route ("/profile",methods=['GET'])
+@app.route("/customerAppointments", methods=['GET'])
 @auth.login_required
-def profile():
-    user = g.user   
-    
-    # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
-    user_in_db = User.query.filter(User.username == user.username).first() 
-    if user_in_db:
-        appointment = Appointment.query.filter(Appointment.customer_id == user_in_db.id).all()
+def customerAppointments():
+    if g.user is not None:
+        appointment = Appointment.query.filter(Appointment.customer_id == g.user.id).all()
         appointment_list = []
         for item in appointment:
             list_item = {}
@@ -349,6 +331,7 @@ def profile():
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
+            list_item["priority"] = item.priority
             if item.emergency == "false":
                 list_item["emergency"] = False
             elif item.emergency == "true":
@@ -371,6 +354,41 @@ def profile():
             else:
                 list_item["dischargeDate"] = str(item.dischargeDate)
             appointment_list.append(list_item)
+        return jsonify({
+            "code": 200,
+            "msg": "Success",
+            "data":{
+                "appointments":appointment_list
+            }
+                   
+        })
+    else:
+        return jsonify({
+            "code": 401,
+            "msg": "Unauthorized"
+                   
+        })
+
+
+@app.route("/profile", methods=['GET'])
+@auth.login_required
+def profile():
+    user = g.user   
+    employee = g.employee
+    user_in_db = None
+    if g.user is not None:
+        user_in_db = User.query.filter(User.username == user.username).first()
+    # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
+    elif g.employee is not None:
+        user_in_db = Employee.query.filter(Employee.username == employee.username).first()
+    else:
+        return jsonify({
+            "code": 401,
+            "msg": "Unauthorized"
+                   
+        })
+    if user_in_db:
+        
         user = {}
         user["username"] = user_in_db.username
         user["firstName"] = user_in_db.firstName
@@ -380,8 +398,8 @@ def profile():
             "code": 200,
             "msg": "Success",
             "data":{
-                "basic":user,
-                "appointments":appointment_list
+                "basic":user
+                
             }
                    
         })
@@ -391,21 +409,34 @@ def profile():
             "msg": "Invalid data"
         })
 
-@app.route ("/updateProfile",methods=['PUT'])
+
+@app.route("/updateProfile", methods=['PUT'])
 @auth.login_required
 def updateProfile():
     if "firstName" in request.form and "lastName" in request.form and "email" in request.form:
         user = g.user
-        if not user:
+        employee = g.employee
+        if_em = 0
+        print(user)
+        if g.user is not None:
+            user_in_db = User.query.filter(User.username == user.username).first()
+            # real_date = datetime.datetime.strptime(date,'%Y-%m-%d').date()  
+        elif g.employee is not None:
+            user_in_db = Employee.query.filter(Employee.username == employee.username).first()
+            if_em = 1
+        else:
             return jsonify({
-            "code":401,
-            "msg":"Unauthorized"
-        })
+            "code": 401,
+            "msg": "Unauthorized"
+                   
+            })
         email = request.form["email"]
         firstName = request.form["firstName"]
         lastName = request.form["lastName"]
-        user_in_db = User.query.filter(User.username == user.username).first()
-        email_in_db = User.query.filter(User.email == email).first()
+        if if_em == 0:
+            email_in_db = User.query.filter(User.email == email).first()
+        else:
+            email_in_db = Employee.query.filter(Employee.email == email).first()
         if re.match('^[a-zA-Z]{2,10}$', firstName) is None:
             return jsonify({
                 'code': 400,
@@ -444,7 +475,7 @@ def updateProfile():
 
 @app.route("/allAppointments/<status>/<typ>/<emergency>/<location>/<sequence>", methods=['GET'])
 @auth.login_required
-def allAppointments(status="",typ="",emergency="",location="",sequence=""):
+def all_appointments(status="", typ="", emergency="", location="", sequence=""):
     employee_in_db = g.employee
     
     request_type = typ
@@ -552,11 +583,11 @@ def allAppointments(status="",typ="",emergency="",location="",sequence=""):
             list_item = {}
             list_item["id"] = item.id
             list_item["type"] = item.pet_type
-            
             list_item["symptom"] = item.symptom
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
+            list_item["priority"] = item.priority
             if item.emergency == "false":
                 list_item["emergency"] = False
             elif item.emergency == "true":
@@ -582,24 +613,27 @@ def allAppointments(status="",typ="",emergency="",location="",sequence=""):
         
         if request_sequence == "date":
             appointment_list.sort(key=lambda item:item["date"])
+        elif request_sequence == "priority":
+            appointment_list.sort(key=lambda item:item["priority"])
+        
         return jsonify({
-            "code":200,
-            "msg":"Success",
-            "data":{
-                "appointments":appointment_list
+            "code": 200,
+            "msg": "Success",
+            "data": {
+                "appointments": appointment_list
             }
         })
     else:
         return jsonify({
-            "code":401,
-            "msg":"Unauthorized"
+            "code": 401,
+            "msg": "Unauthorized"
         })
 
-@app.route ("/employeeAppointments",methods=['GET'])
+
+@app.route("/employeeAppointments/<se>/<pr>", methods=['GET'])
 @auth.login_required
-def employeeAppointments():
+def employee_appointments(se="", pr=""):
     username = g.employee.username
-    
     employee_in_db = Employee.query.filter(Employee.username == username).first()
      
     if employee_in_db:
@@ -609,11 +643,11 @@ def employeeAppointments():
             list_item = {}
             list_item["id"] = item.id
             list_item["type"] = item.pet_type
-            # list_item["petStatus"] = item.petStatus
             list_item["symptom"] = item.symptom
             list_item["date"] = str(item.date)
             list_item["location"] = item.location
             list_item["message"] = item.message
+            list_item["priority"] = item.priority
             if item.emergency == "false":
                 list_item["emergency"] = False
             elif item.emergency == "true":
@@ -635,28 +669,46 @@ def employeeAppointments():
                 list_item["dischargeDate"] = "Undetermined"
             else:
                 list_item["dischargeDate"] = str(item.dischargeDate)
-            appointment_list.append(list_item)
-        
+
+            if pr =="all":
+                appointment_list.append(list_item)
+            elif pr =="Very urgent" and list_item["priority"] == 3:
+                appointment_list.append(list_item)
+            elif pr == "Urgent" and list_item["priority"] == 2:
+                appointment_list.append(list_item)
+            elif pr == "Important" and list_item["priority"] == 1:
+                appointment_list.append(list_item)
+            elif pr == "Normal" and list_item["priority"] == 0:
+                appointment_list.append(list_item)
+
+        if se == "date":
+            appointment_list.sort(key=lambda item:item["date"])
+        elif se == "priority":
+            appointment_list.sort(key=lambda item:item["priority"])
+
         return jsonify({
-            "code":200,
-            "msg":"Success",
-            "data":{
-                "appointments":appointment_list
+            "code": 200,
+            "msg": "Success",
+            "data": {
+                "appointments": appointment_list
             }
         })
-    if user_in_db:
+    else:
         return jsonify({
-            "code":401,
-            "msg":"Unauthorized"
+            "code": 401,
+            "msg": "Unauthorized"
         })
 
-@app.route ("/updateAppointment",methods=['PUT'])
+
+@app.route("/updateAppointment", methods=['PUT'])
 @auth.login_required
 def updateAppointment():
-    user = ""
     user_in_db = ""
+
+    # user type
     employee = False
 
+    # Determine the user type
     if g.user is not None:
         user = g.user.username
         user_in_db = User.query.filter(User.username == user).first()
@@ -664,86 +716,101 @@ def updateAppointment():
         user = g.employee.username
         user_in_db = Employee.query.filter(Employee.username == user).first()
         employee = True
+    else:
+        return jsonify({"code": 400, "msg": "User type invalid"})
 
-    if user_in_db:
+    if "id" in request.form:
         id = request.form["id"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
+        customer = User.query.filter(User.id == appointment.customer_id).first()
+        mail_sender = MailSender(customer.email)
 
+        if not employee:
+            if appointment.customer_id != user_in_db.id:
+                return jsonify({"code": 400, "msg": "Failed"})
+
+        # add employee name and id to appointments
         if employee:
             if appointment.employee_id is None:
                 appointment.employee_id = user_in_db.id
-            appointment.attendingDoctor = user_in_db.firstName + " " + user_in_db.lastName
-            
+                appointment.attendingDoctor = user_in_db.firstName + " " + user_in_db.lastName
 
-        else:
-            if "status" in request.form :
-                status = request.form["status"]
-                if (status == "Canceled" and appointment.status == "") or (status == "Completed" and appointment.status == "Discharged"):
-                    appointment.status = status
-                    db.session.commit()
-                    return jsonify({"code": 200, "msg": "Success"})
-            return jsonify({"code": 400, "msg": "Failed"})
-
-        if appointment.employee_id != user_in_db.id:
-            return jsonify({"code": 400, "msg": "Failed"})
+            elif appointment.employee_id != user_in_db.id:
+                return jsonify({"code": 400, "msg": "Failed"})
 
         if "status" in request.form:
             status = request.form["status"]
-            if status == "Processing" or status == "Operating" or status == "" or status == "Discharged" or status == "Canceled" or status == "Completed":
-                if (status == "Processing" and appointment.status == "") and (appointment.status!="Canceled" or appointment.status!="Completed"):
+            # for customer
+            if not employee:
+                if status == "Completed" and appointment.status == "Discharged":
                     appointment.status = status
+                    db.session.commit()
+                    mail_sender.send_finish_mail()
+                    return jsonify({"code": 200, "msg": "Appointment completed"})
+                elif status == "Canceled" and appointment.status == "":
+                    appointment.status = status
+                    db.session.commit()
+                    mail_sender.send_cancel_mail()
+                    return jsonify({"code": 200, "msg": "Appointment canceled"})
+                else:
+                    return jsonify({"code": 400, "msg": "Permission denied"})
+            # for employee
+            if employee:
+                print(1)
+                if status == "Processing" and appointment.status == "":
+                    print(2)
+                    appointment.status = status
+                    db.session.commit()
+                    mail_sender.send_processing_mail()
+                    return jsonify({"code": 200, "msg": "Appointment processing"})
 
-        if "operationTime" in request.form: 
+                appointment_status_set = set(["Processing", "Operating", "Discharged"])
+                request_status_set = set(["Discharged", "Operating", "Canceled"])
+
+                if status in request_status_set and appointment.status in appointment_status_set:
+                    appointment.status = status
+                    db.session.commit()
+                    if status == "Discharged":
+                        mail_sender.send_discharge_mail()
+                    elif status == "Operating":
+                        mail_sender.send_operation_mail()
+                    elif status == "Canceled":
+                        mail_sender.send_cancel_mail()
+                    return jsonify({"code": 200, "msg": "Operation success"})
+
+        if "operationTime" in request.form and employee:
             operationTime = request.form["operationTime"]
             appointment.operationTime = datetime.datetime.strptime(operationTime, '%Y-%m-%d').date()
-
-        if "dischargeDate" in request.form:
+            mail_sender.send_operation_mail()
+        if "dischargeDate" in request.form and employee:
             dischargeDate = request.form["dischargeDate"]
             appointment.dischargeDate = datetime.datetime.strptime(dischargeDate, '%Y-%m-%d').date()
-
-        if "attendingDoctor" in request.form:
-            attendingDoctor = request.form["attendingDoctor"]
-            appointment.attendingDoctor = attendingDoctor
-
+            mail_sender.send_discharge_mail()
         db.session.commit()
-        return jsonify({"code": 200, "msg": "Success"})
+        return jsonify({"code": 200, "msg": "Operation success"})
 
     else:
         return jsonify({"code": 400, "msg": "Failed"})
 
-@app.route ("/deleteAppointment",methods=['PUT'])
+
+@app.route("/updatePriority", methods=['PUT'])
 @auth.login_required
-def deleteAppointment():
+def updatePriority():
     employee_in_db = g.employee
-    user_in_db = g.user
     
-    if employee_in_db and "id" in request.form:
+    if employee_in_db and "priority" in request.form and "id" in request.form:
         id = request.form["id"]
+        priority = request.form["priority"]
         appointment = Appointment.query.filter(Appointment.id == id).first()
-
         if appointment.employee_id == employee_in_db.id:
-            appointment.status = "Canceled"
+            appointment.priority = priority
             db.session.commit()
             return jsonify({"code": 200, "msg": "Success"}) 
         else:
-            return jsonify({"code": 200, "msg": "Failed"})
-        
+            return jsonify({"code": 400, "msg": "Failed"})
 
-        
-    elif user_in_db and "id" in request.form:
-        id = request.form["id"]
-        appointment = Appointment.query.filter(Appointment.id == id).first()
-        if appointment.customer_id == user_in_db.id and appointment.status == "":
-            appointment.status = "Canceled"
-            db.session.commit()
-            return jsonify({"code": 200, "msg": "Success"}) 
-        else:
-            return jsonify({"code": 200, "msg": "Failed"})
 
-    else:
-        return jsonify({"code": 400, "msg": "Failed"})
-
-@app.route ("/discussion",methods=['POST'])
+@app.route("/discussion", methods=['POST'])
 @auth.login_required
 def discussion():
     if "appointmentId" in request.form.keys() and "content" in request.form.keys():
@@ -755,18 +822,22 @@ def discussion():
             appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
             if(appointment == None or appointment.employee_id != employee_in_db.id):
                 return jsonify({
-                "code":401,
-                "msg":"Unauthorized"
+                    "code": 401,
+                    "msg": "Unauthorized"
             })
         
             localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            discussion = Discussion(appointment_id=appointmentId, content=post, post_time=localtime, employee="ture")
+            discussion = Discussion(appointment_id=appointmentId, content=post, post_time=localtime, employee="true")
             db.session.add(discussion)
             db.session.commit()
 
+            customer = User.query.filter(User.id == appointment.customer_id).first()
+            mail_sender = MailSender(customer.email)
+            mail_sender.send_discussion_mail()
+
             return jsonify({
-                "code":200,
-                "msg":"Success"
+                "code": 200,
+                "msg": "Success"
             })
 
         elif g.user is not None:
@@ -775,8 +846,8 @@ def discussion():
             appointment = Appointment.query.filter(Appointment.id == appointmentId).first()
             if(appointment == None or appointment.customer_id != user_in_db.id):
                 return jsonify({
-                "code":401,
-                "msg":"Unauthorized"
+                    "code": 401,
+                    "msg": "Unauthorized"
             })
         
             localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -785,8 +856,8 @@ def discussion():
             db.session.commit()
 
             return jsonify({
-                "code":200,
-                "msg":"Success"
+                "code": 200,
+                "msg": "Success"
             })
 
         else:    
@@ -801,7 +872,8 @@ def discussion():
             "msg": "Invalid data"
         })
 
-@app.route ("/discussion/<string:appointmentId>",methods=['GET'])
+
+@app.route("/discussion/<string:appointmentId>", methods=['GET'])
 @auth.login_required
 def getDiscussions(appointmentId):
     if g.user is not None:
@@ -852,9 +924,7 @@ def getDiscussions(appointmentId):
     })
 
 
-
-
-@app.route ("/logout",methods=['POST']) # line 152-155 code from lecture 13 def logout()
+@app.route("/logout", methods=['POST'])
 @auth.login_required
 def logout():
     g.user = None
@@ -864,8 +934,6 @@ def logout():
             "code": 200,
             "msg": "Log out sucess"
         })   
-
-
 
 
 if __name__ == '__main__':

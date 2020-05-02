@@ -10,6 +10,7 @@ export const string = {
         AD: "Take care of your pet in all aspects",
         SAN: "start appointment now",
         language: "language",
+        download: "Download"
     },
 
     user: {
@@ -84,6 +85,8 @@ export const string = {
         operationDate: "Operation date: ",
         attendingDoctor: "Attending doctor: ",
         dischargeDate: "Discharge date: ",
+        priority: "Priority",
+        SP: "Set priority",
         username: "Username: ",
         email: "Email: ",
         EYI: "Edit your information",
@@ -92,10 +95,18 @@ export const string = {
         handleFailed: "Handle failed",
         handleSuccess: "Handle success",
         handleSuccessHint: "you can view this appointment in your personal panel",
+        PD: "Personal Dashboard",
+        PI: "Personal Info",
+        name: "Name",
+        AA: "All appointments",
+        waiting: "Waiting",
+        POO: "Processing / Operating",
+        DOC: "Discharged / Completed"
     },
 
     discussion: {
         DWAD: "Discuss with attending doctor",
+        DWC: "Discuss with your customer",
         IYMH: "input your message here",
         handle: "Handle",
         showFilter: "Show filter",
@@ -106,6 +117,11 @@ export const string = {
         location: "Location",
         emergency: "Emergency",
         order: "Order",
+        ED: "Employee Discussion",
+        CD: "Customer Discussion",
+        EDH: "You can discuss with all appointment customers",
+        CDH: "You can discuss with your attending doctors",
+        discuss: "discuss",
     },
 
     personal: {
@@ -116,6 +132,12 @@ export const string = {
         CDD: "Choose discharge date",
         CTA: "Cancel the appointment",
         AP: "Accepted appointments",
-        CP: "Completed appointments"
+        CP: "Completed appointments",
+        ED: "Employee Dashboard",
+        accepted: "Accepted",
+        operating: "Operating",
+        discharged: "Discharged",
+        completed: "Completed",
+        filter: "Filter"
     }
 }

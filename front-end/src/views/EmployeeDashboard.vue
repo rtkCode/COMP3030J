@@ -63,12 +63,16 @@
           <div v-for="(a,index) in appointments" :key="index">
             <div class="d-flex justify-content-around mx-2 my-4 px-1 py-3 rounded-lg" :class="{'bg-light-red': a.emergency, 'bg-light-light': !a.emergency}">
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
-              <span>{{index+1}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
+              <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
               <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">{{$t("string.dashboard.details")}}</a>
               <button class="btn btn-outline-info badge badge-info" @click="updateStatus(a.id)" :disabled="a.employeeId">{{$t("string.discussion.handle")}}</button>
             </div>
             <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
               <tbody>
+                <tr>
+                  <td>{{$t("string.dashboard.priority")}}<span class="text-secondary">{{$global.priority(a.priority)}}</span></td>
+                  <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
+                </tr>
                 <tr>
                   <td>{{$t("string.dashboard.status")}}<span class="text-secondary">{{a.status}}</span></td>
                   <td>{{$t("string.dashboard.emergency")}}<span class="text-secondary">{{a.emergency}}</span></td>
@@ -86,9 +90,6 @@
                 </tr>
                 <tr>
                   <td>{{$t("string.dashboard.operationDate")}}<span class="text-secondary">{{a.operationTime}}</span></td>
-                  <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
-                </tr>
-                <tr>
                   <td>{{$t("string.dashboard.dischargeDate")}}<span class="text-secondary">{{a.dischargeDate}}</span></td>
                 </tr>
               </tbody>
@@ -125,7 +126,7 @@
         pets: ["all", "Dog", "Cat"],
         o: 0,
         selectedOrder: "normal",
-        orders: ["normal", "by date"],
+        orders: ["normal", "date", "priority"],
         selectedEmergency: "all",
         emergencys: ["all", "true", "false"],
         e: 0,
@@ -151,6 +152,7 @@
     },
 
     mounted() {
+      this.$global.resizeContent();
       this.baseUrl=this.$global.request("allAppointments");
       this.getAppointments();
     },

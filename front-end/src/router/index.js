@@ -10,6 +10,9 @@ import EmployeeLogIn from '../views/EmployeeLogIn.vue'
 import EmployeeDashboard from '../views/EmployeeDashboard.vue'
 import EmployeePersonal from '../views/EmployeePersonal.vue'
 import Discussion from '../views/Discussion.vue'
+import EmployeeDiscussion from '../views/EmployeeDiscussion.vue'
+import NotFound from '../views/NotFound.vue'
+import Download from '../views/Download.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
@@ -22,6 +25,10 @@ Vue.prototype.$qs = qs
 Vue.prototype.$token = token
 Vue.prototype.$global = global
 
+window.onresize = function () {
+  global.resizeContent();
+}
+
 const routes = [
   {
     path: '/',
@@ -32,20 +39,16 @@ const routes = [
     path: '/login',
     name: 'LogIn',
     component: LogIn,
-    // lazy-loaded
-    // component: () => import(/* webpackChunkName: "login" */ '../views/LogIn.vue')
     meta: {
-      toLogout: true
+      requireLogout: true
     },
   },
   {
     path: '/register',
     name: 'SignUp',
     component: SignUp,
-    // lazy-loaded
-    // component: () => import(/* webpackChunkName: "register" */ '../views/SignUp.vue')
     meta: {
-      toLogout: true
+      requireLogout: true
     },
   },
   {
@@ -53,7 +56,9 @@ const routes = [
     name: 'Appointment',
     component: Appointment,
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      employee: true,
+      employeePath: "/employee/dashboard"
     },
   },
   {
@@ -62,12 +67,23 @@ const routes = [
     component: LogOut,
   },
   {
+    path: '/download',
+    name: 'Download',
+    component: Download
+  },
+  {
+    path: '/404',
+    name: 'NotFound',
+    component: NotFound
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
     meta: {
       requireAuth: true,
-      employee: true
+      employee: true,
+      employeePath: "/employee/dashboard"
     },
   },
   {
@@ -75,7 +91,7 @@ const routes = [
     name: 'EmployeeLogIn',
     component: EmployeeLogIn,
     meta: {
-      toLogout: true
+      requireLogout: true
     },
   },
   {
@@ -84,7 +100,8 @@ const routes = [
     component: EmployeeDashboard,
     meta: {
       requireAuth: true,
-      // employee: true
+      requireEmployee: true,
+      normalPath: "/dashboard"
     },
   },
   {
@@ -92,7 +109,9 @@ const routes = [
     name: 'EmployeePersonal',
     component: EmployeePersonal,
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      requireEmployee: true,
+      normalPath: "/dashboard"
     },
   },
   {
@@ -100,9 +119,22 @@ const routes = [
     name: 'Discussion',
     component: Discussion,
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      employee: true,
+      employeePath: "/employee/discussion"
     },
-  }
+  },
+  {
+    path: '/employee/discussion',
+    name: 'EmployeeDiscussion',
+    component: EmployeeDiscussion,
+    meta: {
+      requireAuth: true,
+      requireEmployee: true,
+      normalPath: "/discussion"
+    },
+  },
+  {path:'*',redirect:'/404'}
 ]
 
 const router = new VueRouter({
@@ -117,7 +149,7 @@ router.beforeEach((to, from, next) => {
       next({
         name: 'LogIn',
         query: {
-          message: "In order to complete this operation, you must log in",
+          message: "Login to complete this operation",
           from: to.path
         }
       });
@@ -137,7 +169,10 @@ router.beforeEach((to, from, next) => {
         .then(function (response) {
           if (response.data.code == 200) {
             if (to.meta.employee) {
-              if (_token.isEmployee() == "true") next("/employee/dashboard");
+              if (_token.isEmployee() == "true") next(to.meta.employeePath);
+              else next();
+            } else if (to.meta.requireEmployee) {
+              if (_token.isEmployee() == "false") next(to.meta.normalPath);
               else next();
             } else next();
           } else {
@@ -152,7 +187,7 @@ router.beforeEach((to, from, next) => {
                 next({
                   name: 'EmployeeLogIn',
                   query: {
-                    message: "Login status expired, please log in again",
+                    message: "Status expired, please login again",
                     from: to.path
                   }
                 });
@@ -161,7 +196,7 @@ router.beforeEach((to, from, next) => {
                 next({
                   name: 'LogIn',
                   query: {
-                    message: "Login status expired, please log in again",
+                    message: "Status expired, please login again",
                     from: to.path
                   }
                 });
@@ -174,7 +209,7 @@ router.beforeEach((to, from, next) => {
           }
         });
     }
-  } else if (to.meta.toLogout) {
+  } else if (to.meta.requireLogout) {
     if (token.getToken(0) == null) {
       next();
     } else {

@@ -1,22 +1,21 @@
 <template>
   <div>
-    <HeaderIf :hospital="hospital"></HeaderIf>
+    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <div class="content d-flex justify-content-center" :style="$global.bg2">
       <div class="col-lg-6 col-md-10 col-sm-12 col mx-2 p-0">
-        <div class="h5 text-left text-info mt-4 p-1">{{$t("string.discussion.CDH")}}</div>
-        <div v-for="(a,index) in appointments" :key="index">
+        <div class="h5 text-left text-info mt-4 p-1">{{$t("string.discussion.EDH")}}</div>
+        <div v-for="(a,index) in appointments" :key="index">
           <div
             class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg opacity"
             :class="{'bg-light-red': a.emergency, 'bg-light-light': !a.emergency}"
           >
             <span
               class="d-flex align-items-center badge badge-pill"
-              :class="[a.status=='Waiting'?'badge-secondary':'',a.status=='Processing'?'badge-info':'',a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']"
+              :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']"
             >{{a.status}}</span>
             <span>{{a.id}}</span>
-            <span>{{a.type}}</span>
+            <span class="hide-sm">{{a.type}}</span>
             <span class="hide-sm">{{a.date}}</span>
-            <span class="hide-md">{{a.attendingDoctor}}</span>
             <a
               class="text-info"
               data-toggle="collapse"
@@ -58,7 +57,6 @@
               {{$t("string.discussion.discuss")}}
             </a>
           </div>
-
           <table
             class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11"
             :id="'a'+index"
@@ -137,7 +135,7 @@
                   <div class="small text-secondary">{{d.postTime}}</div>
                   <div
                     class="bg-info rounded-lg py-1 px-2 my-4 text-left text-white bubble"
-                    :class="[!d.employee?'ml-auto':'mr-auto']"
+                    :class="[!d.employee?'mr-auto':'ml-auto']"
                   >{{d.content}}</div>
                 </div>
               </div>
@@ -175,15 +173,14 @@ export default {
   data() {
     return {
       appointments: [],
-      discussions: [],
       hintTitle: "",
       hintText: "",
-      messageText: {},
       messageFailure: false,
-      showButton: true
+      showButton: true,
+      messageText: {},
+      discussions: []
     };
   },
-
   components: {
     HeaderIf,
     Footer,
@@ -195,61 +192,66 @@ export default {
   },
 
   created() {
-    document.title = this.$t("string.discussion.CD") + " | " + this.hospital;
+    document.title = this.$t("string.discussion.ED") + " | " + this.hospital;
   },
 
   mounted() {
     this.$global.resizeContent();
-    this.getAppointment();
+    this.getAppointments();
   },
 
   methods: {
-    getAppointment() {
+    getAppointments() {
       let _this = this;
+      this.showButton = false;
 
       this.$axios({
         method: "get",
-        url: this.$global.request("customerAppointments"),
+        url: this.$global.request("employeeAppointments"),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: "bearer " + this.$token.getToken(1)
+          Authorization: "bearer " + this.$token.getToken(1)
         },
         data: this.$qs.stringify({
           token: this.$token.getToken(0)
         })
       })
-        .then(function(response) {
-          console.log(response);
-          if (response.data.code == 200) {
-            _this.appointments = response.data.data.appointments.reverse();
+      .then(function(response) {
+        _this.showButton = true;
+        if (response.data.code == 200) {
+          _this.appointments = response.data.data.appointments.reverse();
+        }
+        if (response.data.code == 400) {
+          $(".toast").toast("show");
+          _this.messageFailure = true;
+          _this.hintTitle = _this.$t("string.user.unknowError");
+          _this.hintText =
+            response.data.msg + _this.$t("string.user.unknowErrorHint");
+        }
+      })
+      .catch(function(error) {
+        _this.showButton = true;
+        console.log(error);
+        if (!error.response == undefined) {
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: "LogIn",
+              query: {
+                message: _this.$t("string.appointment.loginExpired"),
+                from: "/dashboard"
+              }
+            });
           }
-          if (response.data.code == 400) {
-            $(".toast").toast("show");
-            _this.messageFailure = true;
-            _this.hintTitle = "Unknow error";
-            _this.hintText = response.data.msg + ", please refresh the page";
-          }
-        })
-        .catch(function(error) {
-          if (!error.response == undefined) {
-            if (error.response.status == 401) {
-              _this.$token.removeToken();
-              _this.$router.push({
-                name: "LogIn",
-                query: {
-                  message: "Login status expired, please log in again",
-                  from: "/discussion"
-                }
-              });
-            }
-          } else {
-            $(".toast").toast("show");
-            console.log(error);
-            _this.messageFailure = true;
-            _this.hintTitle = "Unknow error";
-            _this.hintText = response.data.msg + ", please check console log";
-          }
-        });
+        } else {
+          $(".toast").toast("show");
+          console.log(error);
+          _this.messageFailure = true;
+          _this.hintTitle = _this.$t("string.user.unknowError");
+          _this.hintText =
+            response.data.msg + _this.$t("string.user.unknowErrorHint");
+        }
+      });
     },
 
     getDiscussion(discussionId) {
@@ -264,40 +266,40 @@ export default {
           Authorization: "bearer " + this.$token.getToken(1)
         }
       })
-        .then(function(response) {
-          console.log(response);
-          if (response.data.code == 200) {
-            _this.discussions = response.data.data.discussions;
+      .then(function(response) {
+        console.log(response);
+        if (response.data.code == 200) {
+          _this.discussions = response.data.data.discussions;
+        }
+        if (response.data.code == 400) {
+          $(".toast").toast("show");
+          _this.messageFailure = true;
+          _this.hintTitle = _this.$t("string.user.unknowError");
+          _this.hintText =
+            response.data.msg + _this.$t("string.user.unknowErrorHint");
+        }
+      })
+      .catch(function(error) {
+        if (!error.response == undefined) {
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: "LogIn",
+              query: {
+                message: _this.$t("string.appointment.loginExpired"),
+                from: "/dashboard"
+              }
+            });
           }
-          if (response.data.code == 400) {
-            $(".toast").toast("show");
-            _this.messageFailure = true;
-            _this.hintTitle = _this.$t("string.user.unknowError");
-            _this.hintText =
-              response.data.msg + _this.$t("string.user.unknowErrorHint");
-          }
-        })
-        .catch(function(error) {
-          if (!error.response == undefined) {
-            if (error.response.status == 401) {
-              _this.$token.removeToken();
-              _this.$router.push({
-                name: "LogIn",
-                query: {
-                  message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
-                }
-              });
-            }
-          } else {
-            $(".toast").toast("show");
-            console.log(error);
-            _this.messageFailure = true;
-            _this.hintTitle = _this.$t("string.user.unknowError");
-            _this.hintText =
-              response.data.msg + _this.$t("string.user.unknowErrorHint");
-          }
-        });
+        } else {
+          $(".toast").toast("show");
+          console.log(error);
+          _this.messageFailure = true;
+          _this.hintTitle = _this.$t("string.user.unknowError");
+          _this.hintText =
+            response.data.msg + _this.$t("string.user.unknowErrorHint");
+        }
+      });
     },
 
     postDiscussion(appointmentId) {
@@ -316,42 +318,43 @@ export default {
           content: this.messageText[appointmentId]
         })
       })
-        .then(function(response) {
-          _this.messageText[appointmentId] = "";
-          console.log(response);
-          if (response.data.code == 200) {
-            _this.getDiscussion(appointmentId);
+      .then(function(response) {
+        _this.messageText[appointmentId] = "";
+        console.log(response);
+        if (response.data.code == 200) {
+          _this.getDiscussion(appointmentId);
+        }
+        if (response.data.code == 400) {
+          $(".toast").toast("show");
+          _this.messageFailure = true;
+          _this.hintTitle = _this.$t("string.user.unknowError");
+          _this.hintText =
+            response.data.msg + _this.$t("string.user.unknowErrorHint");
+        }
+      })
+      .catch(function(error) {
+        if (!error.response == undefined) {
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: "LogIn",
+              query: {
+                message: _this.$t("string.appointment.loginExpired"),
+                from: "/dashboard"
+              }
+            });
           }
-          if (response.data.code == 400) {
-            $(".toast").toast("show");
-            _this.messageFailure = true;
-            _this.hintTitle = _this.$t("string.user.unknowError");
-            _this.hintText =
-              response.data.msg + _this.$t("string.user.unknowErrorHint");
-          }
-        })
-        .catch(function(error) {
-          if (!error.response == undefined) {
-            if (error.response.status == 401) {
-              _this.$token.removeToken();
-              _this.$router.push({
-                name: "LogIn",
-                query: {
-                  message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
-                }
-              });
-            }
-          } else {
-            $(".toast").toast("show");
-            console.log(error);
-            _this.messageFailure = true;
-            _this.hintTitle = _this.$t("string.user.unknowError");
-            _this.hintText =
-              response.data.msg + _this.$t("string.user.unknowErrorHint");
-          }
-        });
+        } else {
+          $(".toast").toast("show");
+          console.log(error);
+          _this.messageFailure = true;
+          _this.hintTitle = _this.$t("string.user.unknowError");
+          _this.hintText =
+            response.data.msg + _this.$t("string.user.unknowErrorHint");
+        }
+      });
     }
+
   }
 };
 </script>
@@ -365,11 +368,5 @@ export default {
 .message-container {
   height: 300px;
   overflow-y: scroll;
-}
-
-@media (max-width: 510px) {
-  .hide-md{
-    display: none;
-  }
 }
 </style>

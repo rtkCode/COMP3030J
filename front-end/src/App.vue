@@ -17,12 +17,12 @@
   color: rgba(0,0,0,.9) !important;
 }
 
-.content{
-  min-height: 87vh;
-}
-
 td {
   text-align: left;
+}
+
+.bg-white50{
+  background: rgba(255,255,255,0.7) !important;
 }
 
 .bg-light-red{
@@ -37,6 +37,10 @@ td {
   color: #FF4136;
 }
 
+.error-text{
+  color: #FF4136;
+}
+
 .input-div{
   min-width: 304px;
 }
@@ -45,6 +49,28 @@ td {
   .hide-sm{
     display: none;
   }
+}
+
+.text-shadow{
+  text-shadow:3px 2px 1px #212121;
+}
+
+.button-gradient{
+  background: linear-gradient(146deg, rgba(143,255,165,1) 1%, rgba(14,92,173,1) 100%);
+  opacity: 0.8;
+  transition: all 0.3s;
+}
+
+.button-gradient:hover{
+  opacity: 1;
+}
+
+.border-radius10{
+  border-radius: 10px !important;
+}
+
+.opacity{
+  opacity: 0.9;
 }
 </style>
 

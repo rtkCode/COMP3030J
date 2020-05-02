@@ -10,6 +10,7 @@ export const string = {
         AD: "全方位照顾您的宠物",
         SAN: "现在开始预约 >>>",
         language: "语言",
+        download: "下载客户端"
     },
 
     user: {
@@ -88,6 +89,8 @@ export const string = {
         operationDate: "手术日期: ",
         attendingDoctor: "主治医师: ",
         dischargeDate: "出院日期: ",
+        priority: "优先级",
+        SP: "设置优先级",
         username: "用户名: ",
         email: "电子邮件: ",
         EYI: "修改个人信息",
@@ -96,10 +99,18 @@ export const string = {
         handleFailed: "接手失败",
         handleSuccess: "接手成功",
         handleSuccessHint: "您可以在您的个人面板中查看此预约",
+        PD: "个人中心",
+        PI: "个人信息",
+        name: "名字",
+        AA: "所有预约",
+        waiting: "等待处理",
+        POO: "处理中 / 手术中",
+        DOC: "已出院 / 已完成"
     },
 
     discussion: {
         DWAD: "与主治医师讨论",
+        DWC: "与你的客户讨论",
         IYMH: "输入你要发送的信息",
         handle: "接手",
         showFilter: "筛选条件",
@@ -110,6 +121,11 @@ export const string = {
         location: "地点",
         emergency: "急诊",
         order: "顺序",
+        ED: "雇员讨论区",
+        CD: "顾客讨论区",
+        EDH: "你可以在此与所有预约客户讨论",
+        CDH: "你可以在此与主治医师讨论",
+        discuss: "讨论",
     },
 
     personal: {
@@ -120,6 +136,12 @@ export const string = {
         CDD: "选择出院日期",
         CTA: "取消预约",
         AP: "接受的预约",
-        CP: "完成的预约"
+        CP: "完成的预约",
+        ED: "雇员面板",
+        accepted: "已接受",
+        operating: "手术中",
+        discharged: "已出院",
+        completed: "已完成",
+        filter: "筛选"
     }
 }

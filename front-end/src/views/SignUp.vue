@@ -1,58 +1,63 @@
 <template>
-  <div>
-    <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
+  <div :style="$global.bg1">
+    <HeaderIf :hospital="hospital" :transparent="true" ref="header"></HeaderIf>
     <section class="content d-flex flex-column justify-content-center align-items-center">
-      <form class="needs-validation" novalidate>
-        <div class="form">
-          <div class="col-12 text-left">
-            <label for="fn">{{$t("string.user.firstname")}}</label>
-            <input type="text" class="form-control" id="fn" v-model="firstName" required>
-            <small class="invalid">*2-10 letters</small>
-          </div>
 
-          <div class="col-12 text-left mt-1">
-            <label for="ln">{{$t("string.user.lastname")}}</label>
-            <input type="text" class="form-control" id="ln" v-model="lastName" required>
-            <small class="invalid">*2-10 letters</small>
-          </div>
-
-          <div class="col-12 text-left mt-1">
-            <label for="validationCustomUsername">{{$t("string.user.username")}}</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroupPrepend">@</span>
-              </div>
-              <input type="text" class="form-control" v-model="username" @blur="verifyUserId('username')" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+      <div class="login-card card px-3 py-4 shadow-lg">
+        <form class="needs-validation" novalidate>
+          <div class="form">
+            <div class="col-12 text-left">
+              <label for="fn" class="text-white">{{$t("string.user.firstname")}}</label>
+              <input type="text" class="form-control bg-white50" id="fn" v-model="firstName" required>
+              <small class="invalid">*2-10 letters</small>
             </div>
-            <small class="invalid">*4-16 digits, letters, numbers, underscore</small>
-            <small class="error-text">{{usernameErrorText}}</small>
-          </div>
 
-          <div class="col-12 text-left mt-1">
-            <label for="ea">{{$t("string.user.email")}}</label>
-            <input type="email" class="form-control" id="ea" v-model="email" @blur="verifyUserId('email')" required>
-            <small class="invalid">*Please input the correct email address</small>
-            <small class="error-text">{{emailErrorText}}</small>
-          </div>
+            <div class="col-12 text-left mt-1">
+              <label for="ln" class="text-white">{{$t("string.user.lastname")}}</label>
+              <input type="text" class="form-control bg-white50" id="ln" v-model="lastName" required>
+              <small class="invalid">*2-10 letters</small>
+            </div>
 
-          <div class="col-12 text-left mt-1">
-            <label for="pw">{{$t("string.user.password")}}</label>
-            <input type="password" class="form-control" id="pw" v-model="password" required>
-            <small class="invalid">*6-18</small>
-          </div>
+            <div class="col-12 text-left mt-1">
+              <label for="validationCustomUsername" class="text-white">{{$t("string.user.username")}}</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text text-white button-gradient" id="inputGroupPrepend">@</span>
+                </div>
+                <input type="text" class="form-control bg-white50" v-model="username" @blur="verifyUserId('username')" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              </div>
+              <small class="invalid">*4-16 digits, letters, numbers, underscore</small>
+              <small class="error-text">{{usernameErrorText}}</small>
+            </div>
 
-          <div class="col-12 text-left mt-1 mb-2">
-            <label for="irc">{{$t("string.user.IRC")}}</label>
-            <input type="password" class="form-control" id="irc" v-model="irc" :placeholder="$t('string.user.LIBIYRAC')">
+            <div class="col-12 text-left mt-1">
+              <label for="ea" class="text-white">{{$t("string.user.email")}}</label>
+              <input type="email" class="form-control bg-white50" id="ea" v-model="email" @blur="verifyUserId('email')" required>
+              <small class="invalid">*Please input the correct email address</small>
+              <small class="error-text">{{emailErrorText}}</small>
+            </div>
+
+            <div class="col-12 text-left mt-1">
+              <label for="pw" class="text-white">{{$t("string.user.password")}}</label>
+              <input type="password" class="form-control bg-white50" id="pw" v-model="password" required>
+              <small class="invalid">*6-18</small>
+            </div>
+
+            <div class="col-12 text-left mt-1 mb-2">
+              <label for="irc" class="text-white">{{$t("string.user.IRC")}}</label>
+              <input type="password" class="form-control bg-white50" id="irc" v-model="irc" :placeholder="$t('string.user.LIBIYRAC')">
+            </div>
           </div>
+          <small class="text-black-50">{{$t("string.user.registerHint")}}</small>
+        </form>
+        <div>
+          <button class="btn button-gradient rounded border-white text-white mt-2 px-4" type="submit" @click="verifyName()" v-show="showButton">{{$t("string.user.register")}}</button>
+          <button class="btn button-gradient rounded border-white text-white mt-2 px-4" type="button" v-show="!showButton" disabled>
+            <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
+            {{$t("string.user.loading")}}
+          </button>
         </div>
-        <small class="text-secondary">{{$t("string.user.registerHint")}}</small>
-      </form>
-      <button class="btn btn-outline-info mt-2 px-4" type="submit" @click="verifyName()" v-show="showButton">{{$t("string.user.register")}}</button>
-      <button class="btn btn-outline-info mt-2 px-4" type="button" v-show="!showButton" disabled>
-        <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>
-        {{$t("string.user.loading")}}
-      </button>
+      </div>
     </section>
     <Message :hintTitle="registerHintTitle" :hintText="registerHintText" :failure="messageFailure"></Message>
     <Footer :hospital="hospital"></Footer>
@@ -96,6 +101,7 @@ export default {
 
   mounted(){
     $(".invalid").hide();
+    this.$global.resizeContent();
   },
 
   created(){
@@ -233,7 +239,9 @@ export default {
 </script>
 
 <style scoped>
-.error-text{
-  color: #FF4136;
+.login-card{
+  border-radius: 10px !important;
+  border: none !important;
+  background: rgba(0, 110, 117, 0.4);
 }
 </style>

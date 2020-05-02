@@ -1,44 +1,44 @@
 <template>
-  <div class="Appointment">
+  <div class="Appointment" :style="$global.bg2">
     <HeaderIf :hospital="hospital" ref="header"></HeaderIf>
     <div class="d-flex align-items-start flex-column content">
 
-      <div class="p-4">
+      <div class="p-sm-4 p-3">
         <h4 class="text-left">{{$t("string.appointment.date")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(date,index) in dates" :key="index" :class="{checked:index==d}" @click="changeDate(index)">{{date.date}}, {{date.day}}</button>
         </div>
       </div>
 
-      <div class="p-4">
+      <div class="p-sm-4 p-3">
         <h4 class="text-left">{{$t("string.appointment.type")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(pet,index) in pets" :key="index" :class="{checked:index==p}" @click="changePet(index)">{{pet}}</button>
         </div>
       </div>
       
-      <div class="p-4">
+      <div class="p-sm-4 p-3">
         <h4 class="text-left">{{$t("string.appointment.location")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(city,index) in cities" :key="index" :class="{checked:index==c}" @click="changeCity(index)">{{city}}</button>
         </div>
       </div>
 
-      <div class="p-4">
+      <div class="p-sm-4 p-3">
         <h4 class="text-left">{{$t("string.appointment.symptom")}}</h4>
         <div class="d-flex flex-wrap">
           <button class="btn btn-outline-info button-c p-2 m-2" v-for="(type,index) in types" :key="index" :class="{checked:index==t}" @click="changeType(index)">{{type}}</button>
         </div>
       </div>
 
-      <div class="p-4">
+      <div class="p-sm-4 p-3">
         <h4 class="text-left">{{$t("string.appointment.emergency")}}</h4>
         <div class="d-flex flex-wrap">
-          <button class="btn btn-outline-info button-c p-2 m-2" v-for="(i,index) in emergency" :key="index" :class="{checked:index==e}" @click="changeEmergency(index)">{{i}}</button>
+          <button class="btn btn-outline-info button-c p-2 m-2" v-for="(i,index) in emergency" :key="index" :class="[{checked:index==e}, [index==1?'btn-outline-danger':'']]" @click="changeEmergency(index)">{{i}}</button>
         </div>
       </div>
 
-      <div class="p-4" style="width: 100%">
+      <div class="p-sm-4 p-3" style="width: 100%">
         <h4 class="text-left">{{$t("string.appointment.message")}}</h4>
         <div class="d-flex flex-wrap">
           <textarea class="form-control flex-grow-1  p-2 m-2 mr-4" rows="4" v-model="message" :placeholder="$t('string.appointment.messageHint')"></textarea>
@@ -109,6 +109,7 @@ export default {
   },
 
   mounted() {
+    this.$global.resizeContent();
     for(let i=0;i<7;i++){
       let dict={}
       dict["date"]=this.getDate(i);
@@ -238,7 +239,7 @@ export default {
 .checked {
   background-color: #3ba2bd;
   color: #fff;
-  border: 1px #fff solid;
+  border: 1px solid #17a2b8;
 }
 
 svg{

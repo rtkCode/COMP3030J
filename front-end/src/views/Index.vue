@@ -1,15 +1,23 @@
 <template>
-  <div class="Index">
-    <HeaderIf :hospital="hospital"></HeaderIf>
-    <section class="content d-flex justify-content-center align-items-center" :style="bg">
-      <div class>
-        <h1 class="seven24">7<small>x</small>24</h1>
-        <h1>{{$t("string.hospital.AD")}}</h1>
-        <button
-          class="btn btn-outline-info rounded-pill p-3 mt-2"
-          @click="appointment">{{$t("string.hospital.SAN")}}</button>
-      </div>
-    </section>
+  <div class="Index" :style="$global.bg1">
+    <HeaderIf :hospital="hospital" :transparent="true"></HeaderIf>
+    <swiper class="swiper" :options="swiperOption">
+      <swiper-slide>
+        <section class="content d-flex justify-content-center align-items-center text-white">
+          <div class>
+            <h1 class="seven24 text-shadow">7<small>x</small>24</h1>
+            <h1 class="text-shadow">{{$t("string.hospital.AD")}}</h1>
+            <router-link
+              class="btn rounded-pill p-3 mt-2 button-gradient text-white border-light"
+              to="/appointment">{{$t("string.hospital.SAN")}}</router-link>
+          </div>
+        </section>
+      </swiper-slide>
+      <swiper-slide>
+        <section class="content"></section>
+      </swiper-slide>
+      <div class="swiper-pagination" slot="pagination"></div>
+    </swiper>
     <Footer :hospital="hospital"></Footer>
   </div>
 </template>
@@ -17,33 +25,45 @@
 <script>
 import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import 'swiper/css/swiper.css';
 
 export default {
   name: "Index",
   data(){
     return{
-      bg: {
-        // backgroundImage: "url(" + require("../../public/img/index.jpeg") + ")",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% 100%" 
+      swiperOption: {
+        direction: 'vertical',
+        slidesPerView: 1,
+        height: window.innerHeight,
+        mousewheel: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true
+        }
       },
     }
   },
+
   components: {
     HeaderIf,
-    Footer
+    Footer,
+    Swiper,
+    SwiperSlide
   },
+
   props: {
     hospital: String
   },
+
   created() {
     document.title = this.hospital;
   },
-  methods: {
-    appointment() {
-      this.$router.push({ path: "/appointment" });
-    }
-  }
+
+  mounted(){
+    this.$global.resizeContent();
+    document.querySelector(".swiper").style.height=this.$global.minHeight()+"px";
+  },
 };
 </script>
 

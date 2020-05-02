@@ -10,6 +10,7 @@ export const string = {
         AD: "Take care of your pet in all aspects",
         SAN: "start appointment now",
         language: "language",
+        download: "Download"
     },
 
     user: {

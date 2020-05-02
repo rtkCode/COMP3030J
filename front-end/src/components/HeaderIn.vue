@@ -42,9 +42,9 @@
         <!-- links -->
         <nav class="navbar-nav m-auto">
           <router-link class="nav-link" :class="{'link-text': transparent}" to="/appointment" ref="appointment">{{$t("string.hospital.appointment")}}</router-link>
-          <router-link class="nav-link" :class="{'link-text': transparent}" to="/announcement">{{$t("string.hospital.announcement")}}</router-link>
           <router-link class="nav-link" :class="{'link-text': transparent}" to="/discussion">{{$t("string.hospital.discussion")}}</router-link>
           <router-link class="nav-link" :class="{'link-text': transparent}" to="/about">{{$t("string.hospital.about")}}</router-link>
+          <router-link class="nav-link" :class="{'link-text': transparent}" to="/download">{{$t("string.hospital.download")}}</router-link>
         </nav>
         <!-- login & register links -->
         <nav class="navbar-nav ml-auto">

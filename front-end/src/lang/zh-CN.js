@@ -10,6 +10,7 @@ export const string = {
         AD: "全方位照顾您的宠物",
         SAN: "现在开始预约 >>>",
         language: "语言",
+        download: "下载客户端"
     },
 
     user: {

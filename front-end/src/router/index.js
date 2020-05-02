@@ -12,6 +12,7 @@ import EmployeePersonal from '../views/EmployeePersonal.vue'
 import Discussion from '../views/Discussion.vue'
 import EmployeeDiscussion from '../views/EmployeeDiscussion.vue'
 import NotFound from '../views/NotFound.vue'
+import Download from '../views/Download.vue'
 import axios from 'axios'
 import qs from 'qs';
 import token from '../token.js'
@@ -64,6 +65,16 @@ const routes = [
     path: '/logout',
     name: 'LogOut',
     component: LogOut,
+  },
+  {
+    path: '/download',
+    name: 'Download',
+    component: Download
+  },
+  {
+    path: '/404',
+    name: 'NotFound',
+    component: NotFound
   },
   {
     path: '/dashboard',
@@ -123,11 +134,7 @@ const routes = [
       normalPath: "/discussion"
     },
   },
-  {
-    path: '/notfound',
-    name: 'NotFound',
-    component: NotFound
-  }
+  {path:'*',redirect:'/404'}
 ]
 
 const router = new VueRouter({

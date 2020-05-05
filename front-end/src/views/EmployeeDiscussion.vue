@@ -207,7 +207,7 @@ export default {
 
       this.$axios({
         method: "get",
-        url: this.$global.request("employeeAppointments"),
+        url: this.$global.request("employeeAppointments/normal/all"),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: "bearer " + this.$token.getToken(1)

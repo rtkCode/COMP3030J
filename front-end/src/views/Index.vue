@@ -2,7 +2,7 @@
   <div class="Index" :style="$global.bg1">
     <HeaderIf :hospital="hospital" :transparent="true"></HeaderIf>
     <swiper class="swiper" :options="swiperOption">
-      <swiper-slide>
+      <swiper-slide data-hash="index">
         <section class="content d-flex justify-content-center align-items-center text-white">
           <div class>
             <h1 class="seven24 text-shadow">7<small>x</small>24</h1>
@@ -13,8 +13,10 @@
           </div>
         </section>
       </swiper-slide>
-      <swiper-slide>
-        <section class="content"></section>
+      <swiper-slide data-hash="about">
+        <section class="d-flex justify-content-center align-items-center">
+          <About class="d-flex justify-content-center align-items-center"></About>
+        </section>
       </swiper-slide>
       <div class="swiper-pagination" slot="pagination"></div>
     </swiper>
@@ -27,6 +29,7 @@ import HeaderIf from "@/components/HeaderIf.vue";
 import Footer from "@/components/Footer.vue";
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import 'swiper/css/swiper.css';
+import About from "@/views/About.vue";
 
 export default {
   name: "Index",
@@ -40,7 +43,8 @@ export default {
         pagination: {
           el: '.swiper-pagination',
           clickable: true
-        }
+        },
+        hashnav: true
       },
     }
   },
@@ -49,7 +53,8 @@ export default {
     HeaderIf,
     Footer,
     Swiper,
-    SwiperSlide
+    SwiperSlide,
+    About
   },
 
   props: {

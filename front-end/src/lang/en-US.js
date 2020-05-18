@@ -139,5 +139,20 @@ export const string = {
         discharged: "Discharged",
         completed: "Completed",
         filter: "Filter"
+    },
+
+    about: {
+        hb: "Hospital Branches",
+        vd: "Veterinary Doctors",
+        cc: "Clinical case",
+        cl: "Customer letter",
+        p1: "To give every patient the best treatment possible, we are committed to providing only the best services at our hospital, which includes:",
+        p2: "We would be happy to provide you with more information about what we have to offer. Call our hospital at +86 166 6666 6666 to speak with one of our team members and schedule an appointment.",
+        l1: "Wellness and preventive care for puppies, kittens",
+        l2: "Vaccinations tailored to your pet's lifestyle",
+        l3: "Surgery (including laser surgery)",
+        l4: "Orthopaedic surgery",
+        l5: "Internal medicine",
+        l6: "... and more",
     }
 }

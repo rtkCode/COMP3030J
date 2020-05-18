@@ -551,7 +551,7 @@ export default {
             _this.messageFailure=false;
             _this.hintTitle="Success";
             _this.hintText="operation success";
-            _this.getAppointments();
+            _this.getAppointments("normal","all");
           }
           if (response.data.code == 400) {
             $('.toast').toast('show');
@@ -609,7 +609,7 @@ export default {
             _this.messageFailure=false;
             _this.hintTitle="Success";
             _this.hintText="operation success";
-            _this.getAppointments();
+            _this.getAppointments("normal","all");
           }
           if (response.data.code == 400) {
             $('.toast').toast('show');
@@ -674,7 +674,7 @@ export default {
             _this.messageFailure=false;
             _this.hintTitle="Success";
             _this.hintText="operation success";
-            _this.getAppointments();
+            _this.getAppointments("normal","all");
           }
           if (response.data.code == 400) {
             $('.toast').toast('show');

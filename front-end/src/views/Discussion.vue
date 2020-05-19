@@ -4,7 +4,7 @@
     <div class="content d-flex justify-content-center" :style="$global.bg2">
       <div class="col-lg-6 col-md-10 col-sm-12 col mx-2 p-0">
         <div class="h5 text-left text-info mt-4 p-1">{{$t("string.discussion.CDH")}}</div>
-        <div v-for="(a,index) in appointments" :key="index">
+        <div v-for="(a,index) in appointmentss" :key="index">
           <div
             class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg opacity"
             :class="{'bg-light-red': a.emergency, 'bg-light-light': !a.emergency}"
@@ -175,6 +175,7 @@ export default {
   data() {
     return {
       appointments: [],
+      appointmentss: [],
       discussions: [],
       hintTitle: "",
       hintText: "",
@@ -204,6 +205,15 @@ export default {
   },
 
   methods: {
+    handleAppointments(appointments){
+      for(let i=0;i<appointments.length;i++){
+        if(appointments[i].status=="Waiting"||appointments[i].status=="Completed"||appointments[i].status=="Canceled"){
+        }else{
+          this.appointmentss.push(appointments[i]);
+        }
+      }
+    },
+
     getAppointment() {
       let _this = this;
 
@@ -218,38 +228,38 @@ export default {
           token: this.$token.getToken(0)
         })
       })
-        .then(function(response) {
-          console.log(response);
-          if (response.data.code == 200) {
-            _this.appointments = response.data.data.appointments.reverse();
+      .then(function(response) {
+        if (response.data.code == 200) {
+          _this.appointments = response.data.data.appointments.reverse();
+          _this.handleAppointments(_this.appointments)
+        }
+        if (response.data.code == 400) {
+          $(".toast").toast("show");
+          _this.messageFailure = true;
+          _this.hintTitle = "Unknow error";
+          _this.hintText = response.data.msg + ", please refresh the page";
+        }
+      })
+      .catch(function(error) {
+        if (!error.response == undefined) {
+          if (error.response.status == 401) {
+            _this.$token.removeToken();
+            _this.$router.push({
+              name: "LogIn",
+              query: {
+                message: "Login status expired, please log in again",
+                from: "/discussion"
+              }
+            });
           }
-          if (response.data.code == 400) {
-            $(".toast").toast("show");
-            _this.messageFailure = true;
-            _this.hintTitle = "Unknow error";
-            _this.hintText = response.data.msg + ", please refresh the page";
-          }
-        })
-        .catch(function(error) {
-          if (!error.response == undefined) {
-            if (error.response.status == 401) {
-              _this.$token.removeToken();
-              _this.$router.push({
-                name: "LogIn",
-                query: {
-                  message: "Login status expired, please log in again",
-                  from: "/discussion"
-                }
-              });
-            }
-          } else {
-            $(".toast").toast("show");
-            console.log(error);
-            _this.messageFailure = true;
-            _this.hintTitle = "Unknow error";
-            _this.hintText = response.data.msg + ", please check console log";
-          }
-        });
+        } else {
+          $(".toast").toast("show");
+          console.log(error);
+          _this.messageFailure = true;
+          _this.hintTitle = "Unknow error";
+          _this.hintText = response.data.msg + ", please check console log";
+        }
+      });
     },
 
     getDiscussion(discussionId) {
@@ -265,7 +275,6 @@ export default {
         }
       })
         .then(function(response) {
-          console.log(response);
           if (response.data.code == 200) {
             _this.discussions = response.data.data.discussions;
           }
@@ -318,7 +327,6 @@ export default {
       })
         .then(function(response) {
           _this.messageText[appointmentId] = "";
-          console.log(response);
           if (response.data.code == 200) {
             _this.getDiscussion(appointmentId);
           }

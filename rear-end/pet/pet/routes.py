@@ -945,7 +945,7 @@ def changePassword():
     if "prev_password" in request.form and "new_password" in request.form:
         password = request.form["prev_password"]
         new_password = request.form["new_password"]
-        if len(new_password)>=6 and len(new_password<=18):
+        if len(new_password)>5 and len(new_password)<19:
             if (check_password_hash(user_in_db.password_hash, password)):
                 user_in_db.password_hash = generate_password_hash(new_password)
                 db.session.commit()

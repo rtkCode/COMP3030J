@@ -923,6 +923,43 @@ def getDiscussions(appointmentId):
         }
     })
 
+@app.route("/changePassword", methods=['PUT'])
+@auth.login_required
+def changePassword():
+    user_in_db = ""
+
+    # user type
+    employee = False
+
+    # Determine the user type
+    if g.user is not None:
+        user = g.user.username
+        user_in_db = User.query.filter(User.username == user).first()
+    elif g.employee.username is not None:
+        user = g.employee.username
+        user_in_db = Employee.query.filter(Employee.username == user).first()
+        employee = True
+    else:
+        return jsonify({"code": 400, "msg": "User type invalid"})
+
+    if "prev_password" in request.form and "new_password" in request.form:
+        password = request.form["prev_password"]
+        new_password = request.form["new_password"]
+        if len(new_password)>=6 and len(new_password<=18):
+            if (check_password_hash(user_in_db.password_hash, password)):
+                user_in_db.password_hash = generate_password_hash(new_password)
+                db.session.commit()
+                # generateToken()
+                mail_sender = MailSender(user_in_db.email)
+                mail_sender.send_changePassword_mail()
+                return jsonify({"code": 200, "msg": "password changed"})
+            else:
+                return jsonify({"code": 400, "msg": "wrong password"})
+            
+        else:
+            return jsonify({"code": 400, "msg": "Password length not match"})
+    else:
+        return jsonify({"code": 400, "msg": "Format error"})
 
 @app.route("/logout", methods=['POST'])
 @auth.login_required
@@ -934,6 +971,7 @@ def logout():
             "code": 200,
             "msg": "Log out sucess"
         })   
+
 
 
 if __name__ == '__main__':

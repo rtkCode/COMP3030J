@@ -127,6 +127,7 @@
           <p class="my-3">{{$t("string.dashboard.email")}}{{email}}</p>
           <a class="text-info my-3" href="#exampleModal" data-toggle="modal">{{$t("string.dashboard.EYI")}}</a>
           <UModel @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></UModel>
+          <RModel @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></RModel>
         </div>
       </div>
 
@@ -195,6 +196,7 @@
   import Message from '@/components/Message.vue'
   import UModel from "@/components/UpdateProfileModel.vue";
   import DModel from "@/components/DiscussionModel.vue";
+  import RModel from "@/components/ResetPasswordModel.vue";
 
   export default {
     data() {
@@ -226,6 +228,7 @@
       Footer,
       UModel,
       DModel,
+      RModel,
       Message
     },
 

@@ -154,5 +154,11 @@ export const string = {
         l4: "Orthopaedic surgery",
         l5: "Internal medicine",
         l6: "... and more",
+    },
+
+    password: {
+        rp: "Reset Password",
+        pp: "Previous Password",
+        np: "New Password"
     }
 }

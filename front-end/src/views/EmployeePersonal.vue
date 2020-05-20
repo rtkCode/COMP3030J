@@ -677,6 +677,8 @@ export default {
             _this.messageFailure=false;
             _this.hintTitle="Success";
             _this.hintText="operation success";
+            $("#modal2").modal('hide');
+            $("#modal3").modal('hide');
             _this.getAppointments("normal","all");
           }
           if (response.data.code == 400) {

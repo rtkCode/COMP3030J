@@ -230,10 +230,10 @@
             if (error.response.status == 401) {
               _this.$token.removeToken();
               _this.$router.push({
-                name: 'LogIn',
+                name: 'EmployeeLogIn',
                 query: {
                   message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
+                  from: "/employee/dashboard"
                 }
               });
             } }else {
@@ -282,10 +282,10 @@
             if (error.response.status == 401) {
               _this.$token.removeToken();
               _this.$router.push({
-                name: 'LogIn',
+                name: 'EmployeeLogIn',
                 query: {
                   message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
+                  from: "/employee/dashboard"
                 }
               });
             } }else {

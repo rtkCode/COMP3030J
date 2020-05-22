@@ -294,7 +294,7 @@ export default {
                 name: "LogIn",
                 query: {
                   message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
+                  from: "/discussion"
                 }
               });
             }
@@ -346,7 +346,7 @@ export default {
                 name: "LogIn",
                 query: {
                   message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
+                  from: "/discussion"
                 }
               });
             }

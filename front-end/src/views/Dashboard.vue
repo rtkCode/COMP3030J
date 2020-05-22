@@ -304,7 +304,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.username = response.data.data.basic.username;
               _this.email = response.data.data.basic.email;
@@ -359,7 +358,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.appointments = response.data.data.appointments.reverse();
               _this.handleAppointments(_this.appointments);
@@ -460,7 +458,6 @@
             }
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.discussions=response.data.data.discussions;
             }
@@ -510,7 +507,6 @@
           })
           .then(function (response) {
             _this.messageText[appointmentId]="";
-            console.log(response);
             if (response.data.code == 200) {
               _this.getDiscussion(appointmentId);
             }

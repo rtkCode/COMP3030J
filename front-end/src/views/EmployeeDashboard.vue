@@ -70,7 +70,7 @@
             <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
               <tbody>
                 <tr>
-                  <td>{{$t("string.dashboard.priority")}}<span class="text-secondary">{{$global.priority(a.priority)}}</span></td>
+                  <td>{{$t("string.dashboard.priority")}}: <span class="text-secondary">{{$global.priority(a.priority)}}</span></td>
                   <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
                 </tr>
                 <tr>
@@ -215,7 +215,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.appointments = response.data.data.appointments.reverse();
             }
@@ -264,7 +263,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               $('.toast').toast('show');
               _this.messageFailure=false;

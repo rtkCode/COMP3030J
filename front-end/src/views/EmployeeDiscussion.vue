@@ -278,7 +278,6 @@ export default {
         }
       })
       .then(function(response) {
-        console.log(response);
         if (response.data.code == 200) {
           _this.discussions = response.data.data.discussions;
         }

@@ -113,7 +113,6 @@
           }else if(response.data.code==200){
             let token=response.data.token;
             _this.$token.storeEmployeeToken(token);
-            console.log(_this.fromPath);
             if(_this.fromPath==undefined || _this.fromPath=="/"){
                 _this.$router.push("/employee/dashboard");
             }else{

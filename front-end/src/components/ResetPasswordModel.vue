@@ -71,14 +71,25 @@
                             _this.$emit("hintText", response.data.msg);
                             $("#resetPasswordModal").modal('hide');
                             setTimeout("console.log('Reset password successful')",2000);
+                            let e = _this.$token.isEmployee();
                             _this.$token.removeToken();
-                            _this.$router.push({
-                                name: 'LogIn',
-                                query: {
-                                    message: _this.$t("string.appointment.loginExpired"),
-                                    from: "/employee/personal"
-                                }
-                            });
+                            if(e=="true"){
+                                _this.$router.push({
+                                    name: 'EmployeeLogIn',
+                                    query: {
+                                        message: _this.$t("string.appointment.loginExpired"),
+                                        from: "/employee/personal"
+                                    }
+                                });
+                            }else{
+                                _this.$router.push({
+                                    name: 'LogIn',
+                                    query: {
+                                        message: _this.$t("string.appointment.loginExpired"),
+                                        from: "/dashboard"
+                                    }
+                                });
+                            }
                         }
                         if (response.data.code == 400) {
                             _this.$emit("messageFailure", true);

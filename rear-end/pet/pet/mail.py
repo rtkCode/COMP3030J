@@ -121,3 +121,13 @@ class MailSender:
 
         t = threading.Thread(target=self.send, args=(message,), daemon=True)
         t.start()
+
+    def send_changePassword_mail(self):
+        message = MIMEText('Your password has successfully changed in Healing Paws Veterinary Hospital.', 'plain', 'utf-8')
+        message['From'] = Header("Healing Paws Veterinary Hospital", 'utf-8')
+        message['To'] = Header(self.__to_address, 'utf-8')
+        subject = 'Healing Paws Veterinary Hospital Password Changed'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        t = threading.Thread(target=self.send, args=(message,), daemon=True)
+        t.start()

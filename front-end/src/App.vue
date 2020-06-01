@@ -13,6 +13,10 @@
   color: #2c3e50;
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
+
 .router-link-exact-active{
   color: rgba(0,0,0,.9) !important;
 }

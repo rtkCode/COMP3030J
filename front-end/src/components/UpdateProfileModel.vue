@@ -31,6 +31,7 @@
                             <small class="error-text text-danger">{{emailErrorText}}</small>
                         </div>
                     </div>
+                    <p class="text-left m-0"><a class="text-primary cursor-pointer" type="button" data-target="#resetPasswordModal" data-toggle="modal" data-dismiss="modal">{{$t("string.password.rp")}}</a></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t("string.button.close")}}</button>
@@ -106,7 +107,6 @@
                         })
                     })
                     .then(function (response) {
-                        console.log(response);
                         _this.showButton=true;
                         $('.toast').toast('show');
                         if (response.data.code == 200) {

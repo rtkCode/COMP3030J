@@ -127,6 +127,7 @@
           <p class="my-3">{{$t("string.dashboard.email")}}{{email}}</p>
           <a class="text-info my-3" href="#exampleModal" data-toggle="modal">{{$t("string.dashboard.EYI")}}</a>
           <UModel @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></UModel>
+          <RModel @hintTitle="getHintTitle" @hintText="getHintText" @messageFailure="getMessageFailure"></RModel>
         </div>
       </div>
 
@@ -195,6 +196,7 @@
   import Message from '@/components/Message.vue'
   import UModel from "@/components/UpdateProfileModel.vue";
   import DModel from "@/components/DiscussionModel.vue";
+  import RModel from "@/components/ResetPasswordModel.vue";
 
   export default {
     data() {
@@ -226,6 +228,7 @@
       Footer,
       UModel,
       DModel,
+      RModel,
       Message
     },
 
@@ -301,7 +304,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.username = response.data.data.basic.username;
               _this.email = response.data.data.basic.email;
@@ -356,7 +358,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.appointments = response.data.data.appointments.reverse();
               _this.handleAppointments(_this.appointments);
@@ -457,7 +458,6 @@
             }
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.discussions=response.data.data.discussions;
             }
@@ -507,7 +507,6 @@
           })
           .then(function (response) {
             _this.messageText[appointmentId]="";
-            console.log(response);
             if (response.data.code == 200) {
               _this.getDiscussion(appointmentId);
             }

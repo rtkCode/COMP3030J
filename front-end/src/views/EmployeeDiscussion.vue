@@ -4,7 +4,7 @@
     <div class="content d-flex justify-content-center" :style="$global.bg2">
       <div class="col-lg-6 col-md-10 col-sm-12 col mx-2 p-0">
         <div class="h5 text-left text-info mt-4 p-1">{{$t("string.discussion.EDH")}}</div>
-        <div v-for="(a,index) in appointments" :key="index">
+        <div v-for="(a,index) in appointmentss" :key="index">
           <div
             class="d-flex justify-content-around mx-2 my-3 p-2 rounded-lg opacity"
             :class="{'bg-light-red': a.emergency, 'bg-light-light': !a.emergency}"
@@ -173,6 +173,7 @@ export default {
   data() {
     return {
       appointments: [],
+      appointmentss: [],
       hintTitle: "",
       hintText: "",
       messageFailure: false,
@@ -201,13 +202,22 @@ export default {
   },
 
   methods: {
+    handleAppointments(appointments){
+      for(let i=0;i<appointments.length;i++){
+        if(appointments[i].status=="Waiting"||appointments[i].status=="Completed"||appointments[i].status=="Canceled"){
+        }else{
+          this.appointmentss.push(appointments[i]);
+        }
+      }
+    },
+
     getAppointments() {
       let _this = this;
       this.showButton = false;
 
       this.$axios({
         method: "get",
-        url: this.$global.request("employeeAppointments"),
+        url: this.$global.request("employeeAppointments/normal/all"),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: "bearer " + this.$token.getToken(1)
@@ -220,6 +230,7 @@ export default {
         _this.showButton = true;
         if (response.data.code == 200) {
           _this.appointments = response.data.data.appointments.reverse();
+          _this.handleAppointments(_this.appointments)
         }
         if (response.data.code == 400) {
           $(".toast").toast("show");
@@ -236,10 +247,10 @@ export default {
           if (error.response.status == 401) {
             _this.$token.removeToken();
             _this.$router.push({
-              name: "LogIn",
+              name: "EmployeeLogin",
               query: {
                 message: _this.$t("string.appointment.loginExpired"),
-                from: "/dashboard"
+                from: "/employee/discussion"
               }
             });
           }
@@ -267,7 +278,6 @@ export default {
         }
       })
       .then(function(response) {
-        console.log(response);
         if (response.data.code == 200) {
           _this.discussions = response.data.data.discussions;
         }
@@ -284,10 +294,10 @@ export default {
           if (error.response.status == 401) {
             _this.$token.removeToken();
             _this.$router.push({
-              name: "LogIn",
+              name: "EmployeeLogIn",
               query: {
                 message: _this.$t("string.appointment.loginExpired"),
-                from: "/dashboard"
+                from: "/employee/discussion"
               }
             });
           }
@@ -337,10 +347,10 @@ export default {
           if (error.response.status == 401) {
             _this.$token.removeToken();
             _this.$router.push({
-              name: "LogIn",
+              name: "EmployeeLogIn",
               query: {
                 message: _this.$t("string.appointment.loginExpired"),
-                from: "/dashboard"
+                from: "/employee/discussion"
               }
             });
           }

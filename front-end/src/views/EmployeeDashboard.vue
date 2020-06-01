@@ -65,12 +65,12 @@
               <span class="d-flex align-items-center badge badge-pill" :class="[a.status=='Waiting'?'badge-secondary':'', a.status=='Processing'?'badge-info':'', a.status=='Operating'?'badge-primary':'', a.status=='Discharged'?'badge-success':'', a.status=='Canceled'?'badge-danger':'', a.status=='Completed'?'badge-success':'']">{{a.status}}</span>
               <span>{{a.id}}</span><span class="hide-sm">{{a.type}}</span><span class="hide-sm">{{a.date}}</span>
               <a class="text-info" data-toggle="collapse" :href="'#a'+index" role="button" aria-expanded="false" :aria-controls="index">{{$t("string.dashboard.details")}}</a>
-              <button class="btn btn-outline-info badge badge-info" @click="updateStatus(a.id)" :disabled="a.employeeId">{{$t("string.discussion.handle")}}</button>
+              <button class="btn btn-outline-info badge badge-info" @click="updateStatus(a.id)" :disabled="a.employeeId||a.status=='Canceled'">{{$t("string.discussion.handle")}}</button>
             </div>
             <table class="table table-borderless card card-body collapse mx-3 mx-md-5 col-11" :id="'a'+index">
               <tbody>
                 <tr>
-                  <td>{{$t("string.dashboard.priority")}}<span class="text-secondary">{{$global.priority(a.priority)}}</span></td>
+                  <td>{{$t("string.dashboard.priority")}}: <span class="text-secondary">{{$global.priority(a.priority)}}</span></td>
                   <td>{{$t("string.dashboard.attendingDoctor")}}<span class="text-secondary">{{a.attendingDoctor}}</span></td>
                 </tr>
                 <tr>
@@ -215,7 +215,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               _this.appointments = response.data.data.appointments.reverse();
             }
@@ -231,10 +230,10 @@
             if (error.response.status == 401) {
               _this.$token.removeToken();
               _this.$router.push({
-                name: 'LogIn',
+                name: 'EmployeeLogIn',
                 query: {
                   message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
+                  from: "/employee/dashboard"
                 }
               });
             } }else {
@@ -264,7 +263,6 @@
             })
           })
           .then(function (response) {
-            console.log(response);
             if (response.data.code == 200) {
               $('.toast').toast('show');
               _this.messageFailure=false;
@@ -284,10 +282,10 @@
             if (error.response.status == 401) {
               _this.$token.removeToken();
               _this.$router.push({
-                name: 'LogIn',
+                name: 'EmployeeLogIn',
                 query: {
                   message: _this.$t("string.appointment.loginExpired"),
-                  from: "/dashboard"
+                  from: "/employee/dashboard"
                 }
               });
             } }else {

@@ -182,7 +182,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t("string.button.close")}}</button>
-                    <button type="button" class="btn btn-danger" @click="updateStatus(deleteId, 'Canceled')"
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="updateStatus(deleteId, 'Canceled')"
                         v-show="showButton">{{$t("string.button.confirm")}}</button>
                     <button class="btn btn-danger" type="button" v-show="!showButton" disabled>
                         <span class="spinner-border spinner-border-sm mb-1" role="status" aria-hidden="true"></span>

@@ -232,7 +232,11 @@ export default {
     },
 
     routeToLogin(){
-      this.$router.push({name: 'LogIn',query:{ username: this.username}});
+      if(this.employee=="1"){
+        this.$router.push({name: 'EmployeeLogIn',query:{ username: this.username}});
+      }else if(this.employee=="0"){
+        this.$router.push({name: 'LogIn',query:{ username: this.username}});
+      }
     }
   }
 }
